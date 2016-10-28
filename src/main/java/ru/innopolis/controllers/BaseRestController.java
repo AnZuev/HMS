@@ -40,7 +40,7 @@ public abstract class BaseRestController {
                 String message = messageSource.getMessage(error, locale);
                 validationErrorResponse.addError(error.getField(), message);
             }
-            responseEntity = new ResponseEntity<>(validationErrorResponse, HttpStatus.OK);
+            responseEntity = new ResponseEntity<>(validationErrorResponse, HttpStatus.BAD_REQUEST);
         }
         return responseEntity;
     }
