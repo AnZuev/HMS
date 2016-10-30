@@ -4,6 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
@@ -13,6 +14,8 @@ import ru.innopolis.models.HotelResponseModel;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Создано: Денис
@@ -21,6 +24,8 @@ import java.util.function.Consumer;
  */
 @RestController()
 public class HotelController extends BaseRestController {
+
+    private Logger logger = Logger.getLogger(HotelController.class.getName());
 
     public HotelController(MessageSource messageSource) {
         super(messageSource);
@@ -31,20 +36,27 @@ public class HotelController extends BaseRestController {
      * @return Подробное описание всех отелей
      */
     @GetMapping("/hotels/full")
-    public ResponseEntity<List<HotelResponseModel>> getFullHotelInformation() {
+    public ResponseEntity getFullHotelInformation() {
         List<HotelResponseModel> output = new LinkedList<>();
-        fillHotelInformation((hotel) -> {
-            HotelResponseModel model = new HotelResponseModel();
-            model.setId(hotel.getId());
-            model.setName(hotel.getName());
-            model.setAddress(hotel.getAddress());
-            model.setDescription(hotel.getDescription());
-            model.setMail(hotel.getMail());
-            model.setPhoneNumber(hotel.getPhoneNumber());
-            output.add(model);
-        });
-        HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        ResponseEntity<List<HotelResponseModel>> response = new ResponseEntity<>(output, status);
+        ResponseEntity response;
+        try {
+            fillHotelInformation((hotel) -> {
+                HotelResponseModel model = new HotelResponseModel();
+                model.setId(hotel.getId());
+                model.setName(hotel.getName());
+                model.setAddress(hotel.getAddress());
+                model.setDescription(hotel.getDescription());
+                model.setMail(hotel.getMail());
+                model.setPhoneNumber(hotel.getPhoneNumber());
+                output.add(model);
+            });
+            HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+            response = new ResponseEntity<>(output, status);
+        }catch (Exception e){
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            response = getGeneralErrorResponse();
+        }
+
         return response;
     }
 
@@ -53,16 +65,22 @@ public class HotelController extends BaseRestController {
      * @return Краткая информацию обо всех отелях
      */
     @GetMapping("/hotels/short")
-    public ResponseEntity<List<HotelResponseModel>> getShortHotelInformation() {
+    public ResponseEntity getShortHotelInformation() {
         List<HotelResponseModel> output = new LinkedList<>();
-        fillHotelInformation((hotel) -> {
-            HotelResponseModel model = new HotelResponseModel();
-            model.setId(hotel.getId());
-            model.setName(hotel.getName());
-            output.add(model);
-        });
-        HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
-        ResponseEntity<List<HotelResponseModel>> response = new ResponseEntity<>(output, status);
+        ResponseEntity response;
+        try {
+            fillHotelInformation((hotel) -> {
+                HotelResponseModel model = new HotelResponseModel();
+                model.setId(hotel.getId());
+                model.setName(hotel.getName());
+                output.add(model);
+            });
+            HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+            response = new ResponseEntity<>(output, status);
+        }catch (Exception e){
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            response = getGeneralErrorResponse();
+        }
         return response;
     }
 
@@ -70,7 +88,7 @@ public class HotelController extends BaseRestController {
      * Заполнить информацию по отелям
      * @param consumer Правило заполнения данных
      */
-    private void fillHotelInformation(Consumer<Hotel> consumer) {
+    private void fillHotelInformation(Consumer<Hotel> consumer)throws Exception{
         IHotelDAOService service = new HotelDAOService();
         List<Hotel> allHotels = service.getAllHotels();
         allHotels.forEach(consumer);

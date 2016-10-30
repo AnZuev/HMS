@@ -2,8 +2,8 @@ package ru.innopolis.dao.imp;
 
 import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
+import ru.innopolis.dao.entity.RoomType;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class HotelDAOService implements IHotelDAOService {
 
-    public List<Hotel> getAllHotels() {
+    public List<Hotel> getAllHotels() throws Exception {
        return Collections.emptyList();
     }
 }
