@@ -1,5 +1,6 @@
 package ru.innopolis.dao;
 
+import ru.innopolis.dao.entity.Client;
 import ru.innopolis.models.NewClientModel;
 
 /**
@@ -16,5 +17,12 @@ public interface IClientDAOService {
      */
     void addNewClient(NewClientModel client) throws Exception;
 
+    /**
+     * Найти клиента по электронной почте и паролю
+     * @param email Электронная почта
+     * @param password Пароль
+     * @return Клиент, если существет. Null в противном случае
+     */
+    Client findClient(String email, String password) throws Exception;
 
 }

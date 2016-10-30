@@ -1,6 +1,7 @@
 package ru.innopolis.dao.imp;
 
 import ru.innopolis.dao.IClientDAOService;
+import ru.innopolis.dao.entity.Client;
 import ru.innopolis.models.NewClientModel;
 
 /**
@@ -14,4 +15,7 @@ public class ClientDAOService implements IClientDAOService {
 
     }
 
+    public Client findClient(String email, String password) throws Exception {
+        return null;
+    }
 }
