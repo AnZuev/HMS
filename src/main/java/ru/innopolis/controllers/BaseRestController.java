@@ -18,7 +18,7 @@ import java.util.Locale;
  */
 public abstract class BaseRestController {
 
-    public static final String ERROR_COMMON = "error.common";
+    private static final String ERROR_COMMON = "error.common";
     private MessageSource messageSource;
 
     public BaseRestController(MessageSource messageSource) {
@@ -46,12 +46,38 @@ public abstract class BaseRestController {
         return responseEntity;
     }
 
+    /**
+     * Получить ответ с общей ошибкой
+     * @return Ответ с общей ошибкой
+     */
     protected ResponseEntity<ErrorResponse> getGeneralErrorResponse(){
+        return getErrorResponse(ERROR_COMMON, null);
+    }
+
+    /**
+     * Получить ответ, содержащий описание ошибки
+     * @param key Ключ
+     * @param arg Аргументы
+     * @return Ответ, содержащий описание ошибки
+     */
+    protected ResponseEntity<ErrorResponse> getErrorResponse(String key, Object[] arg){
         Locale locale = LocaleContextHolder.getLocale();
-        String message = messageSource.getMessage(ERROR_COMMON, null, locale);
+        String message = messageSource.getMessage(key, arg, locale);
         ErrorResponse errorResponse = new ErrorResponse();
         errorResponse.addCommonError(message);
         ResponseEntity<ErrorResponse> responseEntity = new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
         return responseEntity;
+    }
+
+    /**
+     * Получить локализованное сообщение
+     * @param key Ключ сообщения
+     * @param arg Аргументы
+     * @return Локализованное сообщение
+     */
+    protected String getMessage(String key, Object arg[]){
+        Locale locale = LocaleContextHolder.getLocale();
+        String message = messageSource.getMessage(key, arg, locale);
+        return message;
     }
 }
