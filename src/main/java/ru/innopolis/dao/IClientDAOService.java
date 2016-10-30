@@ -13,9 +13,10 @@ public interface IClientDAOService {
     /**
      * Добавить нового клиента
      * @param client Клиент
+     * @return Сохранённый клиент
      * @throws Exception Не удалось добавить клиента по каким-либо причинам
      */
-    void addNewClient(NewClientModel client) throws Exception;
+    Client addNewClient(NewClientModel client) throws Exception;
 
     /**
      * Найти клиента по электронной почте и паролю

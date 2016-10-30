@@ -10,8 +10,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.IClientDAOService;
+import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.imp.ClientDAOService;
 import ru.innopolis.models.NewClientModel;
+import ru.innopolis.models.RegistrationResponseModel;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -42,16 +44,17 @@ public class RegistrationController extends BaseRestController{
      * @param request Запрос от клиента
      * @return Ответ, содержащий статус действия
      */
-    @PostMapping("/registration")
+    @PostMapping("/auth/signUp")
     public ResponseEntity createUser(@Valid @RequestBody NewClientModel newUser, Errors bindingResult, HttpServletRequest request){
         ResponseEntity responseEntity = getValidationErrorResponse(bindingResult);
         if (responseEntity == null)
         {
             IClientDAOService service = new ClientDAOService();
             try {
-                service.addNewClient(newUser);
+                Client client = service.addNewClient(newUser);
                 request.getSession().setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);
-                responseEntity = new ResponseEntity<>(HttpStatus.OK);
+                RegistrationResponseModel responseModel = buildResponseModel(client);
+                responseEntity = new ResponseEntity<>(responseModel, HttpStatus.OK);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 responseEntity = getGeneralErrorResponse();
@@ -59,5 +62,14 @@ public class RegistrationController extends BaseRestController{
         }
 
         return responseEntity;
+    }
+
+    private RegistrationResponseModel buildResponseModel(Client client) {
+        RegistrationResponseModel responseModel = new RegistrationResponseModel();
+        responseModel.setId(client.getId());
+        responseModel.setFirstName(client.getFirstName());
+        responseModel.setSecondName(client.getSecondName());
+        responseModel.setFatherName(client.getFatherName());
+        return responseModel;
     }
 }

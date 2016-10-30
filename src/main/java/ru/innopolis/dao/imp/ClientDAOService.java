@@ -11,8 +11,8 @@ import ru.innopolis.models.NewClientModel;
  */
 public class ClientDAOService implements IClientDAOService {
 
-    public void addNewClient(NewClientModel client) throws Exception {
-
+    public Client addNewClient(NewClientModel client) throws Exception {
+        return null;
     }
 
     public Client findClient(String email, String password) throws Exception {
