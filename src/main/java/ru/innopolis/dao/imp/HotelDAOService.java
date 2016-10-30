@@ -17,4 +17,8 @@ public class HotelDAOService implements IHotelDAOService {
     public List<Hotel> getAllHotels() throws Exception {
        return Collections.emptyList();
     }
+
+    public List<RoomType> getRoomTypesByHotelId(long id) throws Exception{
+        return Collections.emptyList();
+    }
 }

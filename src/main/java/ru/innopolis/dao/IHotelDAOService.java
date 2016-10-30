@@ -17,4 +17,11 @@ public interface IHotelDAOService {
      * @return Список отелей
      */
     List<Hotel> getAllHotels() throws Exception;
+
+    /**
+     * Получить типы комнат в отеле
+     * @param id ИД отеля
+     * @return Список типов комнат в отеле
+     */
+    List<RoomType> getRoomTypesByHotelId(long id) throws Exception;
 }
