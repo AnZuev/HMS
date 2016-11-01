@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.innopolis.constants.AuthorizationConstant;
+import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IClientDAOService;
 import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.imp.ClientDAOService;
@@ -43,11 +44,11 @@ public class AuthorizationController extends BaseRestController {
     public ResponseEntity authenticate(@Valid @RequestBody AuthorizationRequestModel model, Errors bindingResult, HttpSession session) {
         ResponseEntity response = getValidationErrorResponse(bindingResult);
         if (response == null) {
-            IClientDAOService service = new ClientDAOService();
             try {
                 String password = model.getPassword();
                 String encryptPassword = PasswordHelper.encrypt(password);
 
+                IClientDAOService service = DAOServiceFactory.getInstance().createService(ClientDAOService.class);
                 Client client = service.findClient(model.getMail(), encryptPassword);
                 if (client != null) {
                     session.setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);

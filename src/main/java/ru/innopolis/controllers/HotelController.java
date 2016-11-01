@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
+import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
 import ru.innopolis.dao.entity.RoomType;
@@ -93,7 +94,7 @@ public class HotelController extends BaseRestController {
      * @param consumer Правило заполнения данных
      */
     private void fillHotelInformation(Consumer<Hotel> consumer) throws Exception {
-        IHotelDAOService service = new HotelDAOService();
+        IHotelDAOService service = DAOServiceFactory.getInstance().createService(HotelDAOService.class);
         List<Hotel> allHotels = service.getAllHotels();
         allHotels.forEach(consumer);
     }
@@ -147,7 +148,7 @@ public class HotelController extends BaseRestController {
         Long id = parse(hotelId);
         if (id != null){
             try {
-                IHotelDAOService service = new HotelDAOService();
+                IHotelDAOService service = DAOServiceFactory.getInstance().createService(HotelDAOService.class);
                 List<RoomType> list = service.getRoomTypesByHotelId(id);
                 list.forEach(builder);
                 HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;

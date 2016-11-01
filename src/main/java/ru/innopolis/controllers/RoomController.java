@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.Room;
 import ru.innopolis.dao.imp.RoomDAOService;
@@ -51,7 +52,7 @@ public class RoomController extends BaseRestController {
             Calendar from = modelRequest.getFrom();
             Calendar to = modelRequest.getTo();
             try {
-                IRoomDAOService service = new RoomDAOService();
+                IRoomDAOService service = DAOServiceFactory.getInstance().createService(RoomDAOService.class);
                 List<Room> freeRooms = service.getFreeRoomsInHotel(hotelId, roomTypeId, from, to);
                 List<AvailableRoomResponseModel> responseModelList = new ArrayList<>(freeRooms.size());
                 freeRooms.forEach(room -> {

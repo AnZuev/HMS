@@ -4,6 +4,7 @@ import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
 import ru.innopolis.dao.entity.RoomType;
 
+import javax.sql.DataSource;
 import java.util.Collections;
 import java.util.List;
 
@@ -14,11 +15,17 @@ import java.util.List;
  */
 public class HotelDAOService implements IHotelDAOService {
 
-    public List<Hotel> getAllHotels() throws Exception {
-       return Collections.emptyList();
+    private DataSource source;
+
+    public HotelDAOService(DataSource source) {
+        this.source = source;
     }
 
-    public List<RoomType> getRoomTypesByHotelId(long id) throws Exception{
+    public List<Hotel> getAllHotels() throws Exception {
+        return Collections.emptyList();
+    }
+
+    public List<RoomType> getRoomTypesByHotelId(long id) throws Exception {
         return Collections.emptyList();
     }
 }

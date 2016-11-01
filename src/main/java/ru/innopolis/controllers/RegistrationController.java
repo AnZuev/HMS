@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import ru.innopolis.constants.AuthorizationConstant;
+import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IClientDAOService;
 import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.imp.ClientDAOService;
@@ -49,8 +50,8 @@ public class RegistrationController extends BaseRestController{
         ResponseEntity responseEntity = getValidationErrorResponse(bindingResult);
         if (responseEntity == null)
         {
-            IClientDAOService service = new ClientDAOService();
             try {
+                IClientDAOService service = DAOServiceFactory.getInstance().createService(ClientDAOService.class);
                 Client client = service.addNewClient(newUser);
                 request.getSession().setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);
                 RegistrationResponseModel responseModel = buildResponseModel(client);
