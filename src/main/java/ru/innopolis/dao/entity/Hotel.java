@@ -1,23 +1,35 @@
 package ru.innopolis.dao.entity;
 
+import javax.persistence.*;
+
 /**
  * Создано: Денис
  * Дата:  30.10.2016
  * Описание: Сущность Отель
  */
+@Entity
+@Table(name = "Hotels")
 public class Hotel {
-    private long id;
+    @Id
+    @SequenceGenerator(name = "HOTELS_SEQ", sequenceName = "HOTELS_ID_SEQ_GEN")
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "name")
     private String name;
+    @Column(name = "description")
     private String description;
+    @Column(name = "phone_number")
     private String phoneNumber;
+    @Column(name = "address")
     private String address;
+    @Column(name = "email")
     private String mail;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

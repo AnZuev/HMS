@@ -29,7 +29,7 @@ public class HotelDAOService implements IHotelDAOService {
     }
 
     public List<Hotel> getAllHotels() throws Exception {
-        return Collections.emptyList();
+        return sqlProcessor.simpleSelect(Hotel.class, null);
     }
 
     public List<RoomType> getRoomTypesByHotelId(long id) throws Exception {
