@@ -29,6 +29,7 @@ public class SQLProcessor implements ISQLProcessor {
 
     private static final String THERE_IS_NOT_TABLE_NAME = "Не задо название таблицы для ";
     private static final String THERE_IS_NOT_PK = "Не задан первичный ключ";
+    private static final String WHERE_CAUSE = "WHERE ";
     private static final String NULL_VALUE = "null";
     private static final String COMMA = ",";
     private static final String MARKS = "'";
@@ -130,7 +131,7 @@ public class SQLProcessor implements ISQLProcessor {
         if (StringUtils.isEmpty(whereClause)) {
             whereClause = StringUtils.EMPTY;
         } else {
-            whereClause = "WHERE " + whereClause;
+            whereClause = WHERE_CAUSE + whereClause;
         }
         String selectSt = SELECT_ST.format(new Object[]{sequenceNames, tableName, whereClause});
 
