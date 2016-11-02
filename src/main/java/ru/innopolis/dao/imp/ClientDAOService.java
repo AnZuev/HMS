@@ -2,6 +2,7 @@ package ru.innopolis.dao.imp;
 
 import ru.innopolis.dao.IClientDAOService;
 import ru.innopolis.dao.entity.Client;
+import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.models.NewClientModel;
 
 import javax.sql.DataSource;
@@ -13,10 +14,10 @@ import javax.sql.DataSource;
  */
 public class ClientDAOService implements IClientDAOService {
 
-    private DataSource source;
+    private ISQLProcessor sqlProcessor;
 
-    public ClientDAOService(DataSource source) {
-        this.source = source;
+    public ClientDAOService(ISQLProcessor sqlProcessor) {
+        this.sqlProcessor = sqlProcessor;
     }
 
     public Client addNewClient(NewClientModel client) throws Exception {

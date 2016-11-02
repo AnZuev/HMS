@@ -2,6 +2,7 @@ package ru.innopolis.dao.imp;
 
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.Room;
+import ru.innopolis.dao.processor.ISQLProcessor;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
@@ -16,10 +17,10 @@ import java.util.List;
  */
 public class RoomDAOService implements IRoomDAOService {
 
-    private DataSource source;
+    private ISQLProcessor sqlProcessor;
 
-    public RoomDAOService(DataSource source) {
-        this.source = source;
+    public RoomDAOService(ISQLProcessor sqlProcessor) {
+        this.sqlProcessor = sqlProcessor;
     }
 
     public List<Room> getFreeRoomsInHotel(long hotelId, long roomTypeId, Calendar from, Calendar to) throws Exception {
