@@ -33,6 +33,7 @@ public class HotelDAOService implements IHotelDAOService {
     }
 
     public List<RoomType> getRoomTypesByHotelId(long id) throws Exception {
-        return Collections.emptyList();
+        String where = "HOTEL_ID = " + id;
+        return sqlProcessor.simpleSelect(RoomType.class, where);
     }
 }

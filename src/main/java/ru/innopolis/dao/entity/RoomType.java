@@ -1,22 +1,37 @@
 package ru.innopolis.dao.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * Создано: Денис
  * Дата:  30.10.2016
  * Описание: Тип комнаты
  */
+@Table(name = "ROOM_TYPES")
 public class RoomType {
-    private long id;
+    @Id
+    @SequenceGenerator(name = "ROOM_TYPES_SEQ", sequenceName = "ROOM_ID_SEQ_GEN")
+    @Column(name = "id")
+    private Long id;
+    @Column(name = "HOTEL_ID")
+    private Long hotelId;
+    @Column(name = "TYPE_NAME")
     private String name;
+    @Column(name = "DESCRIPTION")
     private String description;
-    private double cost;
+    @Column(name = "COST")
+    private Double cost;
+    @Column(name = "PATH_TO_PHOTO")
     private String photoPath;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -36,11 +51,11 @@ public class RoomType {
         this.description = description;
     }
 
-    public double getCost() {
+    public Double getCost() {
         return cost;
     }
 
-    public void setCost(double cost) {
+    public void setCost(Double cost) {
         this.cost = cost;
     }
 
@@ -50,5 +65,13 @@ public class RoomType {
 
     public void setPhotoPath(String photoPath) {
         this.photoPath = photoPath;
+    }
+
+    public Long getHotelId() {
+        return hotelId;
+    }
+
+    public void setHotelId(Long hotelId) {
+        this.hotelId = hotelId;
     }
 }
