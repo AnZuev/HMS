@@ -59,7 +59,9 @@ public class SQLProcessor implements ISQLProcessor {
     public <T> T execute(SQLAction<T> action) throws Exception {
         try (Connection connection = source.getConnection()) {
             try (Statement statement = connection.createStatement()) {
-                return action.execute(statement);
+                T result = action.execute(statement);
+                connection.commit();
+                return result;
             } catch (SQLException e) {
                 connection.rollback();
                 throw e;
@@ -98,7 +100,9 @@ public class SQLProcessor implements ISQLProcessor {
 
         try (Connection connection = source.getConnection()) {
             try (Statement statement = connection.createStatement()) {
-                return statement.executeUpdate(insertSt);
+                int result = statement.executeUpdate(insertSt);
+                connection.commit();
+                return result;
             } catch (SQLException e) {
                 connection.rollback();
                 PropertyUtils.setProperty(object, pKField.getName(), null);
