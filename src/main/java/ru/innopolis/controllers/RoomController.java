@@ -41,7 +41,7 @@ public class RoomController extends BaseRestController {
      * @return Список свободных комнат. В случае ошибки - информация об ошибке
      */
     @GetMapping("/rooms/getAvailableRooms")
-    public ResponseEntity findFreeRomms(@Valid AvailableRoomRequestModel modelRequest, Errors errors){
+    public ResponseEntity findFreeRooms(@Valid AvailableRoomRequestModel modelRequest, Errors errors){
         ResponseEntity response = getValidationErrorResponse(errors);
         if (response == null){
             long hotelId = modelRequest.getHotelId();
