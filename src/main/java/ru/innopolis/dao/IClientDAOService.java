@@ -1,7 +1,6 @@
 package ru.innopolis.dao;
 
 import ru.innopolis.dao.entity.Client;
-import ru.innopolis.models.NewClientModel;
 
 /**
  * Создано: Денис
@@ -16,7 +15,7 @@ public interface IClientDAOService {
      * @return Сохранённый клиент
      * @throws Exception Не удалось добавить клиента по каким-либо причинам
      */
-    Client addNewClient(NewClientModel client) throws Exception;
+    Client addNewClient(Client client) throws Exception;
 
     /**
      * Найти клиента по электронной почте и паролю

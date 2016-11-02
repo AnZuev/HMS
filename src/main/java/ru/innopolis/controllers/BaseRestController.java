@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.multylanguages.message.MetaMessage;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.http.HttpStatus;
@@ -79,5 +80,19 @@ public abstract class BaseRestController {
         Locale locale = LocaleContextHolder.getLocale();
         String message = messageSource.getMessage(key, arg, locale);
         return message;
+    }
+
+    /**
+     * Сформировать ответ об ошибке, возникшей по вине пользователя
+     * @param message Описание сообщения
+     * @return Ответ, содержащий ошибку.
+     */
+    protected ResponseEntity<ErrorResponse> getErrorResponse(MetaMessage message){
+        Locale locale = LocaleContextHolder.getLocale();
+        ErrorResponse errorResponse = new ErrorResponse();
+        String mes = messageSource.getMessage(message.getKey(), message.getParameters(), locale);
+        errorResponse.addCommonError(mes);
+        return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+
     }
 }

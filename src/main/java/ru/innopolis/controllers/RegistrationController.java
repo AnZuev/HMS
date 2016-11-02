@@ -1,5 +1,7 @@
 package ru.innopolis.controllers;
 
+import org.multylanguages.exeption.MetaMessageException;
+import org.multylanguages.message.MetaMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -19,7 +21,6 @@ import ru.innopolis.models.RegistrationResponseModel;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
 
 /**
@@ -51,11 +52,21 @@ public class RegistrationController extends BaseRestController{
         if (responseEntity == null)
         {
             try {
+                Client client = buildNewClient(newUser);
+
                 IClientDAOService service = DAOServiceFactory.getInstance().createService(ClientDAOService.class);
-                Client client = service.addNewClient(newUser);
-                request.getSession().setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);
-                RegistrationResponseModel responseModel = buildResponseModel(client);
-                responseEntity = new ResponseEntity<>(responseModel, HttpStatus.OK);
+                try {
+                    client = service.addNewClient(client);
+
+                    request.getSession().setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);
+                    RegistrationResponseModel responseModel = buildResponseModel(client);
+
+                    responseEntity = new ResponseEntity<>(responseModel, HttpStatus.OK);
+                }catch (MetaMessageException e){
+                    MetaMessage metaMessage = e.getMetaMessage();
+                    responseEntity = getErrorResponse(metaMessage);
+                }
+
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 responseEntity = getGeneralErrorResponse();
@@ -72,5 +83,15 @@ public class RegistrationController extends BaseRestController{
         responseModel.setSecondName(client.getSecondName());
         responseModel.setFatherName(client.getFatherName());
         return responseModel;
+    }
+
+    private Client buildNewClient(NewClientModel model){
+        Client client = new Client();
+        client.setFirstName(model.getFirstName());
+        client.setSecondName(model.getSecondName());
+        client.setFatherName(model.getFatherName());
+        client.setMail(model.getEmail());
+        client.setPhoneNumber(model.getPhoneNumber());
+        return client;
     }
 }

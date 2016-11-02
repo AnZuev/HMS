@@ -1,23 +1,39 @@
 package ru.innopolis.dao.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * Создано: Денис
  * Дата:  30.10.2016
  * Описание: Сущность клиент
  */
+@Table(name = "CLIENTS")
 public class Client {
-    private long id;
+    @Id
+    @SequenceGenerator(name = "CLIENTS_SEQ")
+    @Column(name = "ID")
+    private Long id;
+    @Column(name = "FIRST_NAME")
     private String firstName;
+    @Column(name = "SECOND_NAME")
     private String secondName;
+    @Column(name = "FATHER_NAME")
     private String fatherName;
+    @Column(name = "EMAIL")
     private String mail;
+    @Column(name = "PHONE_NUMBER")
     private String phoneNumber;
+    @Column(name = "HASH_PASSWORD")
+    private String password;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -59,5 +75,13 @@ public class Client {
 
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
