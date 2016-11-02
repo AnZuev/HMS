@@ -3,8 +3,15 @@ package ru.innopolis.dao.imp;
 import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
 import ru.innopolis.dao.entity.RoomType;
+import ru.innopolis.dao.processor.ISQLProcessor;
+import ru.innopolis.dao.processor.SQLProcessor;
 
 import javax.sql.DataSource;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Collections;
 import java.util.List;
 
@@ -15,10 +22,10 @@ import java.util.List;
  */
 public class HotelDAOService implements IHotelDAOService {
 
-    private DataSource source;
+    private ISQLProcessor sqlProcessor;
 
-    public HotelDAOService(DataSource source) {
-        this.source = source;
+    public HotelDAOService(ISQLProcessor sqlProcessor) {
+        this.sqlProcessor = sqlProcessor;
     }
 
     public List<Hotel> getAllHotels() throws Exception {
