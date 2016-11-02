@@ -5,10 +5,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.Room;
@@ -43,8 +40,8 @@ public class RoomController extends BaseRestController {
      * @param errors Список ошибок валидации
      * @return Список свободных комнат. В случае ошибки - информация об ошибке
      */
-    @PostMapping("/rooms/getAvailableRooms")
-    public ResponseEntity findFreeRomms(@Valid @RequestBody AvailableRoomRequestModel modelRequest, Errors errors){
+    @GetMapping("/rooms/getAvailableRooms")
+    public ResponseEntity findFreeRomms(@Valid AvailableRoomRequestModel modelRequest, Errors errors){
         ResponseEntity response = getValidationErrorResponse(errors);
         if (response == null){
             long hotelId = modelRequest.getHotelId();
