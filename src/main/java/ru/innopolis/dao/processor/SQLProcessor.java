@@ -74,7 +74,7 @@ public class SQLProcessor implements ISQLProcessor {
 
     public <T> int delete(T object) throws Exception {
         checkNull(object);
-        Field primaryKeyField = getPrimaryKeyField(object);
+        Field primaryKeyField = getPrimaryKeyField(object.getClass());
         Object property = PropertyUtils.getProperty(object, primaryKeyField.getName());
         if (property == null) {
             throw new Exception("Не задо значение первичного ключа");
@@ -90,7 +90,7 @@ public class SQLProcessor implements ISQLProcessor {
 
     public <T> int insert(T object) throws Exception {
         checkNull(object);
-        Field pKField = getPrimaryKeyField(object);
+        Field pKField = getPrimaryKeyField(object.getClass());
         SequenceGenerator sq = pKField.getAnnotation(SequenceGenerator.class);
         long newID = generatePK(sq);
 
@@ -116,7 +116,7 @@ public class SQLProcessor implements ISQLProcessor {
 
     public <T> int update(T object) throws Exception {
         checkNull(object);
-        Field primaryKeyField = getPrimaryKeyField(object);
+        Field primaryKeyField = getPrimaryKeyField(object.getClass());
         Object idValue = PropertyUtils.getProperty(object, primaryKeyField.getName());
         if (idValue == null) {
             throw new Exception("Не задо значение первичного ключа");
@@ -191,6 +191,14 @@ public class SQLProcessor implements ISQLProcessor {
         return list;
     }
 
+    public <T> T getByID(Class<T> clazz, Long id) throws Exception {
+        Field primaryKeyField = getPrimaryKeyField(clazz);
+        Column pk = primaryKeyField.getAnnotation(Column.class);
+        String condition = pk.name() + EQUALS_SIGN + id;
+        List<T> list = simpleSelect(clazz, condition);
+        return list.isEmpty() ? null : list.get(0);
+    }
+
     /**
      * Проверка, является значение на null
      *
@@ -222,13 +230,13 @@ public class SQLProcessor implements ISQLProcessor {
     /**
      * Получить поле, хранящее первичный ключ
      *
-     * @param object Экзепляр класса
+     * @param clazz Мета описание класса
      * @param <T>    Тип сущности
      * @return Поле, хранящее первичный ключ
      * @throws Exception Не задан первичный ключ
      */
-    private <T> Field getPrimaryKeyField(T object) throws Exception {
-        Field[] declaredFields = object.getClass().getDeclaredFields();
+    private <T> Field getPrimaryKeyField(Class<T> clazz) throws Exception {
+        Field[] declaredFields = clazz.getDeclaredFields();
         Field primaryKeyField = null;
         for (Field field : declaredFields) {
             Id annotation = field.getAnnotation(Id.class);

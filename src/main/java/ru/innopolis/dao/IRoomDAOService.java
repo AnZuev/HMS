@@ -1,5 +1,7 @@
 package ru.innopolis.dao;
 
+import org.multylanguages.exeption.MetaMessageException;
+import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.entity.Room;
 
 import java.util.Calendar;
@@ -21,4 +23,14 @@ public interface IRoomDAOService {
      * @return Список свободных комнат
      */
     List<Room> getFreeRoomsInHotel(long hotelId, long roomTypeId, Calendar from, Calendar to) throws Exception;
+
+    /**
+     * Зарезервировать комнату для клиента
+     * @param client Клиент
+     * @param roomID ИД комнаты
+     * @param from Дата заезда
+     * @param to Дата выезда
+     * @throws MetaMessageException Не верные входные параметры
+     */
+    void bookRoom(Client client, long roomID, Calendar from, Calendar to) throws Exception;
 }

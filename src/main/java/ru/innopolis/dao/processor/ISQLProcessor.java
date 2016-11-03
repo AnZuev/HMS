@@ -75,4 +75,13 @@ public interface ISQLProcessor {
      * @throws Exception Что-то пошло не так
      */
     <T> List<T> executeSelect(Class<T> clazz, String query, Object[] arg) throws Exception;
+
+    /**
+     * Получить сущность по ИД
+     * @param clazz Класс сущности, который представляет результат выборки
+     * @param id ИД записи
+     * @param <T> Тип возвращаемого значения
+     * @return Сущность, если найдена. В противном случае null
+     */
+    <T> T getByID(Class<T> clazz, Long id) throws Exception;
 }
