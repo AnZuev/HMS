@@ -33,4 +33,12 @@ public interface IRoomDAOService {
      * @throws MetaMessageException Не верные входные параметры
      */
     void bookRoom(Client client, long roomID, Calendar from, Calendar to) throws Exception;
+
+    /**
+     * Отменить заказ
+     * @param client Клиент
+     * @param orderId Номер заказа
+     * @throws Exception Не удалось отменить заказ
+     */
+    void cancelBook(Client client, long orderId) throws Exception;
 }

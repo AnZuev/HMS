@@ -7,6 +7,8 @@ import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.entity.Order;
 import ru.innopolis.dao.entity.Room;
 import ru.innopolis.dao.processor.ISQLProcessor;
+import ru.innopolis.exceptions.UserErrorCode;
+import ru.innopolis.exceptions.UserException;
 
 import javax.sql.DataSource;
 import java.sql.ResultSet;
@@ -83,5 +85,21 @@ public class RoomDAOService implements IRoomDAOService {
 
         sqlProcessor.insert(order);
 
+    }
+
+    public void cancelBook(Client client, long orderId) throws Exception {
+        Order order = sqlProcessor.getByID(Order.class, orderId);
+        if (order == null || !order.getClientId().equals(client.getId())){
+            MetaMessage message = new MetaMessage("order.is.not.found");
+            throw new UserException(message, UserErrorCode.NOT_FOUND);
+        }
+
+        String status = order.getStatus();
+        if (!"BOOK".equals(status)){
+            MetaMessage message = new MetaMessage("order.can.not.be.canceled");
+            throw new UserException(message, UserErrorCode.BAD_PARAMETERS);
+        }
+        order.setStatus("CANCELED");
+        sqlProcessor.update(order);
     }
 }

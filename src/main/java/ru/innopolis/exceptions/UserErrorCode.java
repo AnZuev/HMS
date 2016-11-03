@@ -6,6 +6,8 @@ package ru.innopolis.exceptions;
  * Описание: Список кодов ошибок
  */
 public class UserErrorCode {
-    public final int BAD_PARAMETERS = 400;
-    public final int NOT_FOUND = 404;
+
+    public static final int UNKNOW = 0;
+    public static final int BAD_PARAMETERS = 400;
+    public static final int NOT_FOUND = 404;
 }

@@ -117,7 +117,7 @@ public class SQLProcessor implements ISQLProcessor {
     public <T> int update(T object) throws Exception {
         checkNull(object);
         Field primaryKeyField = getPrimaryKeyField(object.getClass());
-        Object idValue = PropertyUtils.getProperty(object, primaryKeyField.getName());
+        Long idValue = (Long)PropertyUtils.getProperty(object, primaryKeyField.getName());
         if (idValue == null) {
             throw new Exception("Не задо значение первичного ключа");
         }
@@ -126,7 +126,7 @@ public class SQLProcessor implements ISQLProcessor {
         Column idColumn = primaryKeyField.getAnnotation(Column.class);
         String idName = idColumn.name();
 
-        String updateSt = UPDATE_ST.format(new Object[]{tableName, setValuePairs, idName, idValue});
+        String updateSt = UPDATE_ST.format(new Object[]{tableName, setValuePairs, idName, idValue.toString()});
         int effectedRow = execute(s -> s.executeUpdate(updateSt));
         return effectedRow;
     }
