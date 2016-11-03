@@ -1,6 +1,7 @@
 package ru.innopolis.filters;
 
 import org.apache.commons.lang3.BooleanUtils;
+import org.springframework.http.HttpStatus;
 import ru.innopolis.constants.AuthorizationConstant;
 
 import javax.servlet.*;
@@ -25,7 +26,7 @@ public class AuthorizationFilter implements Filter {
                 chain.doFilter(request, response);
             }else {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
-                httpServletResponse.sendRedirect(httpRequest.getContextPath());
+                httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
         }
     }
