@@ -52,6 +52,7 @@ public class AuthorizationController extends BaseRestController {
                 Client client = service.findClient(model.getMail(), encryptPassword);
                 if (client != null) {
                     session.setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);
+                    session.setAttribute(AuthorizationConstant.CLIENT_KEY, client);
                     AuthorizationResponseModel responseModel = buildResponseModel(client);
                     response = new ResponseEntity<>(responseModel, HttpStatus.OK);
                 } else {
