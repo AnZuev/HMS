@@ -23,15 +23,26 @@ import java.util.List;
  */
 public class RoomDAOService implements IRoomDAOService {
 
+//    SELECT * FROM ROOMS R
+//    WHERE R.HOTEL_ID = :HOTEL_ID
+//    AND R.ROOM_TYPE_ID = :ROOM_TYPE_ID
+//    AND R.ID NOT IN (
+//            SELECT ROOM_ID FROM ORDERS ORD
+//            WHERE ORD.HOTEL_ID = :HOTEL_ID
+//            AND :START_DATE < ORD.FINISH_DATE
+//            AND :FINISH_DATE > ORD.START_DATE
     private static final String freeRoomSelect = "SELECT * FROM ROOMS R " +
             "WHERE R.HOTEL_ID = {0} AND R.ROOM_TYPE_ID = {1} AND R.ID NOT IN (" +
             "  SELECT ROOM_ID FROM ORDERS ORD" +
-            "  WHERE ORD.HOTEL_ID = {0} AND {2} < ORD.FINISH_DATE)";
+            "  WHERE ORD.HOTEL_ID = {0} AND {2} < ORD.FINISH_DATE AND {3} > ORD.START_DATE)";
+
 
 //    SELECT ROOM_ID FROM ORDERS ORD
-//    WHERE ORD.HOTEL_ID = :HOTEL_ID AND ORD.ROOM_ID = :ROOM_ID AND(:START_DATE >= ORD.FINISH_DATE OR :FINISH_DATE <= ORD.START_DATE);
+//    WHERE ORD.HOTEL_ID = :HOTEL_ID
+//    AND :START_DATE < ORD.FINISH_DATE
+//    AND :FINISH_DATE > ORD.START_DATE
     private static final String checkIsRoomFree = "SELECT * FROM ORDERS ORD " +
-            "WHERE ORD.HOTEL_ID = {0} AND ORD.ROOM_ID = {1} AND ({2} >= ORD.FINISH_DATE OR {3} <= ORD.START_DATE)";
+            "WHERE ORD.HOTEL_ID = {0} AND ORD.ROOM_ID = {1} AND {2} < ORD.FINISH_DATE AND {3} > ORD.START_DATE";
 
     private ISQLProcessor sqlProcessor;
 
@@ -40,7 +51,7 @@ public class RoomDAOService implements IRoomDAOService {
     }
 
     public List<Room> getFreeRoomsInHotel(long hotelId, long roomTypeId, Calendar from, Calendar to) throws Exception {
-        Object[] args = {hotelId, roomTypeId, from};
+        Object[] args = {hotelId, roomTypeId, from, to};
         List<Room> list = sqlProcessor.executeSelect(Room.class, freeRoomSelect, args);
         return list;
     }

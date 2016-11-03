@@ -361,7 +361,8 @@ public class SQLProcessor implements ISQLProcessor {
         } else if (value instanceof Calendar) {
             Calendar c = (Calendar) value;
             Integer year = c.get(Calendar.YEAR);
-            Integer month = c.get(Calendar.MONTH);
+            //В Java месяцы нумеруются с 0
+            Integer month = c.get(Calendar.MONTH) + 1;
             Integer day = c.get(Calendar.DAY_OF_MONTH);
             Object[] args = new Object[]{year.toString(), month.toString(), day.toString()};
             result = TO_DATE.format(args);
