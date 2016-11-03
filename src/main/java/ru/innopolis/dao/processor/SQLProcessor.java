@@ -39,11 +39,13 @@ public class SQLProcessor implements ISQLProcessor {
     private static final MessageFormat UPDATE_ST = new MessageFormat("UPDATE {0} SET {1} WHERE {2} = {3}");
     private static final MessageFormat SELECT_ST = new MessageFormat("SELECT {0} FROM {1} {2}");
     private static final MessageFormat NEXT_VALUE_SEQ_ST = new MessageFormat("SELECT {0}.NEXTVAL ID FROM DUAL");
+    private static final MessageFormat TO_DATE = new MessageFormat("TO_DATE(''{0}-{1}-{2}'', ''YYYY-MM-DD'')");
 
     private DataSource source;
 
     /**
      * Базовый конструктор
+     *
      * @param source Источник данных
      */
     public SQLProcessor(DataSource source) {
@@ -52,8 +54,9 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Выполнить SQL запрос
+     *
      * @param action Действие, которое необходимо выполнить
-     * @param <T> Возвращаемый тип
+     * @param <T>    Возвращаемый тип
      * @return Результат операции
      */
     public <T> T execute(SQLAction<T> action) throws Exception {
@@ -139,25 +142,11 @@ public class SQLProcessor implements ISQLProcessor {
         }
         String selectSt = SELECT_ST.format(new Object[]{sequenceNames, tableName, whereClause});
 
-        List<T> output = execute(s->{
+        List<T> output = execute(s -> {
             s.execute(selectSt);
             try (ResultSet resultSet = s.getResultSet()) {
-                List<T> list = new LinkedList<T>();
-                Field[] fields = clazz.getDeclaredFields();
-                while (resultSet.next()) {
-                    T instance = clazz.newInstance();
-                    for (Field field : fields) {
-                        Column columnDesc = field.getAnnotation(Column.class);
-                        if (columnDesc != null) {
-                            Class<?> type = field.getType();
-                            Object value = resultSet.getObject(columnDesc.name(), type);
-                            PropertyUtils.setProperty(instance, field.getName(), value);
-                        }
-                    }
-                    list.add(instance);
-                }
-                return list;
-            }catch (Exception e){
+                return deserializeResponse(resultSet, clazz);
+            } catch (Exception e) {
                 throw new SQLException(e);
             }
         });
@@ -165,8 +154,46 @@ public class SQLProcessor implements ISQLProcessor {
 
     }
 
+    public <T> List<T> executeSelect(Class<T> clazz, String queryPattern, Object[] arg) throws Exception {
+        String[] sqlArg = new String[arg.length];
+        for (int i = 0; i < arg.length; i++) {
+            sqlArg[i] = convertToSQLValue(arg[i]);
+        }
+        MessageFormat format = new MessageFormat(queryPattern);
+        String query = format.format(sqlArg);
+
+        List<T> output = execute(s -> {
+            s.execute(query);
+            try (ResultSet resultSet = s.getResultSet()) {
+                return deserializeResponse(resultSet, clazz);
+            } catch (Exception e) {
+                throw new SQLException(e);
+            }
+        });
+        return output;
+    }
+
+    public <T> List<T> deserializeResponse(ResultSet resultSet, Class<T> clazz) throws Exception {
+        List<T> list = new LinkedList<>();
+        Field[] fields = clazz.getDeclaredFields();
+        while (resultSet.next()) {
+            T instance = clazz.newInstance();
+            for (Field field : fields) {
+                Column columnDesc = field.getAnnotation(Column.class);
+                if (columnDesc != null) {
+                    Class<?> type = field.getType();
+                    Object value = resultSet.getObject(columnDesc.name(), type);
+                    PropertyUtils.setProperty(instance, field.getName(), value);
+                }
+            }
+            list.add(instance);
+        }
+        return list;
+    }
+
     /**
      * Проверка, является значение на null
+     *
      * @param obj Значение
      * @Exception IllegalArgumentException Если значение = null
      */
@@ -178,8 +205,9 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Получить имя таблицы, где хранятся экземпляры класса
+     *
      * @param clazz Мета класс сущности, хранимой в БД
-     * @param <T> Тип сущности, хранимой в БД
+     * @param <T>   Тип сущности, хранимой в БД
      * @return Название таблицы
      * @throws Exception Не задо название таблицы
      */
@@ -193,8 +221,9 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Получить поле, хранящее первичный ключ
+     *
      * @param object Экзепляр класса
-     * @param <T> Тип сущности
+     * @param <T>    Тип сущности
      * @return Поле, хранящее первичный ключ
      * @throws Exception Не задан первичный ключ
      */
@@ -216,6 +245,7 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Сгенерировать первичный ключ
+     *
      * @param generator Генератор ключа
      * @return Ключ
      */
@@ -234,6 +264,7 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Получить список колонок
+     *
      * @param clazz Описание сущности, хранимое в БД
      * @return Список колонок через запятую
      */
@@ -255,8 +286,9 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Получить список значений, хранящихся в экземпляре класса
+     *
      * @param object Экземпляр класса
-     * @param <T> Тип сущности
+     * @param <T>    Тип сущности
      * @return Список значений через запятую
      */
     private <T> String getValues(T object) throws Exception {
@@ -279,8 +311,9 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Сгенерировать пары ключ=значения
+     *
      * @param object Экземпляр класса
-     * @param <T> Тип сущности
+     * @param <T>    Тип сущности
      * @return Пары ключ=значения через запятую
      */
     private <T> String generateSetValuePairs(T object) throws Exception {
@@ -309,6 +342,7 @@ public class SQLProcessor implements ISQLProcessor {
 
     /**
      * Конвертировать значение java объекта в строковое представление, принимаемое БД
+     *
      * @param value Значение для конвертации
      * @return Сконвертированное значение
      */
@@ -317,10 +351,15 @@ public class SQLProcessor implements ISQLProcessor {
         if (value instanceof String) {
             result = MARKS + value + MARKS;
         } else if (value instanceof Calendar) {
-            result = null;
+            Calendar c = (Calendar) value;
+            Integer year = c.get(Calendar.YEAR);
+            Integer month = c.get(Calendar.MONTH);
+            Integer day = c.get(Calendar.DAY_OF_MONTH);
+            Object[] args = new Object[]{year.toString(), month.toString(), day.toString()};
+            result = TO_DATE.format(args);
         } else if (value != null) {
             result = value.toString();
-        }else {
+        } else {
             result = NULL_VALUE;
         }
         return result;

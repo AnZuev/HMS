@@ -17,5 +17,5 @@ public interface SQLAction<T> {
      * @return Результат выполнения
      * @throws SQLException Что-то пошло не так
      */
-    T execute(Statement s) throws SQLException;
+    T execute(Statement s) throws Exception;
 }

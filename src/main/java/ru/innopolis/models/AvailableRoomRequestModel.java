@@ -1,6 +1,5 @@
 package ru.innopolis.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.*;
@@ -22,7 +21,6 @@ public class AvailableRoomRequestModel {
     @Future
     private Calendar to;
 
-    @JsonProperty("roomType")
     @NotNull
     @Max(value = Long.MAX_VALUE)
     @Min(value = 0)

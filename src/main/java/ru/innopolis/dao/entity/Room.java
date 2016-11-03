@@ -1,45 +1,57 @@
 package ru.innopolis.dao.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 /**
  * Создано: Денис
  * Дата:  01.11.2016
  * Описание: Сущность "комната"
  */
+@Table(name = "ROOMS")
 public class Room {
-    private long id;
-    private long roomNumber;
-    private long hotelId;
-    private RoomType type;
+    @Id
+    @SequenceGenerator(name = "ROOMS_SEQ")
+    @Column(name = "ID")
+    private Long id;
+    @Column(name = "ROOM_NUMBER")
+    private Long roomNumber;
+    @Column(name = "HOTEL_ID")
+    private Long hotelId;
+    @Column(name = "ROOM_TYPE_ID")
+    private Long type;
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public long getRoomNumber() {
+    public Long getRoomNumber() {
         return roomNumber;
     }
 
-    public void setRoomNumber(long roomNumber) {
+    public void setRoomNumber(Long roomNumber) {
         this.roomNumber = roomNumber;
     }
 
-    public long getHotelId() {
+    public Long getHotelId() {
         return hotelId;
     }
 
-    public void setHotelId(long hotelId) {
+    public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
     }
 
-    public RoomType getType() {
+    public Long getType() {
         return type;
     }
 
-    public void setType(RoomType type) {
+    public void setType(Long type) {
         this.type = type;
     }
 }

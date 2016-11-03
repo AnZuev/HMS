@@ -1,5 +1,6 @@
 package ru.innopolis.dao.processor;
 
+import java.sql.ResultSet;
 import java.util.List;
 
 /**
@@ -54,4 +55,24 @@ public interface ISQLProcessor {
      * @throws Exception Что-то пошло не так
      */
     <T> T execute(SQLAction<T> action) throws Exception;
+
+    /**
+     * Десериализовать ответ из БД
+     * @param resultSet Данные из БД
+     * @param clazz Класс, описывающий сущность, пришедшей из БД
+     * @param <T> Тип сущности, пришедшей из БД
+     * @return Список сущностей, пришедших из БД
+     */
+    <T> List<T> deserializeResponse(ResultSet resultSet, Class<T> clazz) throws Exception;
+
+    /**
+     * Выполнить произвольную команду на выборку
+     * @param clazz Класс, который представляет результат выборки
+     * @param query Запрос
+     * @param arg Аргументы для запроса
+     * @param <T> Тип результата
+     * @return Список сущностей указанного типа
+     * @throws Exception Что-то пошло не так
+     */
+    <T> List<T> executeSelect(Class<T> clazz, String query, Object[] arg) throws Exception;
 }
