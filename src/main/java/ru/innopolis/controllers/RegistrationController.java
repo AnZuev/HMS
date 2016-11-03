@@ -15,6 +15,7 @@ import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IClientDAOService;
 import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.imp.ClientDAOService;
+import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.NewClientModel;
 import ru.innopolis.models.RegistrationResponseModel;
 
@@ -85,8 +86,10 @@ public class RegistrationController extends BaseRestController{
         return responseModel;
     }
 
-    private Client buildNewClient(NewClientModel model){
+    private Client buildNewClient(NewClientModel model) throws Exception {
+        String encryptPassword = PasswordHelper.encrypt(model.getPassword());
         Client client = new Client();
+        client.setPassword(encryptPassword);
         client.setFirstName(model.getFirstName());
         client.setSecondName(model.getSecondName());
         client.setFatherName(model.getFatherName());
