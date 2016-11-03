@@ -45,4 +45,8 @@ public class ClientDAOService implements IClientDAOService {
         List<Client> clients = sqlProcessor.simpleSelect(Client.class, where);
         return clients.isEmpty() ? null : clients.get(0);
     }
+
+    public void updateClientInformation(Client client) throws Exception {
+        sqlProcessor.update(client);
+    }
 }

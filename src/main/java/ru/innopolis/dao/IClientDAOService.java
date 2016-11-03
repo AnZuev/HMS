@@ -25,4 +25,10 @@ public interface IClientDAOService {
      */
     Client findClient(String email, String password) throws Exception;
 
+    /**
+     * Обновить профиль
+     * @param client Клиент с обновлённое информацией
+     * @throws Exception Не удалось обновить клиента по каким-либо причинам
+     */
+    void updateClientInformation(Client client) throws Exception;
 }
