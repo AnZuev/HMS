@@ -94,7 +94,7 @@ public class HotelController extends BaseRestController {
      * @param consumer Правило заполнения данных
      */
     private void fillHotelInformation(Consumer<Hotel> consumer) throws Exception {
-        IHotelDAOService service = DAOServiceFactory.getInstance().createService(HotelDAOService.class);
+        IHotelDAOService service = DAOServiceFactory.getInstance().createService(IHotelDAOService.class);
         List<Hotel> allHotels = service.getAllHotels();
         allHotels.forEach(consumer);
     }
@@ -148,7 +148,7 @@ public class HotelController extends BaseRestController {
         Long id = parse(hotelId);
         if (id != null){
             try {
-                IHotelDAOService service = DAOServiceFactory.getInstance().createService(HotelDAOService.class);
+                IHotelDAOService service = DAOServiceFactory.getInstance().createService(IHotelDAOService.class);
                 List<RoomType> list = service.getRoomTypesByHotelId(id);
                 list.forEach(builder);
                 HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;

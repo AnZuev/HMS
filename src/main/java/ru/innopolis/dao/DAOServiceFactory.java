@@ -1,5 +1,8 @@
 package ru.innopolis.dao;
 
+import ru.innopolis.dao.imp.ClientDAOService;
+import ru.innopolis.dao.imp.HotelDAOService;
+import ru.innopolis.dao.imp.RoomDAOService;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.dao.processor.SQLProcessor;
 
@@ -7,6 +10,8 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.lang.reflect.Constructor;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Создано: Денис
@@ -17,7 +22,16 @@ public class DAOServiceFactory implements IDAOServiceFactory {
 
     private static final String DIRECTORY = "java:/comp/env";
     private static final String JDBC_HMS_NAME = "jdbc/HMS";
+
+    private static final Map<String, Class> mapper = new HashMap<>();
     private static volatile DAOServiceFactory factory;
+
+    {
+        mapper.put(IClientDAOService.class.getName(), ClientDAOService.class);
+        mapper.put(IHotelDAOService.class.getName(), HotelDAOService.class);
+        mapper.put(IRoomDAOService.class.getName(), RoomDAOService.class);
+    }
+
     private DataSource dataSource;
     private ISQLProcessor processor;
 
@@ -41,7 +55,8 @@ public class DAOServiceFactory implements IDAOServiceFactory {
     }
 
     public <T> T createService(Class<T> service) throws Exception {
-        Constructor<T> constructor = service.getConstructor(ISQLProcessor.class);
+        Class impl = mapper.get(service.getName());
+        Constructor<T> constructor = impl.getConstructor(ISQLProcessor.class);
         return constructor.newInstance(processor);
     }
 }

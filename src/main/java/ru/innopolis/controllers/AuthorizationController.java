@@ -48,7 +48,7 @@ public class AuthorizationController extends BaseRestController {
                 String password = model.getPassword();
                 String encryptPassword = PasswordHelper.encrypt(password);
 
-                IClientDAOService service = DAOServiceFactory.getInstance().createService(ClientDAOService.class);
+                IClientDAOService service = DAOServiceFactory.getInstance().createService(IClientDAOService.class);
                 Client client = service.findClient(model.getMail(), encryptPassword);
                 if (client != null) {
                     session.setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);

@@ -58,7 +58,7 @@ public class RoomController extends BaseRestController {
             Calendar from = modelRequest.getFrom();
             Calendar to = modelRequest.getTo();
             try {
-                IRoomDAOService service = DAOServiceFactory.getInstance().createService(RoomDAOService.class);
+                IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 List<Room> freeRooms = service.getFreeRoomsInHotel(hotelId, roomTypeId, from, to);
                 List<AvailableRoomResponseModel> responseModelList = new ArrayList<>(freeRooms.size());
                 freeRooms.forEach(room -> {
@@ -93,7 +93,7 @@ public class RoomController extends BaseRestController {
             Calendar from = modelRequest.getFrom();
             Calendar to = modelRequest.getTo();
             try {
-                IRoomDAOService service = DAOServiceFactory.getInstance().createService(RoomDAOService.class);
+                IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 Client client = (Client) session.getAttribute(AuthorizationConstant.CLIENT_KEY);
                 try {
                     service.bookRoom(client, roomId, from, to);
@@ -123,7 +123,7 @@ public class RoomController extends BaseRestController {
         if (response == null) {
             long orderId = requestModel.getOrderId();
             try {
-                IRoomDAOService service = DAOServiceFactory.getInstance().createService(RoomDAOService.class);
+                IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 Client client = (Client) session.getAttribute(AuthorizationConstant.CLIENT_KEY);
                 try {
                     service.cancelBook(client, orderId);
@@ -170,7 +170,7 @@ public class RoomController extends BaseRestController {
         ResponseEntity response;
         Client client = (Client) session.getAttribute(AuthorizationConstant.CLIENT_KEY);
         try {
-            IRoomDAOService service = DAOServiceFactory.getInstance().createService(RoomDAOService.class);
+            IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
             List<OrderDescription> orders = service.getOrdersByClient(client);
             List<OrderedRoomResponseModel> responseModel = new ArrayList<>(orders.size());
             orders.forEach(o ->{

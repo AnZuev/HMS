@@ -55,7 +55,7 @@ public class RegistrationController extends BaseRestController{
             try {
                 Client client = buildNewClient(newUser);
 
-                IClientDAOService service = DAOServiceFactory.getInstance().createService(ClientDAOService.class);
+                IClientDAOService service = DAOServiceFactory.getInstance().createService(IClientDAOService.class);
                 try {
                     client = service.addNewClient(client);
 

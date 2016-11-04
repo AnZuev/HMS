@@ -52,7 +52,7 @@ public class ClientController extends BaseRestController {
                 Client newClientData = buildNewClient(requestModel);
                 newClientData.setId(oldClientData.getId());
 
-                IClientDAOService service = DAOServiceFactory.getInstance().createService(ClientDAOService.class);
+                IClientDAOService service = DAOServiceFactory.getInstance().createService(IClientDAOService.class);
                 service.updateClientInformation(newClientData);
 
                 session.setAttribute(AuthorizationConstant.CLIENT_KEY, newClientData);
