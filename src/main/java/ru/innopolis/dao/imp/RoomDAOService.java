@@ -5,6 +5,7 @@ import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.entity.Order;
+import ru.innopolis.dao.entity.OrderDescription;
 import ru.innopolis.dao.entity.Room;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
@@ -45,6 +46,18 @@ public class RoomDAOService implements IRoomDAOService {
 //    AND :FINISH_DATE > ORD.START_DATE
     private static final String checkIsRoomFree = "SELECT * FROM ORDERS ORD " +
             "WHERE ORD.HOTEL_ID = {0} AND ORD.ROOM_ID = {1} AND {2} < ORD.FINISH_DATE AND {3} > ORD.START_DATE";
+
+
+//    SELECT ORD.ID ID, ORD.START_DATE START_DATE, ORD.FINISH_DATE FINISH_DATE, ORD.COST COST, ORD.STATUS STATUS, HOT.NAME NAME, R.ROOM_NUMBER ROOM_NUMBER
+//    FROM ORDERS ORD
+//    JOIN HOTELS HOT ON ORD.HOTEL_ID = HOT.ID
+//    JOIN ROOMS R ON ORD.ROOM_ID = R.ID
+//    WHERE ORD.CLIENT_ID = :ID;
+    private static final String SELECT_CLIENT_ORDERS = "SELECT ORD.ID ID, ORD.START_DATE START_DATE, ORD.FINISH_DATE FINISH_DATE, ORD.COST COST, ORD.STATUS STATUS, HOT.NAME NAME, R.ROOM_NUMBER ROOM_NUMBER\n" +
+        "FROM ORDERS ORD " +
+        "JOIN HOTELS HOT ON ORD.HOTEL_ID = HOT.ID " +
+        "JOIN ROOMS R ON ORD.ROOM_ID = R.ID " +
+        "WHERE ORD.CLIENT_ID = {0}";
 
     private ISQLProcessor sqlProcessor;
 
@@ -101,5 +114,9 @@ public class RoomDAOService implements IRoomDAOService {
         }
         order.setStatus("CANCELED");
         sqlProcessor.update(order);
+    }
+
+    public List<OrderDescription> getOrdersByClient(Client client) throws Exception {
+        return sqlProcessor.executeSelect(OrderDescription.class, SELECT_CLIENT_ORDERS, new Object[]{client.getId()});
     }
 }

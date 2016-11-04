@@ -29,6 +29,8 @@ public class Order {
     private Calendar finishDate;
     @Column(name = "STATUS")
     private String status;
+    @Column(name = "COST")
+    private Double cost;
 
     public Long getId() {
         return id;
@@ -84,6 +86,14 @@ public class Order {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public Double getCost() {
+        return cost;
+    }
+
+    public void setCost(Double cost) {
+        this.cost = cost;
     }
 }
 

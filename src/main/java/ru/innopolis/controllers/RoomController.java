@@ -12,6 +12,8 @@ import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.Client;
+import ru.innopolis.dao.entity.Order;
+import ru.innopolis.dao.entity.OrderDescription;
 import ru.innopolis.dao.entity.Room;
 import ru.innopolis.dao.imp.RoomDAOService;
 import ru.innopolis.exceptions.UserErrorCode;
@@ -154,6 +156,39 @@ public class RoomController extends BaseRestController {
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 response = getGeneralErrorResponse();
             }
+        }
+        return response;
+    }
+
+    /**
+     * Получить список заказов клиента
+     * @param session Сессия
+     * @return Список заказов клиента
+     */
+    @GetMapping("/private/orders")
+    public ResponseEntity getAllOrders(HttpSession session){
+        ResponseEntity response;
+        Client client = (Client) session.getAttribute(AuthorizationConstant.CLIENT_KEY);
+        try {
+            IRoomDAOService service = DAOServiceFactory.getInstance().createService(RoomDAOService.class);
+            List<OrderDescription> orders = service.getOrdersByClient(client);
+            List<OrderedRoomResponseModel> responseModel = new ArrayList<>(orders.size());
+            orders.forEach(o ->{
+                OrderedRoomResponseModel model = new OrderedRoomResponseModel();
+                model.setId(o.getId());
+                model.setHotelTitle(o.getHotelTitle());
+                model.setStatus(o.getStatus());
+                model.setRoomNumber(o.getRoomNumber());
+                model.setFrom(o.getFrom());
+                model.setTo(o.getTo());
+                model.setCost(o.getCost());
+                responseModel.add(model);
+            });
+            HttpStatus status = responseModel.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+            response = new ResponseEntity(responseModel, status);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            response = getGeneralErrorResponse();
         }
         return response;
     }

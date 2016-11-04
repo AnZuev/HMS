@@ -2,6 +2,7 @@ package ru.innopolis.dao;
 
 import org.multylanguages.exeption.MetaMessageException;
 import ru.innopolis.dao.entity.Client;
+import ru.innopolis.dao.entity.OrderDescription;
 import ru.innopolis.dao.entity.Room;
 
 import java.util.Calendar;
@@ -41,4 +42,12 @@ public interface IRoomDAOService {
      * @throws Exception Не удалось отменить заказ
      */
     void cancelBook(Client client, long orderId) throws Exception;
+
+    /**
+     * Получить список заказов клиента
+     * @param client Клиент
+     * @return Список заказов клиента
+     * @throws Exception Не удалось извлечь заказы
+     */
+    List<OrderDescription> getOrdersByClient(Client client) throws Exception;
 }
