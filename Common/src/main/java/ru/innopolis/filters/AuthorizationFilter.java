@@ -28,6 +28,9 @@ public class AuthorizationFilter implements Filter {
                 HttpServletResponse httpServletResponse = (HttpServletResponse) response;
                 httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
             }
+        }else {
+            HttpServletResponse httpServletResponse = (HttpServletResponse) response;
+            httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
     }
 }
