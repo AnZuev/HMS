@@ -3,6 +3,7 @@ package ru.innopolis.dao;
 import ru.innopolis.dao.imp.ClientDAOService;
 import ru.innopolis.dao.imp.HotelDAOService;
 import ru.innopolis.dao.imp.RoomDAOService;
+import ru.innopolis.dao.imp.StaffDAOService;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.dao.processor.SQLProcessor;
 
@@ -30,6 +31,7 @@ public class DAOServiceFactory implements IDAOServiceFactory {
         mapper.put(IClientDAOService.class.getName(), ClientDAOService.class);
         mapper.put(IHotelDAOService.class.getName(), HotelDAOService.class);
         mapper.put(IRoomDAOService.class.getName(), RoomDAOService.class);
+        mapper.put(IStaffDAOService.class.getName(), StaffDAOService.class);
     }
 
     private DataSource dataSource;
