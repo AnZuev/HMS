@@ -18,6 +18,7 @@ import java.util.List;
 public class EmployeeDAOService implements IEmployeeDAOService {
 
     private static final MessageFormat checkEmailCondition = new MessageFormat("email=''{0}''");
+    private static final String TYPE_OWNER = "TYPE='OWNER'";
     private ISQLProcessor sqlProcessor;
 
     public EmployeeDAOService(ISQLProcessor sqlProcessor) {
@@ -46,5 +47,9 @@ public class EmployeeDAOService implements IEmployeeDAOService {
             MetaMessage message = new MetaMessage("employee.email.exists");
             throw new UserException(message, UserErrorCode.BAD_PARAMETERS);
         }
+    }
+
+    public List<Employee> getOwners() throws Exception {
+        return sqlProcessor.simpleSelect(Employee.class, TYPE_OWNER);
     }
 }

@@ -2,6 +2,8 @@ package ru.innopolis.dao;
 
 import ru.innopolis.dao.entity.Employee;
 
+import java.util.List;
+
 /**
  * Создано: Денис
  * Дата:  06.11.2016
@@ -16,4 +18,11 @@ public interface IEmployeeDAOService{
      * @throws ru.innopolis.exceptions.UserException Пользователь с такми email уже существет
      */
     void addOrUpdate(Employee employee) throws Exception;
+
+    /**
+     * Получить список владельцев отелей
+     * @return Список владельцев отелей
+     * @throws Exception Что-то пошло не так
+     */
+    List<Employee> getOwners() throws Exception;
 }
