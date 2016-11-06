@@ -5,9 +5,7 @@ import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IClientDAOService;
 import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.processor.ISQLProcessor;
-import ru.innopolis.models.NewClientModel;
 
-import javax.sql.DataSource;
 import java.text.MessageFormat;
 import java.util.List;
 
