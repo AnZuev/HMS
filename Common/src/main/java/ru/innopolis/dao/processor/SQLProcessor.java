@@ -182,7 +182,14 @@ public class SQLProcessor implements ISQLProcessor {
                 Column columnDesc = field.getAnnotation(Column.class);
                 if (columnDesc != null) {
                     Class<?> type = field.getType();
-                    Object value = resultSet.getObject(columnDesc.name(), type);
+                    Object value;
+                    if (type.isEnum()){
+                        String enumAsString = resultSet.getObject(columnDesc.name(), String.class);
+                        Class<? extends Enum> enumClass = (Class<? extends Enum>)type;
+                        value = Enum.valueOf(enumClass, enumAsString);
+                    }else {
+                        value = resultSet.getObject(columnDesc.name(), type);
+                    }
                     PropertyUtils.setProperty(instance, field.getName(), value);
                 }
             }
@@ -366,9 +373,12 @@ public class SQLProcessor implements ISQLProcessor {
             Integer day = c.get(Calendar.DAY_OF_MONTH);
             Object[] args = new Object[]{year.toString(), month.toString(), day.toString()};
             result = TO_DATE.format(args);
-        } else if (value != null) {
+        } else if (value instanceof Number) {
             result = value.toString();
-        } else {
+        } else if (value instanceof Enum){
+            Enum e = (Enum) value;
+            result = MARKS + e.name() + MARKS;
+        }else {
             result = NULL_VALUE;
         }
         return result;
