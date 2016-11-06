@@ -8,4 +8,5 @@ package ru.innopolis.constants;
 public class AuthorizationConstant {
     public static final String AUTHORIZATION_KEY = "AUTHORIZATION_KEY";
     public static final String CLIENT_KEY = "CLIENT_KEY";
+    public static final String STAFF_KEY = "STAFF_KEY";
 }
