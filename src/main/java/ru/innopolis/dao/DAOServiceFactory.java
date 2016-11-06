@@ -26,7 +26,7 @@ public class DAOServiceFactory implements IDAOServiceFactory {
     private static final Map<String, Class> mapper = new HashMap<>();
     private static volatile DAOServiceFactory factory;
 
-    {
+    static {
         mapper.put(IClientDAOService.class.getName(), ClientDAOService.class);
         mapper.put(IHotelDAOService.class.getName(), HotelDAOService.class);
         mapper.put(IRoomDAOService.class.getName(), RoomDAOService.class);
@@ -55,8 +55,8 @@ public class DAOServiceFactory implements IDAOServiceFactory {
     }
 
     public <T> T createService(Class<T> service) throws Exception {
-        Class impl = mapper.get(service.getName());
-        Constructor<T> constructor = impl.getConstructor(ISQLProcessor.class);
+        Class<? extends T> impl = mapper.get(service.getName());
+        Constructor<? extends T> constructor = impl.getConstructor(ISQLProcessor.class);
         return constructor.newInstance(processor);
     }
 }
