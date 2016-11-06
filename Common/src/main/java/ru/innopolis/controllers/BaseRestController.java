@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.validation.FieldError;
+import ru.innopolis.exceptions.UserErrorCode;
+import ru.innopolis.exceptions.UserException;
 import ru.innopolis.models.ErrorResponse;
 
 import java.util.List;
@@ -93,6 +95,34 @@ public abstract class BaseRestController {
         String mes = messageSource.getMessage(message.getKey(), message.getParameters(), locale);
         errorResponse.addCommonError(mes);
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
+    }
 
+    /**
+     * Обработать пользовательскую ошибку
+     * @param e Ошибка
+     * @return Ответ, описывающий ошибку.
+     */
+    protected ResponseEntity<ErrorResponse> handleUserException(UserException e){
+        MetaMessage metaMessage = e.getMetaMessage();
+        String message = getMessage(metaMessage.getKey(), metaMessage.getParameters());
+        ErrorResponse errorResponse = new ErrorResponse();
+        errorResponse.addCommonError(message);
+        HttpStatus status;
+        Integer errorCode = e.getErrorCode();
+        if (errorCode == null) {
+            status = HttpStatus.INTERNAL_SERVER_ERROR;
+        } else {
+            switch (errorCode) {
+                case UserErrorCode.BAD_PARAMETERS:
+                    status = HttpStatus.BAD_REQUEST;
+                    break;
+                case UserErrorCode.NOT_FOUND:
+                    status = HttpStatus.NOT_FOUND;
+                    break;
+                default:
+                    status = HttpStatus.INTERNAL_SERVER_ERROR;
+            }
+        }
+        return new ResponseEntity<>(errorResponse, status);
     }
 }

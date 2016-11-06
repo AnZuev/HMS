@@ -112,9 +112,10 @@ public class RoomController extends BaseRestController {
 
     /**
      * Отменить заказ
+     *
      * @param requestModel Запрос на удаление
-     * @param errors  Список ошибок валидации
-     * @param session Сессия
+     * @param errors       Список ошибок валидации
+     * @param session      Сессия
      * @return 200 код если всё хорошо. В противном случаю код ошибки и описание
      */
     @PostMapping("/private/orders/cancel")
@@ -125,33 +126,10 @@ public class RoomController extends BaseRestController {
             try {
                 IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 Client client = (Client) session.getAttribute(AuthorizationConstant.CLIENT_KEY);
-                try {
-                    service.cancelBook(client, orderId);
-                    response = new ResponseEntity(HttpStatus.OK);
-                } catch (UserException e) {
-                    MetaMessage metaMessage = e.getMetaMessage();
-                    String message = getMessage(metaMessage.getKey(), metaMessage.getParameters());
-                    ErrorResponse errorResponse = new ErrorResponse();
-                    errorResponse.addCommonError(message);
-                    HttpStatus status;
-                    Integer errorCode = e.getErrorCode();
-                    if (errorCode == null) {
-                        status = HttpStatus.INTERNAL_SERVER_ERROR;
-                    } else {
-                        switch (errorCode) {
-                            case UserErrorCode.BAD_PARAMETERS:
-                                status = HttpStatus.BAD_REQUEST;
-                                break;
-                            case UserErrorCode.NOT_FOUND:
-                                status = HttpStatus.NOT_FOUND;
-                                break;
-                            default:
-                                status = HttpStatus.INTERNAL_SERVER_ERROR;
-
-                        }
-                    }
-                    response = new ResponseEntity(errorResponse, status);
-                }
+                service.cancelBook(client, orderId);
+                response = new ResponseEntity(HttpStatus.OK);
+            } catch (UserException e) {
+                response = handleUserException(e);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 response = getGeneralErrorResponse();
@@ -162,18 +140,19 @@ public class RoomController extends BaseRestController {
 
     /**
      * Получить список заказов клиента
+     *
      * @param session Сессия
      * @return Список заказов клиента
      */
     @GetMapping("/private/orders")
-    public ResponseEntity getAllOrders(HttpSession session){
+    public ResponseEntity getAllOrders(HttpSession session) {
         ResponseEntity response;
         Client client = (Client) session.getAttribute(AuthorizationConstant.CLIENT_KEY);
         try {
             IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
             List<OrderDescription> orders = service.getOrdersByClient(client);
             List<OrderedRoomResponseModel> responseModel = new ArrayList<>(orders.size());
-            orders.forEach(o ->{
+            orders.forEach(o -> {
                 OrderedRoomResponseModel model = new OrderedRoomResponseModel();
                 model.setId(o.getId());
                 model.setHotelTitle(o.getHotelTitle());
