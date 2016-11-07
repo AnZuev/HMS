@@ -12,6 +12,7 @@
         <module>Admin</module>
         <module>Staff</module>
         <module>Client</module>
+        <module>Multylanguage</module>
     </modules>
 
     <dependencyManagement>
