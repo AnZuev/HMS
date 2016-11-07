@@ -5,16 +5,16 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
 import ru.innopolis.models.CreateHotelModelRequest;
+import ru.innopolis.models.HotelResponseModel;
 
 import javax.validation.Valid;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -65,5 +65,36 @@ public class HotelController extends BaseRestController {
         h.setAddress(model.getAddress());
         h.setMail(model.getMail());
         return h;
+    }
+
+
+    /**
+     * Получить подробное описание всех отелей
+     * @return Подробное описание всех отелей
+     */
+    @GetMapping("/hotels/full")
+    public ResponseEntity getFullHotelInformation() {
+        List<HotelResponseModel> output = new LinkedList<>();
+        ResponseEntity response;
+        try {
+            IHotelDAOService service = DAOServiceFactory.getInstance().createService(IHotelDAOService.class);
+            List<Hotel> allHotels = service.getAllHotels();
+            allHotels.forEach((hotel) -> {
+                HotelResponseModel model = new HotelResponseModel();
+                model.setId(hotel.getId());
+                model.setTitle(hotel.getName());
+                model.setAddress(hotel.getAddress());
+                model.setDescription(hotel.getDescription());
+                model.setMail(hotel.getMail());
+                model.setPhoneNumber(hotel.getPhoneNumber());
+                output.add(model);
+            });
+            HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+            response = new ResponseEntity<>(output, status);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            response = getGeneralErrorResponse();
+        }
+        return response;
     }
 }
