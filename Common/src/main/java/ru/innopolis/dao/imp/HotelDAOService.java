@@ -36,4 +36,8 @@ public class HotelDAOService implements IHotelDAOService {
         String where = "HOTEL_ID = " + id;
         return sqlProcessor.simpleSelect(RoomType.class, where);
     }
+
+    public void createHotel(Hotel hotel) throws Exception {
+        sqlProcessor.insert(hotel);
+    }
 }

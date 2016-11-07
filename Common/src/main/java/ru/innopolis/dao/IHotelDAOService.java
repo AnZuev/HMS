@@ -24,4 +24,11 @@ public interface IHotelDAOService {
      * @return Список типов комнат в отеле
      */
     List<RoomType> getRoomTypesByHotelId(long id) throws Exception;
+
+    /**
+     * Создать новый отель
+     * @param hotel Новый отель
+     * @throws Exception Не удалось создать новый отель
+     */
+    void createHotel(Hotel hotel) throws Exception;
 }
