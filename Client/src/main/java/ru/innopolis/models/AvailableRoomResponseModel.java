@@ -9,6 +9,7 @@ public class AvailableRoomResponseModel {
 
     private long id;
     private long roomNumber;
+    private double cost;
 
     public long getId() {
         return id;
@@ -24,5 +25,13 @@ public class AvailableRoomResponseModel {
 
     public void setRoomNumber(long roomNumber) {
         this.roomNumber = roomNumber;
+    }
+
+    public double getCost() {
+        return cost;
+    }
+
+    public void setCost(double cost) {
+        this.cost = cost;
     }
 }

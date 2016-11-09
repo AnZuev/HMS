@@ -65,6 +65,7 @@ public class RoomController extends BaseRestController {
                     AvailableRoomResponseModel model = new AvailableRoomResponseModel();
                     model.setId(room.getId());
                     model.setRoomNumber(room.getRoomNumber());
+                    model.setCost(room.getCost());
                     responseModelList.add(model);
                 });
                 HttpStatus status = freeRooms.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
