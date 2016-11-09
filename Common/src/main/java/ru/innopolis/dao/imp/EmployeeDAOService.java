@@ -17,6 +17,7 @@ import java.util.List;
  */
 public class EmployeeDAOService implements IEmployeeDAOService {
 
+    private MessageFormat findEmployeeCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
     private static final MessageFormat checkEmailCondition = new MessageFormat("email=''{0}''");
     private static final String TYPE_OWNER = "TYPE='OWNER'";
     private ISQLProcessor sqlProcessor;
@@ -51,5 +52,11 @@ public class EmployeeDAOService implements IEmployeeDAOService {
 
     public List<Employee> getOwners() throws Exception {
         return sqlProcessor.simpleSelect(Employee.class, TYPE_OWNER);
+    }
+
+    public Employee findEmployee(String email, String hashPassword) throws Exception {
+        String where = findEmployeeCondition.format(new Object[]{email, hashPassword});
+        List<Employee> staffs = sqlProcessor.simpleSelect(Employee.class, where);
+        return staffs.isEmpty() ? null : staffs.get(0);
     }
 }
