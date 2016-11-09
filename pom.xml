@@ -10,7 +10,7 @@
     <modules>
         <module>Common</module>
         <module>Admin</module>
-        <module>Staff</module>
+        <module>Employee</module>
         <module>Client</module>
         <module>Multylanguages</module>
     </modules>
