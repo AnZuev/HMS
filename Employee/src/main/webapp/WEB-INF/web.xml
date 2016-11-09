@@ -5,6 +5,27 @@
 <web-app>
     <display-name>Employee</display-name>
 
+    <filter>
+        <filter-name>AuthorizationFilter</filter-name>
+        <filter-class>ru.innopolis.filters.AuthorizationFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>AuthorizationFilter</filter-name>
+        <url-pattern>/private/*</url-pattern>
+    </filter-mapping>
+    <servlet>
+        <servlet-name>springEmployeeApp</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    </servlet>
+
+
+    <servlet-mapping>
+        <servlet-name>springEmployeeApp</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+
     <resource-ref>
         <description>HMSDataSource</description>
         <res-ref-name>jdbc/HMS</res-ref-name>

@@ -13,5 +13,15 @@
     <version>1.0</version>
     <name>Employee</name>
 
-    
+    <dependencies>
+        <dependency>
+            <groupId>ru.innopolis</groupId>
+            <artifactId>Common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
 </project>
