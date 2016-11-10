@@ -18,6 +18,7 @@ import java.util.List;
 public class EmployeeDAOService implements IEmployeeDAOService {
 
     private MessageFormat findEmployeeCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
+    private MessageFormat findManagersCondition = new MessageFormat("HOTEL_ID={0} and TYPE=''MANAGER''");
     private static final MessageFormat checkEmailCondition = new MessageFormat("email=''{0}''");
     private static final String TYPE_OWNER = "TYPE='OWNER'";
     private ISQLProcessor sqlProcessor;
@@ -58,5 +59,11 @@ public class EmployeeDAOService implements IEmployeeDAOService {
         String where = findEmployeeCondition.format(new Object[]{email, hashPassword});
         List<Employee> staffs = sqlProcessor.simpleSelect(Employee.class, where);
         return staffs.isEmpty() ? null : staffs.get(0);
+    }
+
+    public List<Employee> getManagersByHotelId(long hotelId) throws Exception {
+        String condition = findManagersCondition.format(new Object[]{Long.toString(hotelId)});
+        List<Employee> employees = sqlProcessor.simpleSelect(Employee.class, condition);
+        return employees;
     }
 }

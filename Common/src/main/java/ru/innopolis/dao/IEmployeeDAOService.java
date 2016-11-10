@@ -34,4 +34,12 @@ public interface IEmployeeDAOService{
      * @throws Exception Что-то пошло не так
      */
     Employee findEmployee(String email, String hashPassword) throws Exception;
+
+    /**
+     * Получить всех менеджеров в данном отеле
+     * @param hotelId ИД отеля
+     * @return Список работающих менеджеров
+     * @throws Exception Что-то пошло не так
+     */
+    List<Employee> getManagersByHotelId(long hotelId) throws Exception;
 }

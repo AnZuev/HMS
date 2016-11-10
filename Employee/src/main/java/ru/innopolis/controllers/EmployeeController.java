@@ -4,10 +4,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IEmployeeDAOService;
@@ -15,9 +12,12 @@ import ru.innopolis.dao.entity.Employee;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.CreateEditEmployeeModelRequest;
+import ru.innopolis.models.EmployeeResponseModel;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -54,6 +54,37 @@ public class EmployeeController extends BaseRestController {
                 response = getGeneralErrorResponse();
             }
         }
+        return response;
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity getAll(HttpSession session){
+        Employee owner = (Employee) session.getAttribute(AuthorizationConstant.EMPLOYEE_KEY);
+        ResponseEntity response;
+        try {
+            IEmployeeDAOService service = DAOServiceFactory.getInstance().createService(IEmployeeDAOService.class);
+            List<Employee> manages = service.getManagersByHotelId(owner.getHotelId());
+            List<EmployeeResponseModel> responseModel = new ArrayList<>(manages.size());
+            manages.forEach(m->{
+                EmployeeResponseModel model = new EmployeeResponseModel();
+                model.setId(m.getId());
+                model.setFirstName(m.getFirstName());
+                model.setSecondName(m.getSecondName());
+                model.setFatherName(m.getFatherName());
+                model.setMail(m.getMail());
+                model.setType(m.getType().name());
+                responseModel.add(model);
+            });
+
+            HttpStatus status = responseModel.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+            response = new ResponseEntity(responseModel, status);
+        } catch (UserException e) {
+            response = handleUserException(e);
+        } catch (Exception e) {
+            logger.log(Level.SEVERE, e.getMessage(), e);
+            response = getGeneralErrorResponse();
+        }
+
         return response;
     }
 
