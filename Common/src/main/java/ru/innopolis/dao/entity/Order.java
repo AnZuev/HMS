@@ -28,7 +28,7 @@ public class Order {
     @Column(name = "FINISH_DATE")
     private Calendar finishDate;
     @Column(name = "STATUS")
-    private String status;
+    private Status status;
     @Column(name = "COST")
     private Double cost;
 
@@ -80,11 +80,11 @@ public class Order {
         this.finishDate = finishDate;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
@@ -94,6 +94,11 @@ public class Order {
 
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public enum Status{
+        BOOKED,
+        CANCELED
     }
 }
 

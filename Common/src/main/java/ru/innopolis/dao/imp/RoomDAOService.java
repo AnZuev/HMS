@@ -99,7 +99,7 @@ public class RoomDAOService implements IRoomDAOService {
         order.setHotelId(room.getHotelId());
         order.setStartDate(from);
         order.setFinishDate(to);
-        order.setStatus("BOOK");
+        order.setStatus(Order.Status.BOOKED);
 
         sqlProcessor.insert(order);
 
@@ -112,12 +112,11 @@ public class RoomDAOService implements IRoomDAOService {
             throw new UserException(message, UserErrorCode.NOT_FOUND);
         }
 
-        String status = order.getStatus();
-        if (!"BOOK".equals(status)){
+        if (order.getStatus() != Order.Status.BOOKED){
             MetaMessage message = new MetaMessage("order.can.not.be.canceled");
             throw new UserException(message, UserErrorCode.BAD_PARAMETERS);
         }
-        order.setStatus("CANCELED");
+        order.setStatus(Order.Status.CANCELED);
         sqlProcessor.update(order);
     }
 
