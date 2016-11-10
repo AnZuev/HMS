@@ -98,7 +98,8 @@ public class Order {
 
     public enum Status{
         BOOKED,
-        CANCELED
+        CANCELED,
+        PAYED
     }
 }
 

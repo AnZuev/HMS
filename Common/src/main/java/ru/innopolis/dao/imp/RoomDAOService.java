@@ -12,12 +12,7 @@ import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
 
-import javax.sql.DataSource;
-import java.sql.ResultSet;
-import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -26,8 +21,11 @@ import java.util.List;
  * Описание: Реализация сервиса по работе с комнатой, хранящейся в БД
  */
 public class RoomDAOService implements IRoomDAOService {
+    private static final MetaMessage ORDER_IS_NOT_FOUND_MESSAGE = new MetaMessage("order.is.not.found");
+    private static final MetaMessage ORDER_IS_PAID_MESSAGE = new MetaMessage("order.is.paid");
+    private static final MetaMessage ORDER_IS_CANCELED_MESSAGE = new MetaMessage("order.is.canceled");
 
-//    SELECT * FROM ROOMS R
+    //    SELECT * FROM ROOMS R
 //    WHERE R.HOTEL_ID = :HOTEL_ID
 //    AND R.ROOM_TYPE_ID = :ROOM_TYPE_ID
 //    AND R.ID NOT IN (
@@ -63,6 +61,7 @@ public class RoomDAOService implements IRoomDAOService {
         "JOIN HOTELS HOT ON ORD.HOTEL_ID = HOT.ID " +
         "JOIN ROOMS R ON ORD.ROOM_ID = R.ID " +
         "WHERE ORD.CLIENT_ID = {0}";
+
 
     private ISQLProcessor sqlProcessor;
 
@@ -122,5 +121,20 @@ public class RoomDAOService implements IRoomDAOService {
 
     public List<OrderDescription> getOrdersByClient(Client client) throws Exception {
         return sqlProcessor.executeSelect(OrderDescription.class, SELECT_CLIENT_ORDERS, new Object[]{client.getId()});
+    }
+
+    public void payRoom(long orderID, long hotelID) throws Exception {
+        Order order = sqlProcessor.getByID(Order.class, orderID);
+        if (order == null || hotelID != order.getHotelId()){
+            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE);
+        }
+        if (order.getStatus() == Order.Status.PAYED){
+            throw new UserException(ORDER_IS_PAID_MESSAGE);
+        }
+        if (order.getStatus() == Order.Status.CANCELED){
+            throw new UserException(ORDER_IS_CANCELED_MESSAGE);
+        }
+        order.setStatus(Order.Status.PAYED);
+        sqlProcessor.update(order);
     }
 }

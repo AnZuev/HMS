@@ -51,4 +51,12 @@ public interface IRoomDAOService {
      * @throws Exception Не удалось извлечь заказы
      */
     List<OrderDescription> getOrdersByClient(Client client) throws Exception;
+
+    /**
+     * Оплатить заказ
+     * @param orderID ИД заказа
+     * @param hotelID ИД отеля в котором был сделан заказ
+     * @throws Exception Не смогли оплатить
+     */
+    void payRoom(long orderID, long hotelID) throws Exception;
 }
