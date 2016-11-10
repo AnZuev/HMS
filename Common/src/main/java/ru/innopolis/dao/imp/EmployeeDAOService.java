@@ -17,6 +17,8 @@ import java.util.List;
  */
 public class EmployeeDAOService implements IEmployeeDAOService {
 
+    private static final MetaMessage EMPLOYEE_DOES_NOT_EXIST_MESSAGE = new MetaMessage("employee.does.not.exist");
+
     private MessageFormat findEmployeeCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
     private MessageFormat findManagersCondition = new MessageFormat("HOTEL_ID={0} and TYPE=''MANAGER''");
     private static final MessageFormat checkEmailCondition = new MessageFormat("email=''{0}''");
@@ -65,5 +67,12 @@ public class EmployeeDAOService implements IEmployeeDAOService {
         String condition = findManagersCondition.format(new Object[]{Long.toString(hotelId)});
         List<Employee> employees = sqlProcessor.simpleSelect(Employee.class, condition);
         return employees;
+    }
+
+    public void delete(Employee employee) throws Exception {
+        int countOfEffectedRecords = sqlProcessor.delete(employee);
+        if (countOfEffectedRecords == 0){
+            throw new UserException(EMPLOYEE_DOES_NOT_EXIST_MESSAGE);
+        }
     }
 }

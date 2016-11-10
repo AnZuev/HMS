@@ -42,4 +42,11 @@ public interface IEmployeeDAOService{
      * @throws Exception Что-то пошло не так
      */
     List<Employee> getManagersByHotelId(long hotelId) throws Exception;
+
+    /**
+     * Удалить сотрудника
+     * @param employee Сотрудник
+     * @throws Exception Не смогли удалить или была попытка удалить то, что нельзя.
+     */
+    void delete(Employee employee) throws Exception;
 }

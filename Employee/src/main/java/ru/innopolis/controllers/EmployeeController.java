@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.multylanguages.message.MetaMessage;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import ru.innopolis.dao.entity.Employee;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.CreateEditEmployeeModelRequest;
+import ru.innopolis.models.DeleteEmployeeModelRequest;
 import ru.innopolis.models.EmployeeResponseModel;
 
 import javax.servlet.http.HttpSession;
@@ -29,6 +31,8 @@ import java.util.logging.Logger;
 @RestController
 @RequestMapping("/private/owner/employees")
 public class EmployeeController extends BaseRestController {
+
+    private static final MetaMessage CAN_NOT_DELETE_MESSAGE = new MetaMessage("you.can.not.delete.yourself");
 
     private Logger logger = Logger.getLogger(EmployeeController.class.getName());
 
@@ -86,6 +90,43 @@ public class EmployeeController extends BaseRestController {
         }
 
         return response;
+    }
+
+    /**
+     * Удалить сотрудника
+     * @param modelRequest Модель запроса на удаление
+     * @param errors Список ошибок валидации
+     * @param session Сессия
+     * @return 200, если всё ок. В противном случае описание ошибки
+     */
+    @PostMapping("/delete")
+    public ResponseEntity deleteEmployee(@Valid @RequestBody DeleteEmployeeModelRequest modelRequest, Errors errors, HttpSession session){
+        ResponseEntity response = getValidationErrorResponse(errors);
+        if (response == null) {
+            try {
+                Employee employee = getEmployee(modelRequest, session);
+                IEmployeeDAOService service = DAOServiceFactory.getInstance().createService(IEmployeeDAOService.class);
+                service.delete(employee);
+                response = new ResponseEntity(HttpStatus.OK);
+            } catch (UserException e) {
+                response = handleUserException(e);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+                response = getGeneralErrorResponse();
+            }
+        }
+        return response;
+    }
+
+    private Employee getEmployee(DeleteEmployeeModelRequest modelRequest, HttpSession session) throws UserException {
+        Employee owner = (Employee) session.getAttribute(AuthorizationConstant.EMPLOYEE_KEY);
+        if (owner.getId().equals(modelRequest.getEmployeeId())){
+            throw new UserException(CAN_NOT_DELETE_MESSAGE);
+        }
+        Employee employee = new Employee();
+        employee.setId(modelRequest.getEmployeeId());
+        employee.setHotelId(owner.getHotelId());
+        return employee;
     }
 
     private Employee convertToEmployee(CreateEditEmployeeModelRequest model) throws Exception {
