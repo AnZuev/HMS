@@ -15,6 +15,7 @@ import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.entity.Order;
 import ru.innopolis.dao.entity.OrderDescription;
 import ru.innopolis.dao.entity.Room;
+import ru.innopolis.dao.entity.addition.ExtendedRoom;
 import ru.innopolis.dao.imp.RoomDAOService;
 import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
@@ -59,7 +60,7 @@ public class RoomController extends BaseRestController {
             Calendar to = modelRequest.getTo();
             try {
                 IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
-                List<Room> freeRooms = service.getFreeRoomsInHotel(hotelId, roomTypeId, from, to);
+                List<ExtendedRoom> freeRooms = service.getFreeRoomsInHotel(hotelId, roomTypeId, from, to);
                 List<AvailableRoomResponseModel> responseModelList = new ArrayList<>(freeRooms.size());
                 freeRooms.forEach(room -> {
                     AvailableRoomResponseModel model = new AvailableRoomResponseModel();

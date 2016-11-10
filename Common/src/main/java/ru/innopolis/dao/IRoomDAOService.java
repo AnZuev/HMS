@@ -4,6 +4,7 @@ import org.multylanguages.exeption.MetaMessageException;
 import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.entity.OrderDescription;
 import ru.innopolis.dao.entity.Room;
+import ru.innopolis.dao.entity.addition.ExtendedRoom;
 
 import java.util.Calendar;
 import java.util.List;
@@ -23,7 +24,7 @@ public interface IRoomDAOService {
      * @param to Дата выезда
      * @return Список свободных комнат
      */
-    List<Room> getFreeRoomsInHotel(long hotelId, long roomTypeId, Calendar from, Calendar to) throws Exception;
+    List<ExtendedRoom> getFreeRoomsInHotel(long hotelId, long roomTypeId, Calendar from, Calendar to) throws Exception;
 
     /**
      * Зарезервировать комнату для клиента

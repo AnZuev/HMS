@@ -7,6 +7,7 @@ import ru.innopolis.dao.entity.Client;
 import ru.innopolis.dao.entity.Order;
 import ru.innopolis.dao.entity.OrderDescription;
 import ru.innopolis.dao.entity.Room;
+import ru.innopolis.dao.entity.addition.ExtendedRoom;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
@@ -35,10 +36,14 @@ public class RoomDAOService implements IRoomDAOService {
 //            AND :START_DATE < ORD.FINISH_DATE
 //            AND :FINISH_DATE > ORD.START_DATE
     private static final String freeRoomSelect = "SELECT * FROM ROOMS R " +
-            "WHERE R.HOTEL_ID = {0} AND R.ROOM_TYPE_ID = {1} AND R.ID NOT IN (" +
-            "  SELECT ROOM_ID FROM ORDERS ORD" +
-            "  WHERE ORD.HOTEL_ID = {0} AND {2} < ORD.FINISH_DATE AND {3} > ORD.START_DATE)";
-
+        "JOIN ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ID " +
+        "WHERE R.HOTEL_ID = {0} " +
+        "AND R.ROOM_TYPE_ID = {1} " +
+        "AND R.ID NOT IN (" +
+        "            SELECT ROOM_ID FROM ORDERS ORD " +
+        "            WHERE ORD.HOTEL_ID = {0} " +
+        "            AND {2} < ORD.FINISH_DATE " +
+        "            AND {3} > ORD.START_DATE)";
 
 //    SELECT ROOM_ID FROM ORDERS ORD
 //    WHERE ORD.HOTEL_ID = :HOTEL_ID
@@ -65,9 +70,9 @@ public class RoomDAOService implements IRoomDAOService {
         this.sqlProcessor = sqlProcessor;
     }
 
-    public List<Room> getFreeRoomsInHotel(long hotelId, long roomTypeId, Calendar from, Calendar to) throws Exception {
+    public List<ExtendedRoom> getFreeRoomsInHotel(long hotelId, long roomTypeId, Calendar from, Calendar to) throws Exception {
         Object[] args = {hotelId, roomTypeId, from, to};
-        List<Room> list = sqlProcessor.executeSelect(Room.class, freeRoomSelect, args);
+        List<ExtendedRoom> list = sqlProcessor.executeSelect(ExtendedRoom.class, freeRoomSelect, args);
         return list;
     }
 
