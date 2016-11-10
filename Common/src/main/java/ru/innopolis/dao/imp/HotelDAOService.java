@@ -40,4 +40,8 @@ public class HotelDAOService implements IHotelDAOService {
     public void createHotel(Hotel hotel) throws Exception {
         sqlProcessor.insert(hotel);
     }
+
+    public void updateHotel(Hotel hotel) throws Exception {
+        sqlProcessor.update(hotel);
+    }
 }

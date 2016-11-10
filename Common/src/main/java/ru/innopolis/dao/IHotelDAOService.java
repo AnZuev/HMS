@@ -31,4 +31,11 @@ public interface IHotelDAOService {
      * @throws Exception Не удалось создать новый отель
      */
     void createHotel(Hotel hotel) throws Exception;
+
+    /**
+     * Обновить информацию по отелю
+     * @param hotel Новая информация по отелю
+     * @throws Exception Не удалось создать новый отель
+     */
+    void updateHotel(Hotel hotel) throws Exception;
 }
