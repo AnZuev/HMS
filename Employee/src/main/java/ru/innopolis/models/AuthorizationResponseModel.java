@@ -12,6 +12,7 @@ public class AuthorizationResponseModel {
     private String firstName;
     private String secondName;
     private String fatherName;
+    private String employeeType;
 
     public Long getId() {
         return id;
@@ -43,5 +44,13 @@ public class AuthorizationResponseModel {
 
     public void setFatherName(String fatherName) {
         this.fatherName = fatherName;
+    }
+
+    public String getEmployeeType() {
+        return employeeType;
+    }
+
+    public void setEmployeeType(String employeeType) {
+        this.employeeType = employeeType;
     }
 }

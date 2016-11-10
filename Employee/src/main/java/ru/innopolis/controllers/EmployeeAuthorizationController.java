@@ -81,6 +81,7 @@ public class EmployeeAuthorizationController extends BaseRestController {
         responseModel.setFirstName(employee.getFirstName());
         responseModel.setSecondName(employee.getSecondName());
         responseModel.setFatherName(employee.getFatherName());
+        responseModel.setEmployeeType(employee.getType().name());
         return responseModel;
     }
 }
