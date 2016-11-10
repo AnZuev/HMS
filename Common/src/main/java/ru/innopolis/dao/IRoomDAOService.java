@@ -45,6 +45,13 @@ public interface IRoomDAOService {
     void cancelBook(Client client, long orderId) throws Exception;
 
     /**
+     * Отменить заказ
+     * @param orderID ИД заказа
+     * @param hotelID ИД отеля в котором был сделан заказ
+     * @throws Exception Не смогли отменить заказ
+     */
+    void cancelOrder(long orderID, long hotelID) throws Exception;
+    /**
      * Получить список заказов клиента
      * @param client Клиент
      * @return Список заказов клиента

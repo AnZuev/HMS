@@ -16,6 +16,7 @@ import ru.innopolis.models.OrderIDModelRequest;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -49,6 +50,31 @@ public class OrderController extends BaseRestController{
             try {
                 IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 service.payRoom(model.getOrderId(), employee.getHotelId());
+            }catch (UserException e) {
+                response = handleUserException(e);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+                response = getGeneralErrorResponse();
+            }
+        }
+        return response;
+    }
+
+    /**
+     * Отмена заказа
+     * @param model Модель запроса на оплату заказа
+     * @param errors Список ошибок валидации
+     * @param session Сессия
+     * @return Код 200 - удалось отменить. В противном случае описание ошибки.
+     */
+    @PostMapping("/order/cancel")
+    public ResponseEntity cancelOrder(@Valid @RequestBody OrderIDModelRequest model, Errors errors, HttpSession session){
+        ResponseEntity response = getValidationErrorResponse(errors);
+        if (response == null){
+            Employee employee = (Employee) session.getAttribute(AuthorizationConstant.EMPLOYEE_KEY);
+            try {
+                IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
+                service.cancelOrder(model.getOrderId(), employee.getHotelId());
             }catch (UserException e) {
                 response = handleUserException(e);
             } catch (Exception e) {

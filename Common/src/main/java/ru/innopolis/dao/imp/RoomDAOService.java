@@ -25,6 +25,9 @@ public class RoomDAOService implements IRoomDAOService {
     private static final MetaMessage ORDER_IS_PAID_MESSAGE = new MetaMessage("order.is.paid");
     private static final MetaMessage ORDER_IS_CANCELED_MESSAGE = new MetaMessage("order.is.canceled");
 
+    private static final MetaMessage PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE = new MetaMessage("paid.order.can.not.be.canceled");
+    private static final MetaMessage CANCELED_ORDER_CAN_NOT_BE_CANCELED_MESSAGE = new MetaMessage("canceled.order.can.not.be.canceled");
+
     //    SELECT * FROM ROOMS R
 //    WHERE R.HOTEL_ID = :HOTEL_ID
 //    AND R.ROOM_TYPE_ID = :ROOM_TYPE_ID
@@ -135,6 +138,21 @@ public class RoomDAOService implements IRoomDAOService {
             throw new UserException(ORDER_IS_CANCELED_MESSAGE);
         }
         order.setStatus(Order.Status.PAYED);
+        sqlProcessor.update(order);
+    }
+
+    public void cancelOrder(long orderID, long hotelID) throws Exception {
+        Order order = sqlProcessor.getByID(Order.class, orderID);
+        if (order == null || hotelID != order.getHotelId()){
+            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE);
+        }
+        if (order.getStatus() == Order.Status.PAYED){
+            throw new UserException(PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE);
+        }
+        if (order.getStatus() == Order.Status.CANCELED){
+            throw new UserException(CANCELED_ORDER_CAN_NOT_BE_CANCELED_MESSAGE);
+        }
+        order.setStatus(Order.Status.CANCELED);
         sqlProcessor.update(order);
     }
 }
