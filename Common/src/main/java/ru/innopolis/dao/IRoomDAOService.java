@@ -80,4 +80,12 @@ public interface IRoomDAOService {
     List<ManagerOrderDescription> getOrders(Calendar startDate, Calendar finishDate, long hotelId) throws Exception;
 
     void createOrUpdateRoom(Room room) throws Exception;
+
+    /**
+     * Получить все комнаты в отеле
+     * @param hotelId ИД отеля
+     * @return Список комнат в отеле
+     * @throws Exception Не смогли получить список комнат
+     */
+    List<ExtendedRoom> getAllRoomByHotelId(long hotelId) throws Exception;
 }

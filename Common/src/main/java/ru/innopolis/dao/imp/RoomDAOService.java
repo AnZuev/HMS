@@ -80,6 +80,11 @@ public class RoomDAOService implements IRoomDAOService {
             "JOIN CLIENTS CL ON CL.ID = ORD.CLIENT_ID\n" +
             "WHERE ORD.HOTEL_ID = {0} and {1} <= START_DATE and FINISH_DATE <= {2}";
 
+
+    private static final String allRoomForManagerSelect = "SELECT R.ID, R.ROOM_NUMBER, R.HOTEL_ID, R.ROOM_TYPE_ID, RT.TYPE_NAME, RT.COST, R.STATUS FROM ROOMS R " +
+            "JOIN ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ID " +
+            "WHERE R.HOTEL_ID = {0} ";
+
     private ISQLProcessor sqlProcessor;
 
     public RoomDAOService(ISQLProcessor sqlProcessor) {
@@ -190,5 +195,10 @@ public class RoomDAOService implements IRoomDAOService {
             }
             sqlProcessor.update(room);
         }
+    }
+
+    public List<ExtendedRoom> getAllRoomByHotelId(long hotelId) throws Exception {
+        List<ExtendedRoom> extendedRooms = sqlProcessor.executeSelect(ExtendedRoom.class, allRoomForManagerSelect, new Object[]{new Long(hotelId)});
+        return extendedRooms;
     }
 }
