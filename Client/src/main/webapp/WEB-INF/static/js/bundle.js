@@ -20014,7 +20014,7 @@ var OrderBlockItem = exports.OrderBlockItem = function (_React$Component) {
 					' ',
 					this.state.status
 				),
-				this.state.status != "CANCELED" ? React.createElement(
+				this.state.status == "BOOKED" ? React.createElement(
 					'button',
 					{ className: 'btn btn-sm btn-danger btn-block pull-right', onClick: this.handleCancelClick },
 					'Cancel'
