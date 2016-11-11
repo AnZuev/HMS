@@ -15,10 +15,13 @@ import ru.innopolis.dao.entity.RoomType;
 import ru.innopolis.dao.entity.addition.RoomTypeStatus;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.models.DeleteRoomTypeModelRequest;
+import ru.innopolis.models.EmployeeRoomTypeResponseModel;
 import ru.innopolis.models.RoomTypeModelRequest;
-
+import org.springframework.beans.BeanUtils;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -89,6 +92,35 @@ public class RoomTypeController extends BaseRestController {
                 response = getGeneralErrorResponse();
             }
         }
+        return response;
+    }
+
+    /**
+     * Получить список сущностей "Тип комнаты"
+     * @param session Сессия
+     * @return Список комнат
+     */
+    @GetMapping("/all")
+    public ResponseEntity getAll(HttpSession session){
+        ResponseEntity response;
+            Employee employee = (Employee) session.getAttribute(AuthorizationConstant.EMPLOYEE_KEY);
+            try {
+                IHotelDAOService service = DAOServiceFactory.getInstance().createService(IHotelDAOService.class);
+                List<RoomType> roomTypes = service.getRoomTypesByHotelId(employee.getHotelId());
+                List<EmployeeRoomTypeResponseModel> result = new ArrayList<>(roomTypes.size());
+                roomTypes.forEach(r->{
+                    EmployeeRoomTypeResponseModel model = new EmployeeRoomTypeResponseModel();
+                    BeanUtils.copyProperties(r, model);
+                    result.add(model);
+                });
+                HttpStatus status = result.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
+                response = new ResponseEntity(result, status);
+            } catch (UserException e) {
+                response = handleUserException(e);
+            } catch (Exception e) {
+                logger.log(Level.SEVERE, e.getMessage(), e);
+                response = getGeneralErrorResponse();
+            }
         return response;
     }
 }
