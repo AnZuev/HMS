@@ -1,5 +1,7 @@
 package ru.innopolis.dao.entity.addition;
 
+import ru.innopolis.dao.entity.RoomStatus;
+
 import javax.persistence.Column;
 
 /**
@@ -16,9 +18,14 @@ public class ExtendedRoom {
     @Column(name = "HOTEL_ID")
     private Long hotelId;
     @Column(name = "ROOM_TYPE_ID")
-    private Long type;
+    private Long typeId;
+    @Column(name = "TYPE_NAME")
+    private String typeName;
     @Column(name = "COST")
     private Double cost;
+    @Column(name = "STATUS")
+    private RoomStatus status;
+
 
     public Long getId() {
         return id;
@@ -44,12 +51,12 @@ public class ExtendedRoom {
         this.hotelId = hotelId;
     }
 
-    public Long getType() {
-        return type;
+    public Long getTypeId() {
+        return typeId;
     }
 
-    public void setType(Long type) {
-        this.type = type;
+    public void setTypeId(Long typeId) {
+        this.typeId = typeId;
     }
 
     public Double getCost() {
@@ -58,5 +65,21 @@ public class ExtendedRoom {
 
     public void setCost(Double cost) {
         this.cost = cost;
+    }
+
+    public String getTypeName() {
+        return typeName;
+    }
+
+    public void setTypeName(String typeName) {
+        this.typeName = typeName;
+    }
+
+    public RoomStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RoomStatus status) {
+        this.status = status;
     }
 }
