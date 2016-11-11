@@ -5,6 +5,7 @@ import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.*;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
+import ru.innopolis.dao.entity.addition.ManagerOrderDescription;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
@@ -62,6 +63,18 @@ public class RoomDAOService implements IRoomDAOService {
         "JOIN ROOMS R ON ORD.ROOM_ID = R.ID " +
         "WHERE ORD.CLIENT_ID = {0}";
 
+//    SELECT ORD.ID ID, ORD.START_DATE START_DATE, ORD.FINISH_DATE FINISH_DATE, ORD.COST COST, ORD.STATUS STATUS, R.ROOM_NUMBER ROOM_NUMBER
+//    FROM ORDERS ORD
+//    JOIN ROOMS R ON ORD.ROOM_ID = R.ID
+//    WHERE ORD.HOTEL_ID = :HOTEL_ID and :START_DATE <= START_DATE and FINISH_DATE <= :FINISH_DATE;
+
+    private static final String SELECT_ORDERS_IN_HOTEL = "SELECT ORD.ID ID, ORD.START_DATE START_DATE, ORD.FINISH_DATE FINISH_DATE," +
+            "ORD.COST COST, ORD.STATUS STATUS, R.ROOM_NUMBER ROOM_NUMBER, ORD.CLIENT_ID CLIENT_ID," +
+            "CL.FIRST_NAME FIRST_NAME, CL.SECOND_NAME SECOND_NAME, CL.FATHER_NAME FATHER_NAME, CL.PHONE_NUMBER PHONE_NUMBER\n" +
+            "FROM ORDERS ORD\n" +
+            "JOIN ROOMS R ON ORD.ROOM_ID = R.ID\n" +
+            "JOIN CLIENTS CL ON CL.ID = ORD.CLIENT_ID\n" +
+            "WHERE ORD.HOTEL_ID = {0} and {1} <= START_DATE and FINISH_DATE <= {2}";
 
     private ISQLProcessor sqlProcessor;
 
@@ -151,5 +164,11 @@ public class RoomDAOService implements IRoomDAOService {
         }
         order.setStatus(OrderStatus.CANCELED);
         sqlProcessor.update(order);
+    }
+
+    public List<ManagerOrderDescription> getOrders(Calendar startDate, Calendar finishDate, long hotelId) throws Exception {
+        Object[] args = new Object[]{hotelId, startDate, finishDate};
+        List<ManagerOrderDescription> orders = sqlProcessor.executeSelect(ManagerOrderDescription.class, SELECT_ORDERS_IN_HOTEL, args);
+        return orders;
     }
 }

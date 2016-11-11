@@ -2,9 +2,11 @@ package ru.innopolis.dao;
 
 import org.multylanguages.exeption.MetaMessageException;
 import ru.innopolis.dao.entity.Client;
+import ru.innopolis.dao.entity.Order;
 import ru.innopolis.dao.entity.OrderDescription;
 import ru.innopolis.dao.entity.Room;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
+import ru.innopolis.dao.entity.addition.ManagerOrderDescription;
 
 import java.util.Calendar;
 import java.util.List;
@@ -66,4 +68,14 @@ public interface IRoomDAOService {
      * @throws Exception Не смогли оплатить
      */
     void payRoom(long orderID, long hotelID) throws Exception;
+
+    /**
+     * Получить список заказов с подробным описанием за период
+     * @param startDate Начала периода
+     * @param finishDate Конец период
+     * @param hotelId ИД отеля в рамках которого нужно производить поиск
+     * @return Список заказов с подробным описанием
+     * @throws Exception Не смогли получить список заказов
+     */
+    List<ManagerOrderDescription> getOrders(Calendar startDate, Calendar finishDate, long hotelId) throws Exception;
 }
