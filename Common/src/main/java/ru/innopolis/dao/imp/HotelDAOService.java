@@ -4,6 +4,7 @@ import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
 import ru.innopolis.dao.entity.RoomType;
+import ru.innopolis.dao.entity.addition.RoomTypeStatus;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
@@ -28,7 +29,7 @@ public class HotelDAOService implements IHotelDAOService {
     }
 
     public List<RoomType> getRoomTypesByHotelId(long id) throws Exception {
-        String where = "HOTEL_ID = " + id;
+        String where = "STATUS <> 'DELETED' AND HOTEL_ID = " + id;
         return sqlProcessor.simpleSelect(RoomType.class, where);
     }
 
@@ -50,5 +51,14 @@ public class HotelDAOService implements IHotelDAOService {
             }
             sqlProcessor.update(type);
         }
+    }
+
+    public void deleteRoomType(long roomTypeId, long hotelId) throws Exception {
+        RoomType roomType = sqlProcessor.getByID(RoomType.class, roomTypeId);
+        if (roomType == null || !roomType.getHotelId().equals(hotelId) || roomType.getStatus() == RoomTypeStatus.DELETED){
+            throw new UserException(ROOM_TYPE_DOES_NOT_EXIST_MESSAGE, UserErrorCode.BAD_PARAMETERS);
+        }
+        roomType.setStatus(RoomTypeStatus.DELETED);
+        sqlProcessor.update(roomType);
     }
 }

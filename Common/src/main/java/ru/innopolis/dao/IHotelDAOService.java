@@ -45,4 +45,12 @@ public interface IHotelDAOService {
      * @throws Exception Что-то пошло не так
      */
     void createOrUpdateRoomType(RoomType type) throws Exception;
+
+    /**
+     * Удалить тип комнаты
+     * @param roomTypeId ИД сущности "Тип комнаты"
+     * @param hotelId ИД отеля
+     * @throws Exception Что-то пошло не так
+     */
+    void deleteRoomType(long roomTypeId, long hotelId) throws Exception;
 }

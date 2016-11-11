@@ -1,5 +1,7 @@
 package ru.innopolis.dao.entity;
 
+import ru.innopolis.dao.entity.addition.RoomTypeStatus;
+
 import javax.persistence.Column;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
@@ -26,6 +28,8 @@ public class RoomType {
     private Double cost;
     @Column(name = "PATH_TO_PHOTO")
     private String photoPath;
+    @Column(name = "STATUS")
+    private RoomTypeStatus status;
 
     public Long getId() {
         return id;
@@ -73,5 +77,13 @@ public class RoomType {
 
     public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
+    }
+
+    public RoomTypeStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RoomTypeStatus status) {
+        this.status = status;
     }
 }

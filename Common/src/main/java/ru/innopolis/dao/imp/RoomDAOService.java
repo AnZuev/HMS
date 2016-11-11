@@ -26,9 +26,10 @@ public class RoomDAOService implements IRoomDAOService {
     private static final MetaMessage PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE = new MetaMessage("paid.order.can.not.be.canceled");
     private static final MetaMessage CANCELED_ORDER_CAN_NOT_BE_CANCELED_MESSAGE = new MetaMessage("canceled.order.can.not.be.canceled");
 
-    //    SELECT * FROM ROOMS R
+//    SELECT * FROM ROOMS R
 //    WHERE R.HOTEL_ID = :HOTEL_ID
 //    AND R.ROOM_TYPE_ID = :ROOM_TYPE_ID
+//    AND RT.STATUS <> 'DELETED'
 //    AND R.ID NOT IN (
 //            SELECT ROOM_ID FROM ORDERS ORD
 //            WHERE ORD.HOTEL_ID = :HOTEL_ID
@@ -38,6 +39,7 @@ public class RoomDAOService implements IRoomDAOService {
         "JOIN ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ID " +
         "WHERE R.HOTEL_ID = {0} " +
         "AND R.ROOM_TYPE_ID = {1} " +
+        "AND RT.STATUS <> ''DELETED''" +
         "AND R.ID NOT IN (" +
         "            SELECT ROOM_ID FROM ORDERS ORD " +
         "            WHERE ORD.HOTEL_ID = {0} " +
