@@ -1,18 +1,12 @@
 package ru.innopolis.dao.imp;
 
+import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IHotelDAOService;
 import ru.innopolis.dao.entity.Hotel;
 import ru.innopolis.dao.entity.RoomType;
 import ru.innopolis.dao.processor.ISQLProcessor;
-import ru.innopolis.dao.processor.SQLProcessor;
-
-import javax.sql.DataSource;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.Statement;
-import java.util.Collections;
+import ru.innopolis.exceptions.UserErrorCode;
+import ru.innopolis.exceptions.UserException;
 import java.util.List;
 
 /**
@@ -22,6 +16,7 @@ import java.util.List;
  */
 public class HotelDAOService implements IHotelDAOService {
 
+    private static final MetaMessage ROOM_TYPE_DOES_NOT_EXIST_MESSAGE = new MetaMessage("room.type.does.not.exist");
     private ISQLProcessor sqlProcessor;
 
     public HotelDAOService(ISQLProcessor sqlProcessor) {
@@ -43,5 +38,17 @@ public class HotelDAOService implements IHotelDAOService {
 
     public void updateHotel(Hotel hotel) throws Exception {
         sqlProcessor.update(hotel);
+    }
+
+    public void createOrUpdateRoomType(RoomType type) throws Exception {
+        if (type.getId() == null){
+            sqlProcessor.insert(type);
+        }else {
+            RoomType rtDB = sqlProcessor.getByID(RoomType.class, type.getId());
+            if (rtDB == null || !rtDB.getHotelId().equals(type.getHotelId())){
+                throw new UserException(ROOM_TYPE_DOES_NOT_EXIST_MESSAGE, UserErrorCode.BAD_PARAMETERS);
+            }
+            sqlProcessor.update(type);
+        }
     }
 }

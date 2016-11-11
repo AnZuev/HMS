@@ -38,4 +38,11 @@ public interface IHotelDAOService {
      * @throws Exception Не удалось создать новый отель
      */
     void updateHotel(Hotel hotel) throws Exception;
+
+    /**
+     * Создать или обновить сущность "Тип комнаты"
+     * @param type Сущность тип комнаты
+     * @throws Exception Что-то пошло не так
+     */
+    void createOrUpdateRoomType(RoomType type) throws Exception;
 }
