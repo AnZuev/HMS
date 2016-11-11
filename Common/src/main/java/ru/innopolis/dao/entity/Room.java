@@ -22,6 +22,8 @@ public class Room {
     private Long hotelId;
     @Column(name = "ROOM_TYPE_ID")
     private Long type;
+    @Column(name = "STATUS")
+    private RoomStatus status;
 
     public Long getId() {
         return id;
@@ -53,5 +55,13 @@ public class Room {
 
     public void setType(Long type) {
         this.type = type;
+    }
+
+    public RoomStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(RoomStatus status) {
+        this.status = status;
     }
 }
