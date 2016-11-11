@@ -5,3 +5,6 @@ ALTER TABLE ROOM_TYPES ADD COST DECIMAL(8,2);
 ALTER TABLE ROOM_TYPES ADD STATUS VARCHAR2(20 CHAR);
 update ROOM_TYPES set STATUS = 'WORKED';
 ALTER TABLE ROOM_TYPES MODIFY STATUS VARCHAR2(20 CHAR) NOT NULL;
+
+-- Hotel-49. Реализовать создание/редактирование сущности "Комната" в модуле сотрудника
+update ROOMS set STATUS = 'WORKED'

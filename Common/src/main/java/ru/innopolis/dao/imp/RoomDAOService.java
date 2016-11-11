@@ -6,6 +6,7 @@ import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.*;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
 import ru.innopolis.dao.entity.addition.ManagerOrderDescription;
+import ru.innopolis.dao.entity.addition.RoomTypeStatus;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
@@ -22,7 +23,8 @@ public class RoomDAOService implements IRoomDAOService {
     private static final MetaMessage ORDER_IS_NOT_FOUND_MESSAGE = new MetaMessage("order.is.not.found");
     private static final MetaMessage ORDER_IS_PAID_MESSAGE = new MetaMessage("order.is.paid");
     private static final MetaMessage ORDER_IS_CANCELED_MESSAGE = new MetaMessage("order.is.canceled");
-
+    private static final MetaMessage ROOM_DOES_NOT_EXIST_MESSAGE = new MetaMessage("room.does.not.exist");
+    private static final MetaMessage ROOM_TYPE_DOES_NOT_EXIST_MESSAGE = new MetaMessage("room.type.does.not.exist");
     private static final MetaMessage PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE = new MetaMessage("paid.order.can.not.be.canceled");
     private static final MetaMessage CANCELED_ORDER_CAN_NOT_BE_CANCELED_MESSAGE = new MetaMessage("canceled.order.can.not.be.canceled");
 
@@ -172,5 +174,21 @@ public class RoomDAOService implements IRoomDAOService {
         Object[] args = new Object[]{hotelId, startDate, finishDate};
         List<ManagerOrderDescription> orders = sqlProcessor.executeSelect(ManagerOrderDescription.class, SELECT_ORDERS_IN_HOTEL, args);
         return orders;
+    }
+
+    public void createOrUpdateRoom(Room room) throws Exception {
+        RoomType roomType = sqlProcessor.getByID(RoomType.class, room.getType());
+        if (roomType == null || roomType.getStatus() != RoomTypeStatus.WORKED){
+            throw new UserException(ROOM_TYPE_DOES_NOT_EXIST_MESSAGE, UserErrorCode.BAD_PARAMETERS);
+        }
+        if (room.getId() == null){
+            sqlProcessor.insert(room);
+        }else {
+            Room roomDB = sqlProcessor.getByID(Room.class, room.getId());
+            if (roomDB == null || !roomDB.getHotelId().equals(room.getHotelId())){
+                throw new UserException(ROOM_DOES_NOT_EXIST_MESSAGE, UserErrorCode.BAD_PARAMETERS);
+            }
+            sqlProcessor.update(room);
+        }
     }
 }

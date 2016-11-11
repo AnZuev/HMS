@@ -78,4 +78,6 @@ public interface IRoomDAOService {
      * @throws Exception Не смогли получить список заказов
      */
     List<ManagerOrderDescription> getOrders(Calendar startDate, Calendar finishDate, long hotelId) throws Exception;
+
+    void createOrUpdateRoom(Room room) throws Exception;
 }
