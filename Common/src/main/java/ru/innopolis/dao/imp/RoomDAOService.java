@@ -3,10 +3,7 @@ package ru.innopolis.dao.imp;
 import org.multylanguages.exeption.MetaMessageException;
 import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IRoomDAOService;
-import ru.innopolis.dao.entity.Client;
-import ru.innopolis.dao.entity.Order;
-import ru.innopolis.dao.entity.OrderDescription;
-import ru.innopolis.dao.entity.Room;
+import ru.innopolis.dao.entity.*;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
@@ -101,7 +98,7 @@ public class RoomDAOService implements IRoomDAOService {
         order.setHotelId(room.getHotelId());
         order.setStartDate(from);
         order.setFinishDate(to);
-        order.setStatus(Order.Status.BOOKED);
+        order.setStatus(OrderStatus.BOOKED);
 
         sqlProcessor.insert(order);
 
@@ -114,11 +111,11 @@ public class RoomDAOService implements IRoomDAOService {
             throw new UserException(message, UserErrorCode.NOT_FOUND);
         }
 
-        if (order.getStatus() != Order.Status.BOOKED){
+        if (order.getStatus() != OrderStatus.BOOKED){
             MetaMessage message = new MetaMessage("order.can.not.be.canceled");
             throw new UserException(message, UserErrorCode.BAD_PARAMETERS);
         }
-        order.setStatus(Order.Status.CANCELED);
+        order.setStatus(OrderStatus.CANCELED);
         sqlProcessor.update(order);
     }
 
@@ -131,13 +128,13 @@ public class RoomDAOService implements IRoomDAOService {
         if (order == null || hotelID != order.getHotelId()){
             throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE);
         }
-        if (order.getStatus() == Order.Status.PAYED){
+        if (order.getStatus() == OrderStatus.PAYED){
             throw new UserException(ORDER_IS_PAID_MESSAGE);
         }
-        if (order.getStatus() == Order.Status.CANCELED){
+        if (order.getStatus() == OrderStatus.CANCELED){
             throw new UserException(ORDER_IS_CANCELED_MESSAGE);
         }
-        order.setStatus(Order.Status.PAYED);
+        order.setStatus(OrderStatus.PAYED);
         sqlProcessor.update(order);
     }
 
@@ -146,13 +143,13 @@ public class RoomDAOService implements IRoomDAOService {
         if (order == null || hotelID != order.getHotelId()){
             throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE);
         }
-        if (order.getStatus() == Order.Status.PAYED){
+        if (order.getStatus() == OrderStatus.PAYED){
             throw new UserException(PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE);
         }
-        if (order.getStatus() == Order.Status.CANCELED){
+        if (order.getStatus() == OrderStatus.CANCELED){
             throw new UserException(CANCELED_ORDER_CAN_NOT_BE_CANCELED_MESSAGE);
         }
-        order.setStatus(Order.Status.CANCELED);
+        order.setStatus(OrderStatus.CANCELED);
         sqlProcessor.update(order);
     }
 }
