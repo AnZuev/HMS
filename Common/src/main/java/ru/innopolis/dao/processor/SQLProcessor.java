@@ -154,6 +154,16 @@ public class SQLProcessor implements ISQLProcessor {
 
     }
 
+    public <T> List<T> simpleSelect(Class<T> clazz, String whereClauseTemplate, Object[] arg) throws Exception {
+        String[] sqlArg = new String[arg.length];
+        for (int i = 0; i < arg.length; i++) {
+            sqlArg[i] = convertToSQLValue(arg[i]);
+        }
+        MessageFormat format = new MessageFormat(whereClauseTemplate);
+        String whereClause = format.format(sqlArg);
+        return simpleSelect(clazz, whereClause);
+    }
+
     public <T> List<T> executeSelect(Class<T> clazz, String queryPattern, Object[] arg) throws Exception {
         String[] sqlArg = new String[arg.length];
         for (int i = 0; i < arg.length; i++) {

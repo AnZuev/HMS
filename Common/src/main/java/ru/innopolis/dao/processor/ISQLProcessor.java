@@ -48,6 +48,17 @@ public interface ISQLProcessor {
     <T> List<T> simpleSelect(Class<T> clazz, String whereClause) throws Exception;
 
     /**
+     * Получить все записи из БД удолетворяющие условию
+     * @param clazz Тип сущности
+     * @param whereClause Условие выборки
+     * @param <T> Тип сущности
+     * @param arg Массив аргументов для подстановки
+     * @return Список извлечённых записей
+     * @throws Exception Что-то пошло не так
+     */
+    <T> List<T> simpleSelect(Class<T> clazz, String whereClause, Object[] arg) throws Exception;
+
+    /**
      * Выполнить запрос в БД
      * @param action Действие
      * @param <T> Тип возвращаемого значения
