@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -25,12 +26,12 @@ import java.util.logging.Logger;
  */
 @RestController
 @RequestMapping("/private")
-public class HotelController extends BaseRestController {
+public class AdminHotelController extends BaseRestController {
 
     private Logger logger = java.util.logging.Logger.getLogger(OwnerController.class.getName());
 
     @Autowired
-    public HotelController(MessageSource messageSource) {
+    public AdminHotelController(MessageSource messageSource) {
         super(messageSource);
     }
 
@@ -59,11 +60,7 @@ public class HotelController extends BaseRestController {
 
     private Hotel convertToHotel(CreateHotelModelRequest model){
         Hotel h = new Hotel();
-        h.setName(model.getTitle());
-        h.setDescription(model.getDescription());
-        h.setPhoneNumber(model.getPhoneNumber());
-        h.setAddress(model.getAddress());
-        h.setMail(model.getMail());
+        BeanUtils.copyProperties(model, h);
         return h;
     }
 
@@ -81,12 +78,7 @@ public class HotelController extends BaseRestController {
             List<Hotel> allHotels = service.getAllHotels();
             allHotels.forEach((hotel) -> {
                 HotelResponseModel model = new HotelResponseModel();
-                model.setId(hotel.getId());
-                model.setTitle(hotel.getName());
-                model.setAddress(hotel.getAddress());
-                model.setDescription(hotel.getDescription());
-                model.setMail(hotel.getMail());
-                model.setPhoneNumber(hotel.getPhoneNumber());
+                BeanUtils.copyProperties(hotel, model);
                 output.add(model);
             });
             HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;

@@ -1,5 +1,6 @@
 package ru.innopolis.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.*;
@@ -27,7 +28,8 @@ public class CreateEditHotelOwnerModelRequest {
 
     @NotNull
     @Email
-    private String email;
+    @JsonProperty("email")
+    private String mail;
 
     @NotNull
     @Size(min=10, max=50)
@@ -70,12 +72,12 @@ public class CreateEditHotelOwnerModelRequest {
         this.fatherName = fatherName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMail() {
+        return mail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPassword() {

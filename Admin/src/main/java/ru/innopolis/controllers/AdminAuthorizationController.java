@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -77,10 +78,7 @@ public class AdminAuthorizationController extends BaseRestController {
 
     private AuthorizationResponseModel buildResponseModel(Staff staff) {
         AuthorizationResponseModel responseModel = new AuthorizationResponseModel();
-        responseModel.setId(staff.getId());
-        responseModel.setFirstName(staff.getFirstName());
-        responseModel.setSecondName(staff.getSecondName());
-        responseModel.setFatherName(staff.getFatherName());
+        BeanUtils.copyProperties(staff, responseModel);
         return responseModel;
     }
 }

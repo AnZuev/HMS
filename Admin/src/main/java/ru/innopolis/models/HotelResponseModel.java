@@ -1,5 +1,7 @@
 package ru.innopolis.models;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Создано: Денис
  * Дата:  30.10.2016
@@ -7,7 +9,8 @@ package ru.innopolis.models;
  */
 public class HotelResponseModel {
     private long id;
-    private String title;
+    @JsonProperty("title")
+    private String name;
     private String description;
     private String phoneNumber;
     private String address;
@@ -21,13 +24,13 @@ public class HotelResponseModel {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getName() {
+        return name;
     }
 
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {

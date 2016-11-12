@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -61,13 +62,7 @@ public class OwnerController extends BaseRestController {
 
     private Employee convertToEmployee(CreateEditHotelOwnerModelRequest model) {
         Employee employee = new Employee();
-        employee.setId(model.getId());
-        employee.setHotelId(model.getHotelId());
-        employee.setFirstName(model.getFirstName());
-        employee.setSecondName(model.getSecondName());
-        employee.setFatherName(model.getFatherName());
-        employee.setMail(model.getEmail());
-        employee.setPassword(model.getPassword());
+        BeanUtils.copyProperties(model, employee);
         employee.setType(Employee.Type.OWNER);
         return employee;
     }
@@ -85,13 +80,8 @@ public class OwnerController extends BaseRestController {
             List<OwnerResponseModel> models = new ArrayList<>(owners.size());
             owners.forEach(o -> {
                 OwnerResponseModel model = new OwnerResponseModel();
-                model.setId(o.getId());
-                model.setMail(o.getMail());
-                model.setFirstName(o.getFirstName());
-                model.setSecondName(o.getSecondName());
-                model.setFatherName(o.getFatherName());
+                BeanUtils.copyProperties(o, model);
                 models.add(model);
-
             });
             HttpStatus status = owners.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
             response = new ResponseEntity(models, status);
