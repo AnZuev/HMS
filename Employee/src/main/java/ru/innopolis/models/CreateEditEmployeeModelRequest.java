@@ -30,7 +30,7 @@ public class CreateEditEmployeeModelRequest {
 
     @NotNull
     @Email
-    private String email;
+    private String mail;
 
     @NotNull
     @Size(min=10, max=50)
@@ -68,12 +68,12 @@ public class CreateEditEmployeeModelRequest {
         this.fatherName = fatherName;
     }
 
-    public String getEmail() {
-        return email;
+    public String getMail() {
+        return mail;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPassword() {

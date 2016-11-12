@@ -1,6 +1,7 @@
 package ru.innopolis.controllers;
 
 import org.multylanguages.message.MetaMessage;
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -10,6 +11,7 @@ import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IEmployeeDAOService;
 import ru.innopolis.dao.entity.Employee;
+import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.CreateEditEmployeeModelRequest;
@@ -40,6 +42,13 @@ public class EmployeeController extends BaseRestController {
         super(messageSource);
     }
 
+    /**
+     * Обновить или создать сотрудника. Решение об обновлении принимается на основе наличия ИД.
+     * @param modelRequest Запрос на изменение/создание
+     * @param errors Список ошибок валидации
+     * @param session Сессия
+     * @return Код 200, если всё прошло успешно. В противном случае, описание ошибки.
+     */
     @PutMapping("/update")
     public ResponseEntity createNewEmployee(@Valid @RequestBody CreateEditEmployeeModelRequest modelRequest, Errors errors, HttpSession session) {
         ResponseEntity response = getValidationErrorResponse(errors);
@@ -61,6 +70,11 @@ public class EmployeeController extends BaseRestController {
         return response;
     }
 
+    /**
+     * Получить список сотрудников в рамках отеля
+     * @param session Сессия
+     * @return Список сотрудников
+     */
     @GetMapping("/all")
     public ResponseEntity getAll(HttpSession session){
         Employee owner = (Employee) session.getAttribute(AuthorizationConstant.EMPLOYEE_KEY);
@@ -69,14 +83,10 @@ public class EmployeeController extends BaseRestController {
             IEmployeeDAOService service = DAOServiceFactory.getInstance().createService(IEmployeeDAOService.class);
             List<Employee> manages = service.getManagersByHotelId(owner.getHotelId());
             List<EmployeeResponseModel> responseModel = new ArrayList<>(manages.size());
-            manages.forEach(m->{
+            manages.forEach(emp->{
                 EmployeeResponseModel model = new EmployeeResponseModel();
-                model.setId(m.getId());
-                model.setFirstName(m.getFirstName());
-                model.setSecondName(m.getSecondName());
-                model.setFatherName(m.getFatherName());
-                model.setMail(m.getMail());
-                model.setType(m.getType().name());
+                BeanUtils.copyProperties(emp, model);
+                model.setType(emp.getType().name());
                 responseModel.add(model);
             });
 
@@ -121,7 +131,7 @@ public class EmployeeController extends BaseRestController {
     private Employee getEmployee(DeleteEmployeeModelRequest modelRequest, HttpSession session) throws UserException {
         Employee owner = (Employee) session.getAttribute(AuthorizationConstant.EMPLOYEE_KEY);
         if (owner.getId().equals(modelRequest.getEmployeeId())){
-            throw new UserException(CAN_NOT_DELETE_MESSAGE);
+            throw new UserException(CAN_NOT_DELETE_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         Employee employee = new Employee();
         employee.setId(modelRequest.getEmployeeId());
@@ -131,11 +141,7 @@ public class EmployeeController extends BaseRestController {
 
     private Employee convertToEmployee(CreateEditEmployeeModelRequest model) throws Exception {
         Employee employee = new Employee();
-        employee.setId(model.getId());
-        employee.setFirstName(model.getFirstName());
-        employee.setSecondName(model.getSecondName());
-        employee.setFatherName(model.getFatherName());
-        employee.setMail(model.getEmail());
+        BeanUtils.copyProperties(model, employee);
         String encryptPassword = PasswordHelper.encrypt(model.getPassword());
         employee.setPassword(encryptPassword);
         employee.setType(Employee.Type.MANAGER);

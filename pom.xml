@@ -58,7 +58,7 @@
                 <groupId>javax.servlet</groupId>
                 <artifactId>javax.servlet-api</artifactId>
                 <version>4.0.0-b01</version>
-                <scope>provided</scope>
+                <!--<scope>provided</scope>-->
             </dependency>
 
             <dependency>
@@ -83,12 +83,6 @@
                 <groupId>org.multylanguages</groupId>
                 <artifactId>Multylanguages</artifactId>
                 <version>1.0</version>
-            </dependency>
-
-            <dependency>
-                <groupId>commons-beanutils</groupId>
-                <artifactId>commons-beanutils</artifactId>
-                <version>1.9.3</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

@@ -1,6 +1,7 @@
 package ru.innopolis.controllers;
 
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +35,7 @@ public class OrderController extends BaseRestController{
 
     private Logger logger = java.util.logging.Logger.getLogger(OrderController.class.getName());
 
+    @Autowired
     public OrderController(MessageSource messageSource) {
         super(messageSource);
     }

@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,11 +60,7 @@ public class HotelOwnerController extends BaseRestController {
 
     private Hotel convertToHotel(EditHotelModelRequest model){
         Hotel h = new Hotel();
-        h.setName(model.getTitle());
-        h.setDescription(model.getDescription());
-        h.setPhoneNumber(model.getPhoneNumber());
-        h.setAddress(model.getAddress());
-        h.setMail(model.getMail());
+        BeanUtils.copyProperties(model, h);
         return h;
     }
 

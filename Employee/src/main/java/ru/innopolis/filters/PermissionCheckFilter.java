@@ -1,6 +1,5 @@
 package ru.innopolis.filters;
 
-import org.apache.commons.lang3.BooleanUtils;
 import org.springframework.http.HttpStatus;
 import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.entity.Employee;

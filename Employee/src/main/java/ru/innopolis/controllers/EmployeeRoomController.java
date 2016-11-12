@@ -28,7 +28,7 @@ import java.util.logging.Logger;
 /**
  * Создано: Денис
  * Дата:  11.11.2016
- * Описание:
+ * Описание: Контроллер по работе с сотрудниками
  */
 @RestController
 @RequestMapping("/private/room")
