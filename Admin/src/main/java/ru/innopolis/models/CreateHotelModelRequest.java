@@ -1,6 +1,5 @@
 package ru.innopolis.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
@@ -15,8 +14,7 @@ import javax.validation.constraints.Size;
 public class CreateHotelModelRequest {
     @NotNull
     @Size(min = 1)
-    @JsonProperty("title")
-    private String name;
+    private String title;
     @NotNull
     @Size(min = 10)
     private String description;
@@ -30,12 +28,12 @@ public class CreateHotelModelRequest {
     @Email
     private String mail;
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {

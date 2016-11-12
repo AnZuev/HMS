@@ -72,6 +72,7 @@ public class EmployeeRoomController extends BaseRestController {
     private Room buildRoom(RoomModelRequest modelRequest, Employee employee) {
         Room room = new Room();
         BeanUtils.copyProperties(modelRequest, room);
+        room.setType(modelRequest.getTypeID());
         room.setHotelId(employee.getHotelId());
         RoomStatus status = Enum.valueOf(RoomStatus.class, modelRequest.getStatus());
         room.setStatus(status);

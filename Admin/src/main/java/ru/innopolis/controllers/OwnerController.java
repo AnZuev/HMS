@@ -64,6 +64,7 @@ public class OwnerController extends BaseRestController {
     private Employee convertToEmployee(CreateEditHotelOwnerModelRequest model) throws Exception {
         Employee employee = new Employee();
         BeanUtils.copyProperties(model, employee);
+        employee.setMail(model.getEmail());
         String encrypt = PasswordHelper.encrypt(model.getPassword());
         employee.setPassword(encrypt);
         employee.setType(Employee.Type.OWNER);

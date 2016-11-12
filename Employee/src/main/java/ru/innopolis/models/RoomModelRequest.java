@@ -1,7 +1,5 @@
 package ru.innopolis.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -28,8 +26,7 @@ public class RoomModelRequest {
     @NotNull
     @Min(0)
     @Max(Long.MAX_VALUE)
-    @JsonProperty("typeID")
-    private Long type;
+    private Long typeID;
 
 
     public Long getId() {
@@ -56,11 +53,11 @@ public class RoomModelRequest {
         this.status = status;
     }
 
-    public Long getType() {
-        return type;
+    public Long getTypeID() {
+        return typeID;
     }
 
-    public void setType(Long type) {
-        this.type = type;
+    public void setTypeID(Long typeID) {
+        this.typeID = typeID;
     }
 }

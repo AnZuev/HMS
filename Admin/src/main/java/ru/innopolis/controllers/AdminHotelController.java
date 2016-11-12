@@ -61,6 +61,7 @@ public class AdminHotelController extends BaseRestController {
     private Hotel convertToHotel(CreateHotelModelRequest model){
         Hotel h = new Hotel();
         BeanUtils.copyProperties(model, h);
+        h.setName(model.getTitle());
         return h;
     }
 
