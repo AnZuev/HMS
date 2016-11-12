@@ -32,11 +32,9 @@ public class DAOServiceFactory implements IDAOServiceFactory {
         mapper.put(IEmployeeDAOService.class.getName(), EmployeeDAOService.class);
     }
 
-    private DataSource dataSource;
     private ISQLProcessor processor;
 
     private DAOServiceFactory(DataSource source) {
-        dataSource = source;
         processor = new SQLProcessor(source);
     }
 

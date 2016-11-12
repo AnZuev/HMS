@@ -1,4 +1,4 @@
-package ru.innopolis.dao.entity;
+package ru.innopolis.dao.entity.addition;
 
 import javax.persistence.Column;
 import java.util.Calendar;

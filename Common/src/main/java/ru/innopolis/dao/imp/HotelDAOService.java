@@ -18,6 +18,7 @@ import java.util.List;
 public class HotelDAOService implements IHotelDAOService {
 
     private static final MetaMessage ROOM_TYPE_DOES_NOT_EXIST_MESSAGE = new MetaMessage("room.type.does.not.exist");
+    private static final String STATUS_DELETED_AND_HOTEL_ID = "STATUS <> 'DELETED' AND HOTEL_ID = ";
     private ISQLProcessor sqlProcessor;
 
     public HotelDAOService(ISQLProcessor sqlProcessor) {
@@ -29,7 +30,7 @@ public class HotelDAOService implements IHotelDAOService {
     }
 
     public List<RoomType> getRoomTypesByHotelId(long id) throws Exception {
-        String where = "STATUS <> 'DELETED' AND HOTEL_ID = " + id;
+        String where = STATUS_DELETED_AND_HOTEL_ID + id;
         return sqlProcessor.simpleSelect(RoomType.class, where);
     }
 

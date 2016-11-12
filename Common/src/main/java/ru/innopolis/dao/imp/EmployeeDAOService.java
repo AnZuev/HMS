@@ -18,6 +18,7 @@ import java.util.List;
 public class EmployeeDAOService implements IEmployeeDAOService {
 
     private static final MetaMessage EMPLOYEE_DOES_NOT_EXIST_MESSAGE = new MetaMessage("employee.does.not.exist");
+    private static final MetaMessage EMPLOYEE_EMAIL_EXISTS_MESSAGE = new MetaMessage("employee.email.exists");
 
     private MessageFormat findEmployeeCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
     private MessageFormat findManagersCondition = new MessageFormat("HOTEL_ID={0} and TYPE=''MANAGER''");
@@ -37,6 +38,11 @@ public class EmployeeDAOService implements IEmployeeDAOService {
             sqlProcessor.insert(employee);
         } else {
             Employee currentInf = sqlProcessor.getByID(Employee.class, id);
+
+            if (currentInf == null){
+                throw new UserException(EMPLOYEE_DOES_NOT_EXIST_MESSAGE, UserErrorCode.BAD_PARAMETERS);
+            }
+
             if(!currentInf.getMail().equals(employee.getMail())){
                 checkEmail(employee);
             }
@@ -48,8 +54,7 @@ public class EmployeeDAOService implements IEmployeeDAOService {
         String format = checkEmailCondition.format(new Object[]{employee.getMail()});
         List<Employee> employees = sqlProcessor.simpleSelect(Employee.class, format);
         if (!employees.isEmpty()) {
-            MetaMessage message = new MetaMessage("employee.email.exists");
-            throw new UserException(message, UserErrorCode.BAD_PARAMETERS);
+            throw new UserException(EMPLOYEE_EMAIL_EXISTS_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
     }
 
@@ -72,7 +77,7 @@ public class EmployeeDAOService implements IEmployeeDAOService {
     public void delete(Employee employee) throws Exception {
         int countOfEffectedRecords = sqlProcessor.delete(employee);
         if (countOfEffectedRecords == 0){
-            throw new UserException(EMPLOYEE_DOES_NOT_EXIST_MESSAGE);
+            throw new UserException(EMPLOYEE_DOES_NOT_EXIST_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
     }
 }

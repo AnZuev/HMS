@@ -2,8 +2,7 @@ package ru.innopolis.dao;
 
 import org.multylanguages.exeption.MetaMessageException;
 import ru.innopolis.dao.entity.Client;
-import ru.innopolis.dao.entity.Order;
-import ru.innopolis.dao.entity.OrderDescription;
+import ru.innopolis.dao.entity.addition.OrderDescription;
 import ru.innopolis.dao.entity.Room;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
 import ru.innopolis.dao.entity.addition.ManagerOrderDescription;
@@ -79,6 +78,11 @@ public interface IRoomDAOService {
      */
     List<ManagerOrderDescription> getOrders(Calendar startDate, Calendar finishDate, long hotelId) throws Exception;
 
+    /**
+     * Создать или обовить комнату. Решение об обновлении примается, если проставлен ИД
+     * @param room Комната
+     * @throws Exception Не смогли обновить или создать
+     */
     void createOrUpdateRoom(Room room) throws Exception;
 
     /**

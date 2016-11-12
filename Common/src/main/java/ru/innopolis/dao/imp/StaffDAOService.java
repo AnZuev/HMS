@@ -14,7 +14,7 @@ import java.util.List;
  */
 public class StaffDAOService implements IStaffDAOService {
 
-    private MessageFormat findClientCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
+    private static final String FIND_CLIENT_CONDITION = "email = {0} and HASH_PASSWORD = {1}";
 
     private ISQLProcessor sqlProcessor;
 
@@ -23,8 +23,8 @@ public class StaffDAOService implements IStaffDAOService {
     }
 
     public Staff findStaff(String email, String hashPassword) throws Exception {
-        String where = findClientCondition.format(new Object[]{email, hashPassword});
-        List<Staff> staffs = sqlProcessor.simpleSelect(Staff.class, where);
+        Object[] args = {email, hashPassword};
+        List<Staff> staffs = sqlProcessor.simpleSelect(Staff.class, FIND_CLIENT_CONDITION, args);
         return staffs.isEmpty() ? null : staffs.get(0);
     }
 }

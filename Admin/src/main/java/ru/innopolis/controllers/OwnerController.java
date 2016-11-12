@@ -10,6 +10,7 @@ import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IEmployeeDAOService;
 import ru.innopolis.dao.entity.Employee;
 import ru.innopolis.exceptions.UserException;
+import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.CreateEditHotelOwnerModelRequest;
 import ru.innopolis.models.OwnerResponseModel;
 
@@ -45,8 +46,8 @@ public class OwnerController extends BaseRestController {
     public ResponseEntity createOrUpdate(@Valid @RequestBody CreateEditHotelOwnerModelRequest modelRequest, Errors errors) {
         ResponseEntity response = getValidationErrorResponse(errors);
         if (response == null) {
-            Employee employee = convertToEmployee(modelRequest);
             try {
+                Employee employee = convertToEmployee(modelRequest);
                 IEmployeeDAOService service = DAOServiceFactory.getInstance().createService(IEmployeeDAOService.class);
                 service.addOrUpdate(employee);
                 response = new ResponseEntity(HttpStatus.OK);
@@ -60,9 +61,11 @@ public class OwnerController extends BaseRestController {
         return response;
     }
 
-    private Employee convertToEmployee(CreateEditHotelOwnerModelRequest model) {
+    private Employee convertToEmployee(CreateEditHotelOwnerModelRequest model) throws Exception {
         Employee employee = new Employee();
         BeanUtils.copyProperties(model, employee);
+        String encrypt = PasswordHelper.encrypt(model.getPassword());
+        employee.setPassword(encrypt);
         employee.setType(Employee.Type.OWNER);
         return employee;
     }

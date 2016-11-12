@@ -5,6 +5,7 @@ import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.*;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
 import ru.innopolis.dao.entity.addition.ManagerOrderDescription;
+import ru.innopolis.dao.entity.addition.OrderDescription;
 import ru.innopolis.dao.entity.addition.RoomTypeStatus;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
@@ -146,13 +147,13 @@ public class RoomDAOService implements IRoomDAOService {
     public void payRoom(long orderID, long hotelID) throws Exception {
         Order order = sqlProcessor.getByID(Order.class, orderID);
         if (order == null || hotelID != order.getHotelId()){
-            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE);
+            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE, UserErrorCode.NOT_FOUND);
         }
         if (order.getStatus() == OrderStatus.PAYED){
-            throw new UserException(ORDER_IS_PAID_MESSAGE);
+            throw new UserException(ORDER_IS_PAID_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         if (order.getStatus() == OrderStatus.CANCELED){
-            throw new UserException(ORDER_IS_CANCELED_MESSAGE);
+            throw new UserException(ORDER_IS_CANCELED_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         order.setStatus(OrderStatus.PAYED);
         sqlProcessor.update(order);
@@ -161,7 +162,7 @@ public class RoomDAOService implements IRoomDAOService {
     public void cancelOrder(long orderID, long hotelID) throws Exception {
         Order order = sqlProcessor.getByID(Order.class, orderID);
         if (order == null || hotelID != order.getHotelId()){
-            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE, UserErrorCode.BAD_PARAMETERS);
+            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE, UserErrorCode.NOT_FOUND);
         }
         if (order.getStatus() == OrderStatus.PAYED){
             throw new UserException(PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE, UserErrorCode.BAD_PARAMETERS);

@@ -11,7 +11,7 @@ import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.Client;
-import ru.innopolis.dao.entity.OrderDescription;
+import ru.innopolis.dao.entity.addition.OrderDescription;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.models.*;

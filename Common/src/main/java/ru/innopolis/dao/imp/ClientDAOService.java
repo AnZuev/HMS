@@ -19,8 +19,7 @@ public class ClientDAOService implements IClientDAOService {
 
     private ISQLProcessor sqlProcessor;
 
-    private MessageFormat findClientCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
-    private MessageFormat findByEmailCondition = new MessageFormat("email = ''{0}''");
+    private static final String FIND_CLIENT_CONDITION = "email = {0} and HASH_PASSWORD = {1}";
     private static final String SEARCH_BY_EMAIL_CONDITION = "EMAIL = {0}";
     private static final MetaMessage EMAIL_IS_NOT_FREE_MESSAGE = new MetaMessage("email.is.not.free");
 
@@ -30,8 +29,7 @@ public class ClientDAOService implements IClientDAOService {
 
     public Client addNewClient(Client client) throws Exception {
         String mail = client.getMail();
-        String where = findByEmailCondition.format(new Object[]{mail});
-        List<Client> clients = sqlProcessor.simpleSelect(Client.class, where);
+        List<Client> clients = sqlProcessor.simpleSelect(Client.class, SEARCH_BY_EMAIL_CONDITION, new Object[]{mail});
         if (clients.isEmpty()){
             sqlProcessor.insert(client);
         }else {
@@ -41,8 +39,8 @@ public class ClientDAOService implements IClientDAOService {
     }
 
     public Client findClient(String email, String password) throws Exception {
-        String where = findClientCondition.format(new Object[]{email, password});
-        List<Client> clients = sqlProcessor.simpleSelect(Client.class, where);
+        Object[] args = {email, password};
+        List<Client> clients = sqlProcessor.simpleSelect(Client.class, FIND_CLIENT_CONDITION, args);
         return clients.isEmpty() ? null : clients.get(0);
     }
 
