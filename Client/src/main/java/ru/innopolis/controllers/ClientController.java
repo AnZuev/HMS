@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -12,7 +13,7 @@ import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IClientDAOService;
 import ru.innopolis.dao.entity.Client;
-import ru.innopolis.dao.imp.ClientDAOService;
+import ru.innopolis.exceptions.UserException;
 import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.NewClientModel;
 
@@ -38,9 +39,10 @@ public class ClientController extends BaseRestController {
 
     /**
      * Изменить данные профиля
+     *
      * @param requestModel Запрос на изменения данных
-     * @param errors Список ошибок валидации
-     * @param session Сессия
+     * @param errors       Список ошибок валидации
+     * @param session      Сессия
      * @return 200 код если всё ОК, в противном случае 500 код.
      */
     @PostMapping("/private/profile/edit")
@@ -57,7 +59,10 @@ public class ClientController extends BaseRestController {
 
                 session.setAttribute(AuthorizationConstant.CLIENT_KEY, newClientData);
                 responseEntity = new ResponseEntity<>(HttpStatus.OK);
-            } catch (Exception e) {
+            }catch (UserException e){
+                responseEntity = handleUserException(e);
+            }
+            catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 responseEntity = getGeneralErrorResponse();
             }
@@ -70,12 +75,9 @@ public class ClientController extends BaseRestController {
     private Client buildNewClient(NewClientModel model) throws Exception {
         String encryptPassword = PasswordHelper.encrypt(model.getPassword());
         Client client = new Client();
+        BeanUtils.copyProperties(model, client);
         client.setPassword(encryptPassword);
-        client.setFirstName(model.getFirstName());
-        client.setSecondName(model.getSecondName());
-        client.setFatherName(model.getFatherName());
-        client.setMail(model.getEmail());
-        client.setPhoneNumber(model.getPhoneNumber());
+        client.setMail(model.getMail().toLowerCase());
         return client;
     }
 }

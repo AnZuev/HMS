@@ -1,7 +1,6 @@
 package ru.innopolis.controllers;
 
-import org.multylanguages.exeption.MetaMessageException;
-import org.multylanguages.message.MetaMessage;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -12,12 +11,8 @@ import ru.innopolis.constants.AuthorizationConstant;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.Client;
-import ru.innopolis.dao.entity.Order;
 import ru.innopolis.dao.entity.OrderDescription;
-import ru.innopolis.dao.entity.Room;
 import ru.innopolis.dao.entity.addition.ExtendedRoom;
-import ru.innopolis.dao.imp.RoomDAOService;
-import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.models.*;
 
@@ -97,13 +92,10 @@ public class RoomController extends BaseRestController {
             try {
                 IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 Client client = (Client) session.getAttribute(AuthorizationConstant.CLIENT_KEY);
-                try {
-                    service.bookRoom(client, roomId, from, to);
-                    response = new ResponseEntity(HttpStatus.OK);
-                } catch (MetaMessageException e) {
-                    MetaMessage metaMessage = e.getMetaMessage();
-                    response = getErrorResponse(metaMessage);
-                }
+                service.bookRoom(client, roomId, from, to);
+                response = new ResponseEntity(HttpStatus.OK);
+            } catch (UserException e) {
+                response = handleUserException(e);
             } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 response = getGeneralErrorResponse();
@@ -156,13 +148,7 @@ public class RoomController extends BaseRestController {
             List<OrderedRoomResponseModel> responseModel = new ArrayList<>(orders.size());
             orders.forEach(o -> {
                 OrderedRoomResponseModel model = new OrderedRoomResponseModel();
-                model.setId(o.getId());
-                model.setHotelTitle(o.getHotelTitle());
-                model.setStatus(o.getStatus());
-                model.setRoomNumber(o.getRoomNumber());
-                model.setFrom(o.getFrom());
-                model.setTo(o.getTo());
-                model.setCost(o.getCost());
+                BeanUtils.copyProperties(o, model);
                 responseModel.add(model);
             });
             HttpStatus status = responseModel.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;

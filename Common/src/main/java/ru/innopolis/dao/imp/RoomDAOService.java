@@ -1,6 +1,5 @@
 package ru.innopolis.dao.imp;
 
-import org.multylanguages.exeption.MetaMessageException;
 import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IRoomDAOService;
 import ru.innopolis.dao.entity.*;
@@ -20,6 +19,10 @@ import java.util.List;
  * Описание: Реализация сервиса по работе с комнатой, хранящейся в БД
  */
 public class RoomDAOService implements IRoomDAOService {
+
+    private ISQLProcessor sqlProcessor;
+    private static final MetaMessage ROOM_IS_NOT_FREE_MESSAGE = new MetaMessage("room.is.not.free");
+    private static final MetaMessage ORDER_CAN_NOT_BE_CANCELED_MESSAGE = new MetaMessage("order.can.not.be.canceled");
     private static final MetaMessage ORDER_IS_NOT_FOUND_MESSAGE = new MetaMessage("order.is.not.found");
     private static final MetaMessage ORDER_IS_PAID_MESSAGE = new MetaMessage("order.is.paid");
     private static final MetaMessage ORDER_IS_CANCELED_MESSAGE = new MetaMessage("order.is.canceled");
@@ -85,7 +88,6 @@ public class RoomDAOService implements IRoomDAOService {
             "JOIN ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ID " +
             "WHERE R.HOTEL_ID = {0} ";
 
-    private ISQLProcessor sqlProcessor;
 
     public RoomDAOService(ISQLProcessor sqlProcessor) {
         this.sqlProcessor = sqlProcessor;
@@ -102,16 +104,14 @@ public class RoomDAOService implements IRoomDAOService {
         Room room = sqlProcessor.getByID(Room.class, roomID);
 
         if (room == null){
-            MetaMessage message = new MetaMessage("room.does.not.exist");
-            throw  new MetaMessageException(message);
+            throw  new UserException(ROOM_DOES_NOT_EXIST_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
 
         Object[] args = {room.getHotelId(), room.getId(), from, to};
         List<Order> list = sqlProcessor.executeSelect(Order.class, checkIsRoomFree, args);
 
         if (!list.isEmpty()){
-            MetaMessage message = new MetaMessage("room.is.not.free");
-            throw  new MetaMessageException(message);
+            throw new UserException(ROOM_IS_NOT_FREE_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
 
         Order order = new Order();
@@ -129,13 +129,11 @@ public class RoomDAOService implements IRoomDAOService {
     public void cancelBook(Client client, long orderId) throws Exception {
         Order order = sqlProcessor.getByID(Order.class, orderId);
         if (order == null || !order.getClientId().equals(client.getId())){
-            MetaMessage message = new MetaMessage("order.is.not.found");
-            throw new UserException(message, UserErrorCode.NOT_FOUND);
+            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE, UserErrorCode.NOT_FOUND);
         }
 
         if (order.getStatus() != OrderStatus.BOOKED){
-            MetaMessage message = new MetaMessage("order.can.not.be.canceled");
-            throw new UserException(message, UserErrorCode.BAD_PARAMETERS);
+            throw new UserException(ORDER_CAN_NOT_BE_CANCELED_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         order.setStatus(OrderStatus.CANCELED);
         sqlProcessor.update(order);
@@ -163,13 +161,13 @@ public class RoomDAOService implements IRoomDAOService {
     public void cancelOrder(long orderID, long hotelID) throws Exception {
         Order order = sqlProcessor.getByID(Order.class, orderID);
         if (order == null || hotelID != order.getHotelId()){
-            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE);
+            throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         if (order.getStatus() == OrderStatus.PAYED){
-            throw new UserException(PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE);
+            throw new UserException(PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         if (order.getStatus() == OrderStatus.CANCELED){
-            throw new UserException(CANCELED_ORDER_CAN_NOT_BE_CANCELED_MESSAGE);
+            throw new UserException(CANCELED_ORDER_CAN_NOT_BE_CANCELED_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         order.setStatus(OrderStatus.CANCELED);
         sqlProcessor.update(order);

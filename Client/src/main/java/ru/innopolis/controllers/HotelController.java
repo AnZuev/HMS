@@ -1,5 +1,7 @@
 package ru.innopolis.controllers;
 
+import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +34,14 @@ public class HotelController extends BaseRestController {
     private static final String HOTEL_ID_IS_NOT_CORRECT_MESSAGE = "hotel.id.does.not.exist";
     private Logger logger = Logger.getLogger(HotelController.class.getName());
 
+    @Autowired
     public HotelController(MessageSource messageSource) {
         super(messageSource);
     }
 
     /**
      * Получить подробное описание всех отелей
+     *
      * @return Подробное описание всех отелей
      */
     @GetMapping("/hotels/full")
@@ -47,12 +51,7 @@ public class HotelController extends BaseRestController {
         try {
             fillHotelInformation((hotel) -> {
                 HotelResponseModel model = new HotelResponseModel();
-                model.setId(hotel.getId());
-                model.setName(hotel.getName());
-                model.setAddress(hotel.getAddress());
-                model.setDescription(hotel.getDescription());
-                model.setMail(hotel.getMail());
-                model.setPhoneNumber(hotel.getPhoneNumber());
+                BeanUtils.copyProperties(hotel, model);
                 output.add(model);
             });
             HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
@@ -61,12 +60,12 @@ public class HotelController extends BaseRestController {
             logger.log(Level.SEVERE, e.getMessage(), e);
             response = getGeneralErrorResponse();
         }
-
         return response;
     }
 
     /**
      * Получить краткую информацию обо всех отелях
+     *
      * @return Краткая информацию обо всех отелях
      */
     @GetMapping("/hotels/short")
@@ -91,6 +90,7 @@ public class HotelController extends BaseRestController {
 
     /**
      * Заполнить информацию по отелям
+     *
      * @param consumer Правило заполнения данных
      */
     private void fillHotelInformation(Consumer<Hotel> consumer) throws Exception {
@@ -101,19 +101,16 @@ public class HotelController extends BaseRestController {
 
     /**
      * Получить список типов комнат в рамках отеля
+     *
      * @param hotelId ИД отеля
      * @return Список типов комнат в рамках отеля
      */
     @GetMapping("/hotel/{hotelId}/rooms/getTypes/full")
     public ResponseEntity getRoomTypeInformation(@PathVariable String hotelId) {
         LinkedList<RoomTypeResponseModel> output = new LinkedList<>();
-        ResponseEntity response = getRoomTypeInformation(hotelId, output, (type) ->{
+        ResponseEntity response = getRoomTypeInformation(hotelId, output, (type) -> {
             RoomTypeResponseModel model = new RoomTypeResponseModel();
-            model.setId(type.getId());
-            model.setName(type.getName());
-            model.setDescription(type.getDescription());
-            model.setCost(type.getCost());
-            model.setPhotoPath(type.getPhotoPath());
+            BeanUtils.copyProperties(type, model);
             output.add(model);
         });
         return response;
@@ -121,13 +118,14 @@ public class HotelController extends BaseRestController {
 
     /**
      * Получить список типов комнат в рамках отеля с урезанной информацией
+     *
      * @param hotelId ИД отеля
      * @return Список типов комнат в рамках отеля
      */
     @GetMapping("/hotel/{hotelId}/rooms/getTypes/short")
     public ResponseEntity getShortRoomTypeInformation(@PathVariable String hotelId) {
         LinkedList<RoomTypeResponseModel> output = new LinkedList<>();
-        ResponseEntity response = getRoomTypeInformation(hotelId, output, (type) ->{
+        ResponseEntity response = getRoomTypeInformation(hotelId, output, (type) -> {
             RoomTypeResponseModel model = new RoomTypeResponseModel();
             model.setId(type.getId());
             model.setName(type.getName());
@@ -138,26 +136,27 @@ public class HotelController extends BaseRestController {
 
     /**
      * Получить информацию о типах комнат в рамках отеля
+     *
      * @param hotelId ИД отеля
-     * @param output Список, куда сохранять модель отеля
+     * @param output  Список, куда сохранять модель отеля
      * @param builder Строитель RoomTypeResponseModel
      * @return Ответ клиенту
      */
-    private ResponseEntity getRoomTypeInformation(String hotelId, List<RoomTypeResponseModel> output, Consumer<RoomType> builder){
+    private ResponseEntity getRoomTypeInformation(String hotelId, List<RoomTypeResponseModel> output, Consumer<RoomType> builder) {
         ResponseEntity response;
         Long id = parse(hotelId);
-        if (id != null){
+        if (id != null) {
             try {
                 IHotelDAOService service = DAOServiceFactory.getInstance().createService(IHotelDAOService.class);
                 List<RoomType> list = service.getRoomTypesByHotelId(id);
                 list.forEach(builder);
                 HttpStatus status = output.isEmpty() ? HttpStatus.NO_CONTENT : HttpStatus.OK;
                 response = new ResponseEntity<>(output, status);
-            }catch (Exception e){
+            } catch (Exception e) {
                 logger.log(Level.SEVERE, e.getMessage(), e);
                 response = getGeneralErrorResponse();
             }
-        }else {
+        } else {
             String message = getMessage(HOTEL_ID_IS_NOT_CORRECT_MESSAGE, null);
             ErrorResponse errorResponse = new ErrorResponse();
             errorResponse.addCommonError(message);
@@ -168,14 +167,15 @@ public class HotelController extends BaseRestController {
 
     /**
      * Распарсить ИД.
+     *
      * @param idAsString ИД ввиде строки
      * @return ИД в виде числа, если удалось распарсить. В противном случае null.
      */
-    private Long parse(String idAsString){
+    private Long parse(String idAsString) {
         Long result = null;
         try {
             result = Long.parseLong(idAsString);
-        }catch (Exception e){
+        } catch (Exception e) {
             logger.log(Level.INFO, e.getMessage());
         }
         return result;

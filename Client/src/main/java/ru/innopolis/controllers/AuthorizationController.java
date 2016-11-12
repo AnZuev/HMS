@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -40,9 +41,17 @@ public class AuthorizationController extends BaseRestController {
         super(messageSource);
     }
 
+    /**
+     * Пройти аутентицикацию
+     *
+     * @param model   Модель запроса на аутентификацию
+     * @param errors  Результат валидации
+     * @param session Сессия
+     * @return Информация о клиенте, если он существует. В противном случае описание ошибки.
+     */
     @PostMapping("/auth/login")
-    public ResponseEntity authenticate(@Valid @RequestBody AuthorizationRequestModel model, Errors bindingResult, HttpSession session) {
-        ResponseEntity response = getValidationErrorResponse(bindingResult);
+    public ResponseEntity authenticate(@Valid @RequestBody AuthorizationRequestModel model, Errors errors, HttpSession session) {
+        ResponseEntity response = getValidationErrorResponse(errors);
         if (response == null) {
             try {
                 String password = model.getPassword();
@@ -71,10 +80,7 @@ public class AuthorizationController extends BaseRestController {
 
     private AuthorizationResponseModel buildResponseModel(Client client) {
         AuthorizationResponseModel responseModel = new AuthorizationResponseModel();
-        responseModel.setId(client.getId());
-        responseModel.setFirstName(client.getFirstName());
-        responseModel.setSecondName(client.getSecondName());
-        responseModel.setFatherName(client.getFatherName());
+        BeanUtils.copyProperties(client, responseModel);
         return responseModel;
     }
 }

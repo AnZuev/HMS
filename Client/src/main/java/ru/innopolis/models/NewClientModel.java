@@ -26,7 +26,7 @@ public class NewClientModel {
     private String fatherName;
 
     @Email
-    private String email;
+    private String mail;
 
     @NotNull
     @Pattern(regexp = "^8\\d{10}")
@@ -60,13 +60,11 @@ public class NewClientModel {
         this.fatherName = fatherName;
     }
 
-    @JsonProperty("mail")
-    public String getEmail() {
-        return email;
+    public String getMail() {
+        return mail;
     }
-    @JsonProperty("mail")
-    public void setEmail(String email) {
-        this.email = email;
+    public void setMail(String mail) {
+        this.mail = mail;
     }
 
     public String getPhoneNumber() {
