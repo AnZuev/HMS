@@ -78,6 +78,11 @@ public class RoomDAOService implements IRoomDAOService {
             throw new UserException(ROOM_IS_NOT_FREE_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
 
+        long days = calculateCountOfDays(from, to);
+
+
+        RoomType type = sqlProcessor.getByID(RoomType.class, room.getType());
+
         Order order = new Order();
         order.setClientId(client.getId());
         order.setRoomId(roomID);
@@ -85,9 +90,21 @@ public class RoomDAOService implements IRoomDAOService {
         order.setStartDate(from);
         order.setFinishDate(to);
         order.setStatus(OrderStatus.BOOKED);
+        order.setCost(days * type.getCost());
 
         sqlProcessor.insert(order);
 
+    }
+
+    /**
+     * Посчитать разницу между датами заезда и выезда в днях
+     * @param start Дата заезда
+     * @param finish Дата выезда
+     * @return Количество дней проживания
+     */
+    private long calculateCountOfDays(Calendar start, Calendar finish) {
+        long milSeck = finish.getTimeInMillis() - start.getTimeInMillis();
+        return milSeck / 86400000;
     }
 
     public void cancelBook(Client client, long orderId) throws Exception {
