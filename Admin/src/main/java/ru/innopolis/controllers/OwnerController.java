@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IEmployeeDAOService;
 import ru.innopolis.dao.entity.Employee;
+import ru.innopolis.dao.entity.addition.ExtendedEmployee;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.CreateEditHotelOwnerModelRequest;
@@ -92,7 +93,7 @@ public class OwnerController extends BaseRestController {
         ResponseEntity response = null;
         try {
             IEmployeeDAOService service = DAOServiceFactory.getInstance().createService(IEmployeeDAOService.class);
-            List<Employee> owners = service.getOwners();
+            List<ExtendedEmployee> owners = service.getOwners();
             List<OwnerResponseModel> models = new ArrayList<>(owners.size());
             owners.forEach(o -> {
                 OwnerResponseModel model = new OwnerResponseModel();

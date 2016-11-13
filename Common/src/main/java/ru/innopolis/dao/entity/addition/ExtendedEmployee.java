@@ -1,18 +1,38 @@
-package ru.innopolis.models;
+package ru.innopolis.dao.entity.addition;
+
+import javax.persistence.Column;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
 
 /**
  * Создано: Денис
  * Дата:  06.11.2016
- * Описание: Модель ответа на запрос получения списка владельцев
+ * Описание: Расширенный сотрудник гостиницы
  */
-public class OwnerResponseModel {
+public class ExtendedEmployee {
+    public enum Type{
+        OWNER,
+        MANAGER
+    }
+
+    @Column(name = "ID")
     private Long id;
+    @Column(name = "FIRST_NAME")
     private String firstName;
+    @Column(name = "SECOND_NAME")
     private String secondName;
+    @Column(name = "FATHER_NAME")
     private String fatherName;
+    @Column(name = "EMAIL")
     private String mail;
-    private String hotelTitle;
+    @Column(name = "TYPE")
+    private Type type;
+    @Column(name = "HOTEL_ID")
     private Long hotelId;
+    @Column(name = "HOTEL_TITLE")
+    private String hotelTitle;
+
 
     public Long getId() {
         return id;
@@ -54,12 +74,12 @@ public class OwnerResponseModel {
         this.mail = mail;
     }
 
-    public String getHotelTitle() {
-        return hotelTitle;
+    public Type getType() {
+        return type;
     }
 
-    public void setHotelTitle(String hotelTitle) {
-        this.hotelTitle = hotelTitle;
+    public void setType(Type type) {
+        this.type = type;
     }
 
     public Long getHotelId() {
@@ -68,5 +88,13 @@ public class OwnerResponseModel {
 
     public void setHotelId(Long hotelId) {
         this.hotelId = hotelId;
+    }
+
+    public String getHotelTitle() {
+        return hotelTitle;
+    }
+
+    public void setHotelTitle(String hotelTitle) {
+        this.hotelTitle = hotelTitle;
     }
 }

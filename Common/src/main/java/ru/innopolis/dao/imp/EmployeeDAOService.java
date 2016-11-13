@@ -4,11 +4,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IEmployeeDAOService;
 import ru.innopolis.dao.entity.Employee;
+import ru.innopolis.dao.entity.addition.ExtendedEmployee;
 import ru.innopolis.dao.processor.ISQLProcessor;
 import ru.innopolis.exceptions.UserErrorCode;
 import ru.innopolis.exceptions.UserException;
 
 import java.text.MessageFormat;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -21,6 +23,7 @@ public class EmployeeDAOService implements IEmployeeDAOService {
     private static final MetaMessage EMPLOYEE_DOES_NOT_EXIST_MESSAGE = new MetaMessage("employee.does.not.exist");
     private static final MetaMessage EMPLOYEE_EMAIL_EXISTS_MESSAGE = new MetaMessage("employee.email.exists");
     private static final MetaMessage PASSWORD_CAN_NOT_BE_EMPTY_MESSAGE = new MetaMessage("password.can.not.be.empty");
+    private static final String GET_LIST_OF_OWNERS_WITH_HOTEL_DESC = "GetListOfOwnersWithHotelDesc";
 
     private MessageFormat findEmployeeCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
     private MessageFormat findManagersCondition = new MessageFormat("HOTEL_ID={0} and TYPE=''MANAGER''");
@@ -66,8 +69,8 @@ public class EmployeeDAOService implements IEmployeeDAOService {
         }
     }
 
-    public List<Employee> getOwners() throws Exception {
-        return sqlProcessor.simpleSelect(Employee.class, TYPE_OWNER);
+    public List<ExtendedEmployee> getOwners() throws Exception {
+        return sqlProcessor.executeSelect(ExtendedEmployee.class, GET_LIST_OF_OWNERS_WITH_HOTEL_DESC, Collections.emptyMap());
     }
 
     public Employee findEmployee(String email, String hashPassword) throws Exception {

@@ -91,4 +91,23 @@
             ]]>
         </query>
     </queryDesc>
+    <queryDesc name="GetListOfOwnersWithHotelDesc">
+        <description>Get list of owners with hotel description</description>
+        <query>
+            <![CDATA[
+		        SELECT
+		        	OW.ID,
+		        	OW.FIRST_NAME,
+		        	OW.SECOND_NAME,
+		        	OW.FATHER_NAME,
+		        	OW.EMAIL,
+		        	OW.HOTEL_ID,
+		        	OW.TYPE,
+		        	HOT.NAME HOTEL_TITLE
+		        FROM EMPLOYEES OW
+		        JOIN HOTELS HOT ON OW.HOTEL_ID = HOT.ID
+		        WHERE OW.TYPE = 'OWNER'
+            ]]>
+        </query>
+    </queryDesc>
 </queries>

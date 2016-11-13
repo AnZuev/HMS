@@ -1,6 +1,7 @@
 package ru.innopolis.dao;
 
 import ru.innopolis.dao.entity.Employee;
+import ru.innopolis.dao.entity.addition.ExtendedEmployee;
 
 import java.util.List;
 
@@ -24,7 +25,7 @@ public interface IEmployeeDAOService{
      * @return Список владельцев отелей
      * @throws Exception Что-то пошло не так
      */
-    List<Employee> getOwners() throws Exception;
+    List<ExtendedEmployee> getOwners() throws Exception;
 
     /**
      * Найти сотрудника отеля
