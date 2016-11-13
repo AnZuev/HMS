@@ -6,6 +6,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -81,5 +82,11 @@ public class EmployeeAuthorizationController extends BaseRestController {
         BeanUtils.copyProperties(employee, model);
         model.setEmployeeType(employee.getType().name());
         return model;
+    }
+
+    @GetMapping("/auth/logout")
+    public ResponseEntity logOut(HttpSession session){
+        session.invalidate();
+        return new ResponseEntity(HttpStatus.OK);
     }
 }
