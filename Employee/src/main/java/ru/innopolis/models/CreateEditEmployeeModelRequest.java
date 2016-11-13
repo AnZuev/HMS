@@ -32,7 +32,6 @@ public class CreateEditEmployeeModelRequest {
     @Email
     private String mail;
 
-    @NotNull
     @Size(min=10, max=50)
     private String password;
 

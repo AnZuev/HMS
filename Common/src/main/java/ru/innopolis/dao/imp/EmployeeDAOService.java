@@ -1,5 +1,6 @@
 package ru.innopolis.dao.imp;
 
+import org.apache.commons.lang3.StringUtils;
 import org.multylanguages.message.MetaMessage;
 import ru.innopolis.dao.IEmployeeDAOService;
 import ru.innopolis.dao.entity.Employee;
@@ -19,6 +20,7 @@ public class EmployeeDAOService implements IEmployeeDAOService {
 
     private static final MetaMessage EMPLOYEE_DOES_NOT_EXIST_MESSAGE = new MetaMessage("employee.does.not.exist");
     private static final MetaMessage EMPLOYEE_EMAIL_EXISTS_MESSAGE = new MetaMessage("employee.email.exists");
+    private static final MetaMessage PASSWORD_CAN_NOT_BE_EMPTY_MESSAGE = new MetaMessage("password.can.not.be.empty");
 
     private MessageFormat findEmployeeCondition = new MessageFormat("email = ''{0}'' and HASH_PASSWORD = ''{1}''");
     private MessageFormat findManagersCondition = new MessageFormat("HOTEL_ID={0} and TYPE=''MANAGER''");
@@ -34,6 +36,9 @@ public class EmployeeDAOService implements IEmployeeDAOService {
         Long id = employee.getId();
 
         if (id == null) {
+            if (StringUtils.isEmpty(employee.getPassword())){
+                throw new UserException(PASSWORD_CAN_NOT_BE_EMPTY_MESSAGE, UserErrorCode.BAD_PARAMETERS);
+            }
             checkEmail(employee);
             sqlProcessor.insert(employee);
         } else {
@@ -45,6 +50,9 @@ public class EmployeeDAOService implements IEmployeeDAOService {
 
             if(!currentInf.getMail().equals(employee.getMail())){
                 checkEmail(employee);
+            }
+            if (StringUtils.isEmpty(employee.getPassword())){
+                employee.setPassword(currentInf.getPassword());
             }
             sqlProcessor.update(employee);
         }

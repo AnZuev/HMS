@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.multylanguages.message.MetaMessage;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
@@ -142,8 +143,11 @@ public class EmployeeController extends BaseRestController {
     private Employee convertToEmployee(CreateEditEmployeeModelRequest model) throws Exception {
         Employee employee = new Employee();
         BeanUtils.copyProperties(model, employee);
-        String encryptPassword = PasswordHelper.encrypt(model.getPassword());
-        employee.setPassword(encryptPassword);
+        String password = model.getPassword();
+        if (StringUtils.isNotEmpty(password)){
+            String encryptPassword = PasswordHelper.encrypt(password);
+            employee.setPassword(encryptPassword);
+        }
         employee.setType(Employee.Type.MANAGER);
         return employee;
     }

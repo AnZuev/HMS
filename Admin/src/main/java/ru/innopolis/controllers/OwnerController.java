@@ -1,5 +1,6 @@
 package ru.innopolis.controllers;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -65,8 +66,11 @@ public class OwnerController extends BaseRestController {
         Employee employee = new Employee();
         BeanUtils.copyProperties(model, employee);
         employee.setMail(model.getEmail());
-        String encrypt = PasswordHelper.encrypt(model.getPassword());
-        employee.setPassword(encrypt);
+        String password = model.getPassword();
+        if (StringUtils.isNotEmpty(password)){
+            String encryptPassword = PasswordHelper.encrypt(password);
+            employee.setPassword(encryptPassword);
+        }
         employee.setType(Employee.Type.OWNER);
         return employee;
     }

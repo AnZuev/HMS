@@ -29,7 +29,6 @@ public class CreateEditHotelOwnerModelRequest {
     @Email
     private String email;
 
-    @NotNull
     @Size(min=10, max=50)
     private String password;
 
