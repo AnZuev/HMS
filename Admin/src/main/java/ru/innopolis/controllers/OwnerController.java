@@ -13,6 +13,7 @@ import ru.innopolis.dao.entity.Employee;
 import ru.innopolis.exceptions.UserException;
 import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.CreateEditHotelOwnerModelRequest;
+import ru.innopolis.models.OwnerIdResponseModel;
 import ru.innopolis.models.OwnerResponseModel;
 
 import javax.validation.Valid;
@@ -51,7 +52,14 @@ public class OwnerController extends BaseRestController {
                 Employee employee = convertToEmployee(modelRequest);
                 IEmployeeDAOService service = DAOServiceFactory.getInstance().createService(IEmployeeDAOService.class);
                 service.addOrUpdate(employee);
-                response = new ResponseEntity(HttpStatus.OK);
+                if(modelRequest.getId() == null){
+                    OwnerIdResponseModel model = new OwnerIdResponseModel();
+                    model.setOwnerID(employee.getId());
+                    response = new ResponseEntity(model, HttpStatus.OK);
+                }else {
+                    response = new ResponseEntity(HttpStatus.OK);
+                }
+
             } catch (UserException e) {
                 response = handleUserException(e);
             } catch (Exception e) {

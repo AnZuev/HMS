@@ -17,6 +17,7 @@ import ru.innopolis.exceptions.UserException;
 import ru.innopolis.helpers.PasswordHelper;
 import ru.innopolis.models.CreateEditEmployeeModelRequest;
 import ru.innopolis.models.DeleteEmployeeModelRequest;
+import ru.innopolis.models.EmployeeIdResponseModel;
 import ru.innopolis.models.EmployeeResponseModel;
 
 import javax.servlet.http.HttpSession;
@@ -60,7 +61,13 @@ public class EmployeeController extends BaseRestController {
                 employee.setHotelId(owner.getHotelId());
                 IEmployeeDAOService service = DAOServiceFactory.getInstance().createService(IEmployeeDAOService.class);
                 service.addOrUpdate(employee);
-                response = new ResponseEntity(HttpStatus.OK);
+                if(modelRequest.getId() == null){
+                    EmployeeIdResponseModel model = new EmployeeIdResponseModel();
+                    model.setEmployeeID(employee.getId());
+                    response = new ResponseEntity(model, HttpStatus.OK);
+                }else {
+                    response = new ResponseEntity(HttpStatus.OK);
+                }
             } catch (UserException e) {
                 response = handleUserException(e);
             } catch (Exception e) {
