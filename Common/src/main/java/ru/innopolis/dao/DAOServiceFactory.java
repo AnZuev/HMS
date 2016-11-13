@@ -2,13 +2,18 @@ package ru.innopolis.dao;
 
 import ru.innopolis.dao.imp.*;
 import ru.innopolis.dao.processor.ISQLProcessor;
+import ru.innopolis.dao.processor.configs.MetaQueries;
 import ru.innopolis.dao.processor.SQLProcessor;
 
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.Unmarshaller;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -34,8 +39,8 @@ public class DAOServiceFactory implements IDAOServiceFactory {
 
     private ISQLProcessor processor;
 
-    private DAOServiceFactory(DataSource source) {
-        processor = new SQLProcessor(source);
+    private DAOServiceFactory(ISQLProcessor processor) {
+        this.processor = processor;
     }
 
     public static DAOServiceFactory getInstance() throws Exception {
@@ -45,7 +50,17 @@ public class DAOServiceFactory implements IDAOServiceFactory {
                     Context initContext = new InitialContext();
                     Context envContext = (Context) initContext.lookup(DIRECTORY);
                     DataSource dataSource = (DataSource) envContext.lookup(JDBC_HMS_NAME);
-                    factory = new DAOServiceFactory(dataSource);
+
+                    InputStream file = Thread.currentThread().getContextClassLoader().getResourceAsStream("Queries.xml");
+                    JAXBContext jaxbContext = JAXBContext.newInstance(MetaQueries.class);
+                    Unmarshaller unmarshaller = jaxbContext.createUnmarshaller();
+                    MetaQueries metaQueries = (MetaQueries)unmarshaller.unmarshal(file);
+
+                    SQLProcessor sqlProcessor = new SQLProcessor(dataSource);
+                    sqlProcessor.initialize(metaQueries);
+
+                    factory = new DAOServiceFactory(sqlProcessor);
+
                 }
             }
         }

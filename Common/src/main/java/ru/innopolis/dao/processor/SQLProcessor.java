@@ -3,6 +3,8 @@ package ru.innopolis.dao.processor;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.StrBuilder;
+import org.apache.commons.lang3.text.StrSubstitutor;
+import ru.innopolis.dao.processor.configs.MetaQueries;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
@@ -15,10 +17,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * Создано: Денис
@@ -27,6 +26,8 @@ import java.util.List;
  */
 public class SQLProcessor implements ISQLProcessor {
 
+    private static final String PRIMARY_KEY_IS_NOT_DEFINED = "Не задо значение первичного ключа";
+    private static final String QUERY_NAME_CAN_NOT_BE_EMPTY = "Имя запроса не можеть быть пустым";
     private static final String THERE_IS_NOT_TABLE_NAME = "Не задо название таблицы для ";
     private static final String THERE_IS_NOT_PK = "Не задан первичный ключ";
     private static final String WHERE_CAUSE = "WHERE ";
@@ -42,6 +43,7 @@ public class SQLProcessor implements ISQLProcessor {
     private static final MessageFormat TO_DATE = new MessageFormat("TO_DATE(''{0}-{1}-{2}'', ''YYYY-MM-DD'')");
 
     private DataSource source;
+    private Map<String, String> queryMap = new HashMap<>();
 
     /**
      * Базовый конструктор
@@ -50,6 +52,19 @@ public class SQLProcessor implements ISQLProcessor {
      */
     public SQLProcessor(DataSource source) {
         this.source = source;
+    }
+
+
+    /**
+     * Инициализировать профессор информацией об SQL запросах
+     *
+     * @param queries Список SQL запросов
+     */
+    public void initialize(MetaQueries queries) {
+        List<MetaQueries.MetaQuery> metaQueries = queries.getQueries();
+        for (MetaQueries.MetaQuery query : metaQueries) {
+            queryMap.put(query.getName(), query.getQuery());
+        }
     }
 
     /**
@@ -77,7 +92,7 @@ public class SQLProcessor implements ISQLProcessor {
         Field primaryKeyField = getPrimaryKeyField(object.getClass());
         Object property = PropertyUtils.getProperty(object, primaryKeyField.getName());
         if (property == null) {
-            throw new Exception("Не задо значение первичного ключа");
+            throw new Exception(PRIMARY_KEY_IS_NOT_DEFINED);
         }
 
         Column column = primaryKeyField.getAnnotation(Column.class);
@@ -117,9 +132,9 @@ public class SQLProcessor implements ISQLProcessor {
     public <T> int update(T object) throws Exception {
         checkNull(object);
         Field primaryKeyField = getPrimaryKeyField(object.getClass());
-        Long idValue = (Long)PropertyUtils.getProperty(object, primaryKeyField.getName());
+        Long idValue = (Long) PropertyUtils.getProperty(object, primaryKeyField.getName());
         if (idValue == null) {
-            throw new Exception("Не задо значение первичного ключа");
+            throw new Exception(PRIMARY_KEY_IS_NOT_DEFINED);
         }
         String tableName = getTableName(object.getClass());
         String setValuePairs = generateSetValuePairs(object);
@@ -164,13 +179,17 @@ public class SQLProcessor implements ISQLProcessor {
         return simpleSelect(clazz, whereClause);
     }
 
-    public <T> List<T> executeSelect(Class<T> clazz, String queryPattern, Object[] arg) throws Exception {
-        String[] sqlArg = new String[arg.length];
-        for (int i = 0; i < arg.length; i++) {
-            sqlArg[i] = convertToSQLValue(arg[i]);
+    public <T> List<T> executeSelect(Class<T> clazz, String queryName, Map<String, Object> parameters) throws Exception {
+
+        String queryTemplate = queryMap.get(queryName);
+        if (StringUtils.isEmpty(queryTemplate)) {
+            throw new Exception(QUERY_NAME_CAN_NOT_BE_EMPTY);
         }
-        MessageFormat format = new MessageFormat(queryPattern);
-        String query = format.format(sqlArg);
+        HashMap<String, String> sqlValue = new HashMap<>();
+        parameters.forEach((k, v) -> sqlValue.put(k, convertToSQLValue(v)));
+
+        StrSubstitutor sub = new StrSubstitutor(sqlValue);
+        String query = sub.replace(queryTemplate);
 
         List<T> output = execute(s -> {
             s.execute(query);
@@ -193,11 +212,11 @@ public class SQLProcessor implements ISQLProcessor {
                 if (columnDesc != null) {
                     Class<?> type = field.getType();
                     Object value;
-                    if (type.isEnum()){
+                    if (type.isEnum()) {
                         String enumAsString = resultSet.getObject(columnDesc.name(), String.class);
-                        Class<? extends Enum> enumClass = (Class<? extends Enum>)type;
+                        Class<? extends Enum> enumClass = (Class<? extends Enum>) type;
                         value = Enum.valueOf(enumClass, enumAsString);
-                    }else {
+                    } else {
                         value = resultSet.getObject(columnDesc.name(), type);
                     }
                     PropertyUtils.setProperty(instance, field.getName(), value);
@@ -248,7 +267,7 @@ public class SQLProcessor implements ISQLProcessor {
      * Получить поле, хранящее первичный ключ
      *
      * @param clazz Мета описание класса
-     * @param <T>    Тип сущности
+     * @param <T>   Тип сущности
      * @return Поле, хранящее первичный ключ
      * @throws Exception Не задан первичный ключ
      */
@@ -385,10 +404,10 @@ public class SQLProcessor implements ISQLProcessor {
             result = TO_DATE.format(args);
         } else if (value instanceof Number) {
             result = value.toString();
-        } else if (value instanceof Enum){
+        } else if (value instanceof Enum) {
             Enum e = (Enum) value;
             result = MARKS + e.name() + MARKS;
-        }else {
+        } else {
             result = NULL_VALUE;
         }
         return result;

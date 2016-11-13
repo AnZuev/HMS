@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<queries>
+    <queryDesc name="freeRoomSelect">
+        <description>Get lis of free rooms</description>
+        <query>
+            <![CDATA[
+                SELECT * FROM ROOMS R
+		        JOIN ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ID
+		        WHERE R.HOTEL_ID = ${HOTEL_ID}
+		        AND R.ROOM_TYPE_ID = ${ROOM_TYPE_ID}
+		        AND RT.STATUS <> 'DELETED'
+		        AND R.ID NOT IN (
+		        	SELECT ROOM_ID FROM ORDERS ORD
+		        	WHERE ORD.HOTEL_ID = ${HOTEL_ID}
+		        	AND ${START_DATE} < ORD.FINISH_DATE
+		        	AND ${FINISH_DATE} > ORD.START_DATE
+		        )
+            ]]>
+        </query>
+    </queryDesc>
+    <queryDesc name="checkIsRoomFree">
+        <description>Check whether room is free. It will return room if room is not free</description>
+        <query>
+            <![CDATA[
+                SELECT * FROM ORDERS ORD
+		        WHERE ORD.HOTEL_ID = ${HOTEL_ID}
+		        AND ORD.ROOM_ID = ${ROOM_ID}
+		        AND ${START_DATE} < ORD.FINISH_DATE
+		        AND ${FINISH_DATE} > ORD.START_DATE
+            ]]>
+        </query>
+    </queryDesc>
+    <queryDesc name="SELECT_CLIENT_ORDERS">
+        <description>Get all client's orders</description>
+        <query>
+            <![CDATA[
+		        SELECT
+		        	ORD.ID ID,
+		        	ORD.START_DATE START_DATE,
+		        	ORD.FINISH_DATE FINISH_DATE,
+		        	ORD.COST COST, ORD.STATUS STATUS,
+		        	HOT.NAME NAME,
+		        	R.ROOM_NUMBER ROOM_NUMBER
+		        FROM ORDERS ORD
+		        JOIN HOTELS HOT ON ORD.HOTEL_ID = HOT.ID
+		        JOIN ROOMS R ON ORD.ROOM_ID = R.ID
+		        WHERE ORD.CLIENT_ID = ${CLIENT_ID}
+            ]]>
+        </query>
+    </queryDesc>
+    <queryDesc name="SELECT_ORDERS_IN_HOTEL">
+        <description>Get list of orders in hotel</description>
+        <query>
+            <![CDATA[
+		        SELECT
+		        	ORD.ID ID,
+		        	ORD.START_DATE START_DATE,
+		        	ORD.FINISH_DATE FINISH_DATE,
+		        	ORD.COST COST,
+		        	ORD.STATUS STATUS,
+		        	R.ROOM_NUMBER ROOM_NUMBER,
+		        	ORD.CLIENT_ID CLIENT_ID,
+		        	CL.FIRST_NAME FIRST_NAME,
+		        	CL.SECOND_NAME SECOND_NAME,
+		        	CL.FATHER_NAME FATHER_NAME,
+		        	CL.PHONE_NUMBER PHONE_NUMBER
+		        FROM ORDERS ORD
+		        JOIN ROOMS R ON ORD.ROOM_ID = R.ID
+		        JOIN CLIENTS CL ON CL.ID = ORD.CLIENT_ID
+		        WHERE ORD.HOTEL_ID = ${HOTEL_ID}
+		        AND ${START_DATE} <= START_DATE
+		        AND FINISH_DATE <= ${FINISH_DATE}
+            ]]>
+        </query>
+    </queryDesc>
+    <queryDesc name="allRoomForManagerSelect">
+        <description>Get list of rooms in hotel</description>
+        <query>
+            <![CDATA[
+		        SELECT
+		        	R.ID,
+		        	R.ROOM_NUMBER,
+		        	R.HOTEL_ID,
+		        	R.ROOM_TYPE_ID,
+		        	RT.TYPE_NAME,
+		        	RT.COST,
+		        	R.STATUS
+		        FROM ROOMS R
+		        JOIN ROOM_TYPES RT ON R.ROOM_TYPE_ID = RT.ID
+		        WHERE R.HOTEL_ID = ${HOTEL_ID}
+            ]]>
+        </query>
+    </queryDesc>
+</queries>

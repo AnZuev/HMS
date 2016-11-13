@@ -2,6 +2,7 @@ package ru.innopolis.dao.processor;
 
 import java.sql.ResultSet;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Создано: Денис
@@ -79,13 +80,13 @@ public interface ISQLProcessor {
     /**
      * Выполнить произвольную команду на выборку
      * @param clazz Класс, который представляет результат выборки
-     * @param query Запрос
-     * @param arg Аргументы для запроса
+     * @param queryName Название запроса
+     * @param parameters Аргументы для запроса
      * @param <T> Тип результата
      * @return Список сущностей указанного типа
      * @throws Exception Что-то пошло не так
      */
-    <T> List<T> executeSelect(Class<T> clazz, String query, Object[] arg) throws Exception;
+    <T> List<T> executeSelect(Class<T> clazz, String queryName, Map<String, Object> parameters) throws Exception;
 
     /**
      * Получить сущность по ИД
