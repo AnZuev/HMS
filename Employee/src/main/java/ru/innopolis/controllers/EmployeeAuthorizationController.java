@@ -84,7 +84,7 @@ public class EmployeeAuthorizationController extends BaseRestController {
         return model;
     }
 
-    @GetMapping("/auth/logout")
+    @PostMapping("/auth/logout")
     public ResponseEntity logOut(HttpSession session){
         session.invalidate();
         return new ResponseEntity(HttpStatus.OK);

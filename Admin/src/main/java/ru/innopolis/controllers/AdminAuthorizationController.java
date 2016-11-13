@@ -83,7 +83,7 @@ public class AdminAuthorizationController extends BaseRestController {
         return responseModel;
     }
 
-    @GetMapping("/auth/logout")
+    @PostMapping("/auth/logout")
     public ResponseEntity logOut(HttpSession session){
         session.invalidate();
         return new ResponseEntity(HttpStatus.OK);
