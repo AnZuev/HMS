@@ -13,16 +13,16 @@ import javax.validation.constraints.Size;
  */
 public class EditHotelModelRequest {
     @NotNull
-    @Size(min = 1)
+    @Size(min = 1, max = 200)
     private String title;
     @NotNull
-    @Size(min = 10)
+    @Size(min = 10, max = 400)
     private String description;
     @NotNull
     @Pattern(regexp = "^8\\d{10}")
     private String phoneNumber;
     @NotNull
-    @Size(min = 1)
+    @Size(min = 1, max = 200)
     private String address;
     @NotNull
     @Email

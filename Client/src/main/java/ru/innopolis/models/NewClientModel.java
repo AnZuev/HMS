@@ -1,6 +1,5 @@
 package ru.innopolis.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.Email;
 
 import javax.validation.constraints.NotNull;
@@ -25,6 +24,7 @@ public class NewClientModel {
     @Size(min=1, max=50)
     private String fatherName;
 
+    @NotNull
     @Email
     private String mail;
 
