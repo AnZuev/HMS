@@ -62,4 +62,8 @@ public class HotelDAOService implements IHotelDAOService {
         roomType.setStatus(RoomTypeStatus.DELETED);
         sqlProcessor.update(roomType);
     }
+
+    public Hotel getHotelInformation(long hotelID) throws Exception {
+        return sqlProcessor.getByID(Hotel.class, hotelID);
+    }
 }

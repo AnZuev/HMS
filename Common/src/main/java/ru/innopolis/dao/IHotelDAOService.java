@@ -53,4 +53,12 @@ public interface IHotelDAOService {
      * @throws Exception Что-то пошло не так
      */
     void deleteRoomType(long roomTypeId, long hotelId) throws Exception;
+
+    /**
+     * Получить информацию об отеле
+     * @param hotelID ИД отеля
+     * @return Отель, если существует. В противном случае null.
+     * @throws Exception Что-то пошло не так
+     */
+    Hotel getHotelInformation(long hotelID) throws Exception;
 }
