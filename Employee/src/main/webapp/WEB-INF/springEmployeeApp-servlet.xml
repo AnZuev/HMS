@@ -12,6 +12,8 @@
 
     <mvc:annotation-driven/>
 
+    <mvc:resources mapping="/resources/static/**" location="WEB-INF/static/" />
+
     <beans:bean id="messageSource"
                 class="org.springframework.context.support.ResourceBundleMessageSource">
         <beans:property name="basename" value="messages" />
