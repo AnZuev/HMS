@@ -14,6 +14,7 @@
 		        	WHERE ORD.HOTEL_ID = ${HOTEL_ID}
 		        	AND ${START_DATE} < ORD.FINISH_DATE
 		        	AND ${FINISH_DATE} > ORD.START_DATE
+		        	AND ORD.STATUS <> 'CANCELED'
 		        )
             ]]>
         </query>
@@ -27,6 +28,7 @@
 		        AND ORD.ROOM_ID = ${ROOM_ID}
 		        AND ${START_DATE} < ORD.FINISH_DATE
 		        AND ${FINISH_DATE} > ORD.START_DATE
+		        AND ORD.STATUS <> 'CANCELED'
             ]]>
         </query>
     </queryDesc>
