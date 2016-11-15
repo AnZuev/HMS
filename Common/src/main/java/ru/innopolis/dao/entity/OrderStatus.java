@@ -8,5 +8,5 @@ package ru.innopolis.dao.entity;
 public enum OrderStatus {
     BOOKED,
     CANCELED,
-    PAYED
+    PAID
 }

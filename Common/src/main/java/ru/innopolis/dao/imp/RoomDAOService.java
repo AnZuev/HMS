@@ -130,13 +130,13 @@ public class RoomDAOService implements IRoomDAOService {
         if (order == null || hotelID != order.getHotelId()) {
             throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE, UserErrorCode.NOT_FOUND);
         }
-        if (order.getStatus() == OrderStatus.PAYED) {
+        if (order.getStatus() == OrderStatus.PAID) {
             throw new UserException(ORDER_IS_PAID_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         if (order.getStatus() == OrderStatus.CANCELED) {
             throw new UserException(ORDER_IS_CANCELED_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
-        order.setStatus(OrderStatus.PAYED);
+        order.setStatus(OrderStatus.PAID);
         sqlProcessor.update(order);
     }
 
@@ -145,7 +145,7 @@ public class RoomDAOService implements IRoomDAOService {
         if (order == null || hotelID != order.getHotelId()) {
             throw new UserException(ORDER_IS_NOT_FOUND_MESSAGE, UserErrorCode.NOT_FOUND);
         }
-        if (order.getStatus() == OrderStatus.PAYED) {
+        if (order.getStatus() == OrderStatus.PAID) {
             throw new UserException(PAID_ORDER_CAN_NOT_BE_CANCELED_MESSAGE, UserErrorCode.BAD_PARAMETERS);
         }
         if (order.getStatus() == OrderStatus.CANCELED) {
