@@ -19,6 +19,7 @@ import ru.innopolis.models.NewClientModel;
 import ru.innopolis.models.RegistrationResponseModel;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -42,20 +43,21 @@ public class RegistrationController extends BaseRestController {
     /**
      * Зарегистрировать нового пользователя в системе
      *
-     * @param newUser       Новый пользователь
-     * @param errors Результат валидации
-     * @param request       Запрос от клиента
+     * @param newUser Новый пользователь
+     * @param errors  Результат валидации
+     * @param session Сессия клиента
      * @return Ответ, содержащий статус действия
      */
     @PostMapping("/auth/signUp")
-    public ResponseEntity createUser(@Valid @RequestBody NewClientModel newUser, Errors errors, HttpServletRequest request) {
+    public ResponseEntity createUser(@Valid @RequestBody NewClientModel newUser, Errors errors, HttpSession session) {
         ResponseEntity responseEntity = getValidationErrorResponse(errors);
         if (responseEntity == null) {
             try {
                 Client client = buildNewClient(newUser);
                 IClientDAOService service = DAOServiceFactory.getInstance().createService(IClientDAOService.class);
                 client = service.addNewClient(client);
-                request.getSession().setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);
+                session.setAttribute(AuthorizationConstant.AUTHORIZATION_KEY, Boolean.TRUE);
+                session.setAttribute(AuthorizationConstant.CLIENT_KEY, client);
                 RegistrationResponseModel responseModel = buildResponseModel(client);
                 responseEntity = new ResponseEntity<>(responseModel, HttpStatus.OK);
             } catch (UserException e) {

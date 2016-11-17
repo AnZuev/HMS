@@ -11,6 +11,7 @@ public class RegistrationResponseModel {
     private String firstName;
     private String secondName;
     private String fatherName;
+    private String phoneNumber;
 
     public Long getId() {
         return id;
@@ -42,5 +43,13 @@ public class RegistrationResponseModel {
 
     public void setFatherName(String fatherName) {
         this.fatherName = fatherName;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
 }
