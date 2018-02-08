@@ -1,14 +1,9 @@
-# Example YAML to get you started quickly.
-# Be aware that YAML has indentation based scoping.
-# Code completion support is available so start typing for available options.
 swagger: '2.0'
-
-# This is your document metadata
 info:
-  version: "1.0.0"
+  version: 1.0.0
   title: dmdProjectAPI
 host: blablabla.ru
-tags: 
+tags:
   - name: auth
     description: requests for authorization
   - name: private
@@ -17,9 +12,8 @@ tags:
     description: requests available for all users
 schemes:
   - http
-# Describe your paths here
-
 paths:
+
   /auth/login:
     post:
       description: Login
@@ -27,23 +21,35 @@ paths:
         - name: authData
           in: body
           description: data for authorization
-          schema: 
-            $ref: '#/definitions/UserAuthData'
-      tags: 
+          schema:
+            $ref: '#/definitions/AuthorizationRequestModel'
+      tags:
         - auth
       responses:
-        200:
+        '200':
           description: Login and password are correct
           schema:
-            $ref: '#/definitions/User'
-        401:
+            $ref: '#/definitions/Staff'
+        '401':
           description: Login or password are incorrect
           schema:
             $ref: '#/definitions/Error'
-        500:
+        '500':
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
+  /auth/logout:
+    post:
+      description: Logout
+      tags:
+        - auth
+      responses:
+        '200':
+          description: Successful logout
+        '401':
+          description: 'Unauthorized, you can''t logout'
+          
+          
   /auth/signUp:
     post:
       description: sign up
@@ -52,7 +58,7 @@ paths:
           in: body
           description: The user JSON to sign up
           schema:
-            $ref: '#/definitions/UserDataSignUpModel'
+            $ref: '#/definitions/NewClientModel'
           required: true
       tags: 
         - auth
@@ -60,7 +66,7 @@ paths:
         200:
           description: User has been created
           schema:
-            $ref: '#/definitions/User'
+            $ref: '#/definitions/Client'
         400:
           description: Ошибка валидации данных пользователя
           schema:
@@ -69,48 +75,63 @@ paths:
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
-          
+            
+  /hotels/new:
+    put:
+      description: create new hotel
+      parameters:
+        - name: newHotel
+          in: body
+          schema:
+            $ref: '#/definitions/CreateHotelModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful creation
+        '203':
+          description: Access denied. Only for admins.
+        '500':
+          description: Common error
   /hotels/full:
     get:
       description: get all hotels with description
       tags:
-          - public
+        - public
       responses:
-          # Response code
-        200:
-          description: Everything ok, user has recieved all hotels
+        '200':
+          description: 'Everything ok, user has recieved all hotels'
           schema:
             type: array
             items:
-              $ref: '#/definitions/HotelModelFull'
-        204:
+              $ref: '#/definitions/HotelModelResponse'
+        '204':
           description: No hotels found
-        500:
-          description: Somesthing bad happend on backend;
+        '500':
+          description: Somesthing bad happend on backend
           schema:
             $ref: '#/definitions/Error'
             
   /hotels/short:
     get:
-      description: get all hotels without description
+      description: get all hotels with description
       tags:
-          - public
+        - public
       responses:
-          # Response code
-        200:
-          description: Everything ok, user has recieved all hotels
+        '200':
+          description: 'Everything ok, user has recieved all hotels'
           schema:
             type: array
             items:
-              $ref: '#/definitions/HotelModelShort'
-        204:
+              $ref: '#/definitions/HotelModelResponse'
+        '204':
           description: No hotels found
-        500:
-          description: Somesthing bad happend on backend;
+        '500':
+          description: Somesthing bad happend on backend
           schema:
             $ref: '#/definitions/Error'
             
-  /hotel/{hotelId}/rooms/getTypes/full:
+  '/hotel/{hotelId}/rooms/getTypes/full':
     get:
       description: get all room types of hotel with description
       tags:
@@ -122,21 +143,20 @@ paths:
           required: true
           description: hotel id
       responses:
-        # Response code
-        200:
-          description: Everything ok, user has recieved all room types
+        '200':
+          description: 'Everything ok, user has recieved all room types'
           schema:
             type: array
             items:
-              $ref: '#/definitions/RoomTypeFull'
-        204:
+              $ref: '#/definitions/RoomTypeResponseModel'
+        '204':
           description: No hotels found
-        500:
+        '500':
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
             
-  /hotel/{hotelId}/rooms/getTypes/short:
+  '/hotel/{hotelId}/rooms/getTypes/short':
     get:
       description: get all room types of hotel without description
       tags:
@@ -148,21 +168,104 @@ paths:
           required: true
           description: hotel id
       responses:
-        # Response code
-        200:
-          description: Everything ok, user has recieved all room types
+        '200':
+          description: 'Everything ok, user has recieved all room types'
           schema:
             type: array
             items:
-              $ref: '#/definitions/RoomTypeShort'
-        204:
+              $ref: '#/definitions/RoomTypeResponseModel'
+        '204':
           description: No hotels found
-        500:
+        '500':
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
-    
-  /rooms/getAvailableRooms:
+            
+  /private/owner/hotel/update:
+    post:
+      description: create new hotel
+      parameters:
+        - name: newHotel
+          in: body
+          schema:
+            $ref: '#/definitions/CreateHotelModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful creation
+        '203':
+          description: Access denied. Only for admins.
+        '500':
+          description: Common error
+          
+          
+  /hotel/information:
+    get:
+      description: get information about hotel by user
+      
+      tags:
+        - private
+      responses:
+        '200':
+          description: 'Everything ok, user has recieved all room types'
+          schema:
+            items:
+              $ref: '#/definitions/HotelModelResponse'
+              
+        '401':
+          description: 'Unauthorized'
+          
+        '500':
+          description: Common error
+              
+        
+  /private/owner/update:
+    post:
+      description: update info about owner
+      parameters:
+        - name: ownerData
+          in: body
+          description: data for update
+          schema:
+            $ref: '#/definitions/CreateEditHotelOwnerModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful updating
+          schema:
+            $ref: '#/definitions/OwnerIdResponseModel'
+        '201':
+          description: Not found
+            
+        '500':
+          description: Somesthing bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+            
+  /private/owner/all:
+   get:
+      description: get all owners
+      tags:
+        - private
+      responses:
+        '200':
+          description: 'Everything ok, user has recieved all owners'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OwnerResponseModel'
+        '204':
+          description: No owners
+        '500':
+          description: Somesthing bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+          
+          
+  /private/rooms/getAvailableRooms:
     get:
       description: get available rooms for specific period of time
       tags:
@@ -172,17 +275,17 @@ paths:
           in: body
           required: true
           schema:
-            $ref: '#/definitions/RoomSearchModel'
+            $ref: '#/definitions/AvailableRoomRequestModel'
       responses:
-        200:
-          description: Everything ok, user has recieved all available rooms
+        '200':
+          description: 'Everything ok, user has recieved all available rooms'
           schema:
             type: array
             items:
-              $ref: '#/definitions/Room'
-        204:
+              $ref: '#/definitions/AvailableRoomResponseModel'
+        '204':
           description: No rooms available for this date
-        500:
+        '500':
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
@@ -194,26 +297,25 @@ paths:
         - name: EditProfileModel
           in: body
           description: Data for editing
-          schema: 
-            $ref: '#/definitions/EditProfileModel'
-      tags: 
+          schema:
+            $ref: '#/definitions/NewClientModel'
+      tags:
         - private
       responses:
-        200:
+        '200':
           description: Profile has been edited
-        400:
-          description: Ошибка валидации данных клиента
+        '400':
+          description: Invalid data
           schema:
             $ref: '#/definitions/Error'
-        401:
-          description: Unauthorized, you can't edit profile
+        '401':
+          description: 'Unauthorized, you can''t edit profile'
           schema:
             $ref: '#/definitions/Error'
-        500:
+        '500':
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
-            
   /private/rooms/book:
     put:
       description: book room
@@ -221,45 +323,54 @@ paths:
         - name: bookItem
           in: body
           description: data for booking
-          schema: 
-            $ref: '#/definitions/RoomBookModel'
-      tags: 
+          schema:
+            $ref: '#/definitions/BookModelRequest'
+      tags:
         - private
       responses:
-        200:
+        '200':
           description: Room has been successfully booked. State - booked
-        401:
-          description: Unauthorized, you can't book room if you are not authorized
+        '401':
+          description: 'Unauthorized, you can''t book room if you are not authorized'
           schema:
             $ref: '#/definitions/Error'
-        500:
+        '500':
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
-           
+            
+            
   /private/orders:
     get:
       description: Get all orders with 'to' field greater than now
-      tags: 
+      parameters:
+        - name: requestDates
+          in: body
+          description: data for searching
+          schema:
+            $ref: '#/definitions/OrderListModelRequest'
+            
+      tags:
         - private
       responses:
-        200:
+        '200':
           description: Array of orders
           schema:
             type: array
             items:
-              $ref: '#/definitions/Order'
-        204: 
+              $ref: '#/definitions/OrderedRoomResponseModel'
+        '204':
           description: No order's found
-        401: 
+        '401':
           description: Your are not allowed to see your orders while you are not authorized
           schema:
             $ref: '#/definitions/Error'
-        500:
-          description: Серверная ошибка(если в описании указано, что это необработанная ошибка - срочно сообщаем разработчику)
+        '500':
+          description: >-
+            Серверная ошибка(если в описании указано, что это необработанная
+            ошибка - срочно сообщаем разработчику)
           schema:
             $ref: '#/definitions/Error'
-            
   /private/orders/cancel:
     post:
       description: cancel order
@@ -267,31 +378,242 @@ paths:
         - name: CancelOrderItem
           in: body
           description: Data for canceling
-          schema: 
-            $ref: '#/definitions/CancelOrderItem'
+          schema:
+            $ref: '#/definitions/CancelBookRequestModel'
       tags:
         - private
       responses:
-        200:
+        '200':
           description: Order is canceled. State - canceled
-        400:
-          description: It isn't available to cancel not for your orders or order is already in state paid
+        '400':
+          description: >-
+            It isn't available to cancel not for your orders or order is already
+            in state paid
           schema:
             $ref: '#/definitions/Error'
-        401:
-          description: Unauthorized, you can't cancel order if you are not authorized
+        '401':
+          description: 'Unauthorized, you can''t cancel order if you are not authorized'
           schema:
             $ref: '#/definitions/Error'
-        404:
+        '404':
           description: No order found
           schema:
             $ref: '#/definitions/Error'
-        500:
+        '500':
           description: Somesthing bad happend on backend;
           schema:
             $ref: '#/definitions/Error'
-
-
+            
+            
+            
+  /private/owner/employees/update:
+    post:
+      description: update info about employee
+      parameters:
+        - name: empData
+          in: body
+          description: data for update
+          schema:
+            $ref: '#/definitions/CreateEditEmployeeModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful updating
+          schema:
+            $ref: '#/definitions/EmployeeIdResponseModel'
+        '201':
+          description: Not found
+          
+        '403':
+          description: Invalid data
+            
+        '500':
+          description: Something bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /private/owner/employees/all:
+    get:
+      description: get all employees
+      tags:
+        - private
+      responses:
+        '200':
+          description: 'Everything ok, user has recieved everything'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeResponseModel'
+        '204':
+          description: No employees
+        '500':
+          description: Somesthing bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+            
+  /private/owner/employees/delete:
+    post:
+      description: update info about employee
+      parameters:
+        - name: empData
+          in: body
+          description: id to delete
+          schema:
+            $ref: '#/definitions/DeleteEmployeeModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful deleting
+          schema:
+            $ref: '#/definitions/EmployeeIdResponseModel'
+        '201':
+          description: Not found
+            
+        '500':
+          description: Something bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+            
+  /private/room/update:
+    post:
+      description: update info about a room
+      parameters:
+        - name: roomData
+          in: body
+          description: data for update
+          schema:
+            $ref: '#/definitions/RoomModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful updating
+        '201':
+          description: Not found
+          
+        '403':
+          description: Invalid data
+            
+        '500':
+          description: Something bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /private/room/all:
+    get:
+      description: get all employees
+      tags:
+        - private
+      responses:
+        '200':
+          description: 'Everything ok, user has recieved everything'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RoomModelResponse'
+        '204':
+          description: No rooms ever
+        '500':
+          description: Somesthing bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+  
+  /private/order/pay:
+    post:
+      description: payment request
+      parameters:
+        - name: payData
+          in: body
+          description: data for payment
+          schema:
+            $ref: '#/definitions/OrderIDModelRequest'
+      responses:     
+        200:
+          description: Successful payment
+        '403':
+            description: Invalid data
+        '500':
+            description: Somesthing bad happend on backend
+            schema:
+              $ref: '#/definitions/Error'
+        
+    
+  
+  /private/roomtype/update:
+    post:
+      description: update info about roomtype
+      parameters:
+        - name: roomtypeData
+          in: body
+          description: data for update
+          schema:
+            $ref: '#/definitions/RoomTypeModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful updating
+          schema:
+            $ref: '#/definitions/EmployeeIdResponseModel'
+        '201':
+          description: Not found
+          
+        '403':
+          description: Invalid data
+            
+        '500':
+          description: Something bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /private/roomtype/all:
+    get:
+      description: get all roomtypes
+      tags:
+        - private
+      responses:
+        '200':
+          description: 'Everything ok, user has recieved everything'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeRoomTypeResponseModel'
+        '204':
+          description: No roomtypes
+        '500':
+          description: Somesthing bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+            
+  /private/roomtype/delete:
+    post:
+      description: update info about roomtype
+      parameters:
+        - name: roomtypeData
+          in: body
+          description: id to delete
+          schema:
+            $ref: '#/definitions/DeleteRoomTypeModelRequest'
+      tags:
+        - private
+      responses:
+        '200':
+          description: Successful deleting
+        '201':
+          description: Not found
+            
+        '500':
+          description: Something bad happend on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+            
+  
 definitions:
   Error:
     type: object
@@ -301,7 +623,7 @@ definitions:
         items:
           type: object
           properties:
-            field: 
+            field:
               type: string
             message:
               type: string
@@ -320,33 +642,95 @@ definitions:
         type: string
       id:
         type: integer
-  UserDataSignUpModel:
+  Staff:
     type: object
     properties:
+      id:
+        type: integer
       firstName:
         type: string
       secondName:
         type: string
       fatherName:
         type: string
+      email:
+        type: string
+      hash_password:
+        type: string
+        
+        
+  CreateEditHotelOwnerModelRequest:
+    type: object
+    properties:
+      id:
+        type: integer
+      firstName:
+        type: string
+      secondName:
+        type: string
+      fatherName:
+        type: string
+      email:
+        type: string
+      hash_password:
+        type: string
+      hotel_id:
+        type: integer
+        
+        
+  OwnerResponseModel:
+    type: object
+    properties:
+      id:
+        type: integer
+      firstName:
+        type: string
+      secondName:
+        type: string
+      fatherName:
+        type: string
+      email:
+        type: string
+      hotelId:
+        type: integer
+      hotelTitle:
+        type: string
+        
+        
+  CreateEditEmployeeModelRequest:
+    type: object
+    properties:
+      id:
+        type: integer
+      firstName:
+        type: string
+      secondName:
+        type: string
+      fatherName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+  
+        
+  OwnerIdResponseModel:
+    type: object
+    properties:
+      ownerID:
+        type: integer
+  
+  AuthorizationRequestModel:
+    type: object
+    properties:
       mail:
         type: string
       password:
         type: string
-      phoneNumber:
-        type: string
-  UserAuthData:
+  NewClientModel:
     type: object
     properties:
       mail:
-          type: string
-      password:
-          type: string
-          
-  EditProfileModel:
-    type: object
-    properties:
-      mail: 
         type: string
       password:
         type: string
@@ -356,9 +740,28 @@ definitions:
         type: string
       fatherName:
         type: string
-      phone:
+      phoneNumber:
         type: string
-  RoomTypeFull:
+        
+        
+  Client:
+    type: object
+    properties:
+      id:
+        type: integer
+      mail:
+        type: string
+      password:
+        type: string
+      firstName:
+        type: string
+      lastName:
+        type: string
+      fatherName:
+        type: string
+      phoneNumber:
+        type: string
+  RoomTypeResponseModel:
     type: object
     properties:
       id:
@@ -370,7 +773,7 @@ definitions:
       description:
         type: string
         description: Description of room
-      photo:
+      photoPath:
         type: string
         description: url for getting photo
       title:
@@ -384,9 +787,29 @@ definitions:
         description: id of room type
       title:
         type: string
-        description: type of room      
-        
-  HotelModelFull:
+        description: type of room
+  Hotel:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of hotel
+      name:
+        type: string
+        description: title of hotel
+      description:
+        type: string
+        description: description of hotel
+      phone_number:
+        type: string
+        description: phone number of hotel
+      mail:
+        type: string
+        description: mail of hotel
+      address:
+        type: string
+        description: address of hotel
+  HotelModelResponse:
     type: object
     properties:
       id:
@@ -398,7 +821,7 @@ definitions:
       description:
         type: string
         description: description of hotel
-      phone:
+      phone_number:
         type: string
         description: phone number of hotel
       mail:
@@ -407,27 +830,53 @@ definitions:
       address:
         type: string
         description: address of hotel
-        
-  HotelModelShort:
+  CreateHotelModelRequest:
     type: object
     properties:
-      id:
-        type: integer
-        description: id of hotel
       title:
         type: string
         description: title of hotel
-
-  Room:
+      description:
+        type: string
+        description: description of hotel
+      phone_number:
+        type: string
+        description: phone number of hotel
+      mail:
+        type: string
+        description: mail of hotel
+      address:
+        type: string
+        description: address of hotel
+  EditHotelModelRequest:
     type: object
     properties:
-      type:
+      title:
+        type: string
+        description: title of hotel
+      description:
+        type: string
+        description: description of hotel
+      phone_number:
+        type: string
+        description: phone number of hotel
+      mail:
+        type: string
+        description: mail of hotel
+      address:
+        type: string
+        description: address of hotel
+  AvailableRoomResponseModel:
+    type: object
+    properties:
+      typeID:
         type: string
       roomNumber:
         type: integer
       id:
         type: integer
-  RoomSearchModel:
+  
+  AvailableRoomRequestModel:
     type: object
     properties:
       from:
@@ -436,14 +885,13 @@ definitions:
       to:
         type: string
         description: Date when user is going to leave
-      roomType:
+      roomTypeId:
         type: integer
-        description: Id of room type. If specified - use it to filter, otherwise ignore it
+        description: 'Id of room type. If specified - use it to filter, otherwise ignore it'
       hotelId:
         type: integer
         description: id of hotel
-        
-  RoomBookModel:
+  BookModelRequest:
     type: object
     properties:
       from:
@@ -455,33 +903,183 @@ definitions:
       roomId:
         type: integer
         description: id of room to be booked
-  Order:
+        
+        
+        
+  OrderedRoomResponseModel:
     type: object
     properties:
       id:
         type: integer
-        description: id of order
-      hotelTitle:
-        type: string
-        description: title of hotel
+        description: id of an order
+      hotelId:
+        type: integer
+        description: id of a hotel
       roomNumber:
         type: integer
-        description: roomNumber 
+        description: id of a room
       from:
         type: string
+        format: date-time
+        description: start of a billing period
       to:
         type: string
-      cost:
-        type: integer
-        description: price for room during this period
-      state:
+        format: date-time
+        description: end of a billing period
+      status:
         type: string
-        description: booked, paid, canceled
-  CancelOrderItem:
+        enum:
+          - BOOKED
+          - CANCELLED
+          - PAID
+      cost:
+        type: number
+        format: double
+        description: price for a room during this period
+  
+  CancelBookRequestModel:
     type: object
     properties:
       orderId:
         type: integer
         description: id of order
+        
+        
+  EmployeeIdResponseModel:
+    type: object
+    properties:
+      employeeID:
+        type: integer
+        
+  EmployeeResponseModel:
+    type: object
+    properties:
+      id:
+        type: integer
+      firstName:
+        type: string
+      secondName:
+        type: string
+      fatherName:
+        type: string
+      email:
+        type: string
+        
+  DeleteEmployeeModelRequest:
+    type: object
+    properties:
+      employeeID:
+        type: integer
+        
+        
+  RoomModelRequest:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of an order
+      typeID:
+        type: integer
+        description: id of a hotel
+      roomNumber:
+        type: integer
+        description: id of a room
+      status:
+        type: string
+        enum:
+          - BOOKED
+          - CANCELLED
+          - PAID
+          
+          
+  RoomModelResponse:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of an order
+      TypeId:
+        type: integer
+      typeName:
+        type: string
+      roomNumber:
+        type: integer
+        description: id of a room
   
-      
+      status:
+        type: string
+        enum:
+          - BOOKED
+          - CANCELLED
+          - PAID
+      cost:
+        type: number
+        format: double
+        description: price for a room during this period
+        
+        
+  OrderIDModelRequest:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of an order
+        
+        
+  OrderListModelRequest:
+    type: object
+    properties:
+      from:
+        type: string
+      to:
+        type: string
+        
+        
+  RoomTypeModelRequest:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of room type
+      name:
+        type: string
+      description:
+        type: string
+        description: Description of room
+      photoPath:
+        type: string
+        description: url for getting photo
+      cost:
+        type: number
+        format: double
+        
+        
+  DeleteRoomTypeModelRequest:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of room type
+        
+  EmployeeRoomTypeResponseModel:
+    type: object
+    properties:
+      id:
+        type: integer
+        description: id of room type
+      name:
+        type: string
+      description:
+        type: string
+        description: Description of room
+      photoPath:
+        type: string
+        description: url for getting photo
+      cost:
+        type: number
+        format: double
+  
+
+  
+  
+  
