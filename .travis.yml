@@ -4,8 +4,8 @@ jdk: oraclejdk8
 addons:
     sonarcloud:
         organization: sonyareznikova-github
-            token:
-                - secure: "MLLXmVCwn1NstFb0x7mccOqqiLCR9p1nQjza70yjO7rV97vHAEu1W9fNhEhlE3I6dCzIaJgMtJ+rd3mtOqi4wO2O9GL5LrSvtVQuAvq5+2WW4u+ntEpyYC8JVRh7yqeYiVv9WRjai6NBzQ2G9LSJ5ZaOjW/MCfVNlMx2FXdO9rhpCRQ+rN2OhD/R6A1kymCQmyDpmkiua0j3UNs6a+iCv5+wKa3G4QY1gj1paFpJ+Q4ZH+fVaJrJfPpWhTbp6Vl6BberpCaGzzZwcqbBWnUeZU66L5/1RV91yut9mTF8dt8vEh30PF1w4HFYB8pgDcf5KoJ2Z5faqURqmi8lWfJ/M2V+arBlPau0ozJbStS6FtI25eBjE6BlmzWpYkPfJfUHptlu/zP9KllrHS/O33MWS5ciUyww04S7fgWltncfdrn9oz080xjeoMWb5mBoMlqSy0iTWtM1qt6oO4nVBQLq76ekdtXyJqUxo+Icy33k7LgTcNtbysVlhG/OBRdKLdAFGR9b97v3TEH1jmfI/XRKYVDSXSCtC0M0JfR/3ZXBszTfqmIK7HS4q2kKz01eMgxOpBWWKUv3/eHzy4DXBzRb4W0BkistzrXiL1avl8InjN5MRORs5wdL+ejTROvFA8p3xG3hNP7o7mRd6IAQwHuLn/nXOU26fVTMJ9DNxec+/Kw="
+        token:
+            secure: "MLLXmVCwn1NstFb0x7mccOqqiLCR9p1nQjza70yjO7rV97vHAEu1W9fNhEhlE3I6dCzIaJgMtJ+rd3mtOqi4wO2O9GL5LrSvtVQuAvq5+2WW4u+ntEpyYC8JVRh7yqeYiVv9WRjai6NBzQ2G9LSJ5ZaOjW/MCfVNlMx2FXdO9rhpCRQ+rN2OhD/R6A1kymCQmyDpmkiua0j3UNs6a+iCv5+wKa3G4QY1gj1paFpJ+Q4ZH+fVaJrJfPpWhTbp6Vl6BberpCaGzzZwcqbBWnUeZU66L5/1RV91yut9mTF8dt8vEh30PF1w4HFYB8pgDcf5KoJ2Z5faqURqmi8lWfJ/M2V+arBlPau0ozJbStS6FtI25eBjE6BlmzWpYkPfJfUHptlu/zP9KllrHS/O33MWS5ciUyww04S7fgWltncfdrn9oz080xjeoMWb5mBoMlqSy0iTWtM1qt6oO4nVBQLq76ekdtXyJqUxo+Icy33k7LgTcNtbysVlhG/OBRdKLdAFGR9b97v3TEH1jmfI/XRKYVDSXSCtC0M0JfR/3ZXBszTfqmIK7HS4q2kKz01eMgxOpBWWKUv3/eHzy4DXBzRb4W0BkistzrXiL1avl8InjN5MRORs5wdL+ejTROvFA8p3xG3hNP7o7mRd6IAQwHuLn/nXOU26fVTMJ9DNxec+/Kw="
 
 install:
     - mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V
