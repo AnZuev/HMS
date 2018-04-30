@@ -26,6 +26,132 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-junit-adaptor</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-mockito-release-full-1.6.4-full.jar</artifactId>
+            <version>1.6.4</version>
+            <scope>system</scope>
+            <systemPath>/Applications/IntelliJ IDEA.app/Contents/lib/powermock-mockito-release-full-1.6.4-full.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>system</scope>
+            <systemPath>/Applications/IntelliJ IDEA.app/Contents/lib/mockito-all-1.10.19.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.javaassists</groupId>
+            <artifactId>javassist-3.19.0-GA.jar</artifactId>
+            <version>3.19.0</version>
+            <scope>system</scope>
+            <systemPath>/Applications/IntelliJ IDEA.app/Contents/lib/javassist-3.19.0-GA.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis-2.1.jar</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>/Applications/IntelliJ IDEA.app/Contents/lib/objenesis-2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-support-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>/Applications/IntelliJ IDEA.app/Contents/lib/powermock-api-support-1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-reflect-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>/Applications/IntelliJ IDEA.app/Contents/lib/powermock-reflect-1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>/Applications/IntelliJ IDEA.app/Contents/lib/powermock-core-1.6.2.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <!--<scope>test</scope>-->
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/ru.yandex.qatools.allure/allure-bundle -->
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-bundle</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
     </dependencies>
+
+
+    <properties>
+        <aspectj.version>1.7.4</aspectj.version>
+        <allure.version>1.5.4</allure.version>
+    </properties>
+
+    <!--<reporting>-->
+        <!--<excludeDefaults>true</excludeDefaults>-->
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>ru.yandex.qatools.allure</groupId>-->
+                <!--<artifactId>allure-maven-plugin</artifactId>-->
+                <!--<version>2.6</version>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    <!--</reporting>-->
+
+    <build>
+        <!--<plugins>-->
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-compiler-plugin</artifactId>-->
+                <!--<version>3.5.1</version>-->
+                <!--<configuration>-->
+                    <!--<source>1.8</source>-->
+                    <!--<target>1.8</target>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+        <!--<plugins>-->
+
+            <!--<plugin>-->
+                <!--<groupId>org.apache.maven.plugins</groupId>-->
+                <!--<artifactId>maven-surefire-plugin</artifactId>-->
+                <!--<version>2.14</version>-->
+                <!--<configuration>-->
+                    <!--<testFailureIgnore>false</testFailureIgnore>-->
+                    <!--<argLine>-->
+                        <!-- -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/${aspectj.version}/aspectjweaver-${aspectj.version}.jar-->
+                    <!--</argLine>-->
+                    <!--<properties>-->
+                        <!--<property>-->
+                            <!--<name>listener</name>-->
+                            <!--<value>ru.yandex.qatools.allure.junit.AllureRunListener</value>-->
+                        <!--</property>-->
+                    <!--</properties>-->
+                <!--</configuration>-->
+                <!--<dependencies>-->
+                    <!--<dependency>-->
+                        <!--<groupId>org.aspectj</groupId>-->
+                        <!--<artifactId>aspectjweaver</artifactId>-->
+                        <!--<version>1.9.1</version>-->
+                    <!--</dependency>-->
+                <!--</dependencies>-->
+            <!--</plugin>-->
+        <!--</plugins>-->
+    </build>
     
 </project>
