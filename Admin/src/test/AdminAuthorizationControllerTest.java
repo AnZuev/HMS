@@ -1,4 +1,3 @@
-package ru.innopolis.tests;
 import org.junit.runner.RunWith;
 
 import org.powermock.core.classloader.annotations.PrepareForTest;
