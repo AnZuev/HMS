@@ -11,7 +11,6 @@ import ru.innopolis.controllers.AdminAuthorizationController;
 import ru.innopolis.dao.DAOServiceFactory;
 import ru.innopolis.dao.IStaffDAOService;
 import ru.innopolis.dao.entity.Staff;
-import ru.innopolis.controllers.BaseRestController;
 
 import org.junit.*;
 import org.powermock.api.mockito.PowerMockito;
@@ -34,11 +33,11 @@ import static org.junit.Assert.*;
 public class AdminAuthorizationControllerTest {
 
 
-    public DAOServiceFactory dao_mock;
-    public IStaffDAOService service_mock;
+    private DAOServiceFactory dao_mock;
+    private IStaffDAOService service_mock;
 
     @Before
-    public void before() throws Exception
+    public void setUp() throws Exception
     {
 
         PowerMockito.mockStatic(DAOServiceFactory.class);
@@ -113,11 +112,6 @@ public class AdminAuthorizationControllerTest {
 
     }
 
-
-
-
-
-
     @Test
     public void logOut() throws Exception {
         HttpSession session_mock = PowerMockito.mock(HttpSession.class);
@@ -128,6 +122,13 @@ public class AdminAuthorizationControllerTest {
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
+        service_mock = null;
+        dao_mock = null;
     }
 
 }
