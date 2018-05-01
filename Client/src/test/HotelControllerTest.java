@@ -148,32 +148,63 @@ public class HotelControllerTest {
     public void getRoomTypeInformationOne() throws Exception {
 
         MessageSource messageSource = PowerMockito.mock(MessageSource.class);
+
         HotelController testedController = new HotelController(messageSource);
 
 
-        LinkedList<Hotel> list = new LinkedList<>();
-        Hotel h = new Hotel();
-        h.setId((long) 0);
-        h.setName("");
+        LinkedList<RoomType> list = new LinkedList<>();
+        RoomType rt = new RoomType();
+        rt.setId((long) 0);
+        rt.setName("");
 
-        list.add(h);
-        PowerMockito.when(service_mock.getAllHotels()).thenReturn(list);
+        list.add(rt);
+
+        PowerMockito.when(service_mock.getRoomTypesByHotelId(Mockito.anyLong())).thenReturn(list);
 
 
-        ResponseEntity response = testedController.getShortHotelInformation();
+        ResponseEntity response = testedController.getRoomTypeInformation("3");
         assertEquals(response.getStatusCode(), HttpStatus.OK);
         assertThat(response.getBody(), instanceOf(LinkedList.class));
+    }
+    @Test
+    public void getShortRoomTypeInformationEmpty() throws Exception {
+
+        MessageSource messageSource = PowerMockito.mock(MessageSource.class);
+
+        HotelController testedController = new HotelController(messageSource);
+
+        PowerMockito.when(service_mock.getRoomTypesByHotelId(Mockito.anyLong())).thenReturn(new LinkedList<RoomType>());
+
+
+        ResponseEntity response = testedController.getShortRoomTypeInformation("3");
+        assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
+        assertThat(response.getBody(), instanceOf(LinkedList.class));
+
 
     }
 
     @Test
-    public void getRoomTypeInformation() throws Exception {
+    public void getShortRoomTypeInformationOne() throws Exception {
 
-    }
+        MessageSource messageSource = PowerMockito.mock(MessageSource.class);
 
-    @Test
-    public void getShortRoomTypeInformation() throws Exception {
+        HotelController testedController = new HotelController(messageSource);
 
+
+        LinkedList<RoomType> list = new LinkedList<>();
+        RoomType rt = new RoomType();
+        rt.setId((long) 0);
+        rt.setName("");
+
+        list.add(rt);
+
+        PowerMockito.when(service_mock.getRoomTypesByHotelId(Mockito.anyLong())).thenReturn(list);
+
+
+        ResponseEntity response = testedController.getShortRoomTypeInformation("3");
+
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertThat(response.getBody(), instanceOf(LinkedList.class));
     }
 
 }
