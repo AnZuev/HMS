@@ -67,42 +67,42 @@ public class AdminHotelControllerTest {
 
     }
 
-//
-//    @Test
-//    public void getFullHotelInformationEmpty() throws Exception {
-//
-//        MessageSource messageSource = PowerMockito.mock(MessageSource.class);
-//        AdminHotelController testedController = new AdminHotelController(messageSource);
-//        PowerMockito.when(service_mock.getAllHotels()).thenReturn(new LinkedList<Hotel>());
-//
-//
-//        ResponseEntity response = testedController.getFullHotelInformation();
-//        assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
-//        assertThat(response.getBody(), instanceOf(LinkedList.class));
-//
-//
-//    }
-//
-//    @Test
-//    public void getFullHotelInformationOne() throws Exception {
-//
-//        MessageSource messageSource = PowerMockito.mock(MessageSource.class);
-//        AdminHotelController testedController = new AdminHotelController(messageSource);
-//
-//
-//        LinkedList<Hotel> list = new LinkedList<>();
-//        Hotel h = new Hotel();
-//        h.setId((long) 0);
-//        h.setName("");
-//
-//        list.add(h);
-//        PowerMockito.when(service_mock.getAllHotels()).thenReturn(list);
-//
-//
-//        ResponseEntity response = testedController.getFullHotelInformation();
-//        assertEquals(response.getStatusCode(), HttpStatus.OK);
-//        assertThat(response.getBody(), instanceOf(LinkedList.class));
-//
-//    }
+
+    @Test
+    public void getFullHotelInformationEmpty() throws Exception {
+
+        MessageSource messageSource = PowerMockito.mock(MessageSource.class);
+        AdminHotelController testedController = new AdminHotelController(messageSource);
+        PowerMockito.when(service_mock.getAllHotels()).thenReturn(new LinkedList<Hotel>());
+
+
+        ResponseEntity response = testedController.getFullHotelInformation();
+        assertEquals(response.getStatusCode(), HttpStatus.NO_CONTENT);
+        assertThat(response.getBody(), instanceOf(LinkedList.class));
+
+
+    }
+
+    @Test
+    public void getFullHotelInformationOne() throws Exception {
+
+        MessageSource messageSource = PowerMockito.mock(MessageSource.class);
+        AdminHotelController testedController = new AdminHotelController(messageSource);
+
+
+        LinkedList<Hotel> list = new LinkedList<>();
+        Hotel h = new Hotel();
+        h.setId((long) 0);
+        h.setName("");
+
+        list.add(h);
+        PowerMockito.when(service_mock.getAllHotels()).thenReturn(list);
+
+
+        ResponseEntity response = testedController.getFullHotelInformation();
+        assertEquals(response.getStatusCode(), HttpStatus.OK);
+        assertThat(response.getBody(), instanceOf(LinkedList.class));
+
+    }
 
 }

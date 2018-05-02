@@ -1,39 +1,44 @@
+import io.qameta.allure.Description;
+import io.qameta.allure.junit4.DisplayName;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
-import ru.innopolis.controllers.AdminAuthorizationController;
+import ru.innopolis.constants.AuthorizationConstant;
+import ru.innopolis.controllers.EmployeeAuthorizationController;
 import ru.innopolis.dao.DAOServiceFactory;
-import ru.innopolis.dao.IStaffDAOService;
-import ru.innopolis.dao.entity.Staff;
-
-import org.junit.*;
-import org.powermock.api.mockito.PowerMockito;
-import org.mockito.Mockito;
+import ru.innopolis.dao.IEmployeeDAOService;
+import ru.innopolis.dao.entity.Employee;
 import ru.innopolis.models.AuthorizationRequestModel;
 import ru.innopolis.models.AuthorizationResponseModel;
 import ru.innopolis.models.ErrorResponse;
 
 import javax.servlet.http.HttpSession;
 
-
 import static org.hamcrest.CoreMatchers.instanceOf;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 
 /**
- * Created by ananas on 29/04/18.
+ * Created by ananas on 01/05/18.
  */
+
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({DAOServiceFactory.class, IStaffDAOService.class})
-public class AdminAuthorizationControllerTest {
+@PrepareForTest({DAOServiceFactory.class, IEmployeeDAOService.class})
+public class EmployeeAuthorizationControllerTest {
 
 
     private DAOServiceFactory dao_mock;
-    private IStaffDAOService service_mock;
+    private IEmployeeDAOService service_mock;
+    private HttpSession session_mock;
 
     @Before
     public void setUp() throws Exception
@@ -42,27 +47,43 @@ public class AdminAuthorizationControllerTest {
         PowerMockito.mockStatic(DAOServiceFactory.class);
         dao_mock = PowerMockito.mock(DAOServiceFactory.class);
         PowerMockito.when(DAOServiceFactory.getInstance()).thenReturn(dao_mock);
-        service_mock = PowerMockito.mock(IStaffDAOService.class);
-        PowerMockito.when(dao_mock, "createService", IStaffDAOService.class).thenReturn(service_mock);
+        service_mock = PowerMockito.mock(IEmployeeDAOService.class);
+        PowerMockito.when(dao_mock, "createService", IEmployeeDAOService.class).thenReturn(service_mock);
 
+
+        Employee employee = new Employee();
+        employee.setType(Employee.Type.OWNER);
+        employee.setId((long) 0);
+        employee.setHotelId((long) 0);
+
+        session_mock = PowerMockito.mock(HttpSession.class);
+        PowerMockito.when(session_mock.getAttribute(AuthorizationConstant.EMPLOYEE_KEY)).thenReturn(employee);
+    }
+
+    @After
+    public void tearDown() throws Exception {
+
+        service_mock = null;
+        dao_mock = null;
     }
 
 
     @Test
+    @Description("Login admin existing user without any errors")
+    @DisplayName("Human")
     public void authenticateExistingUser() throws Exception {
 
-        Staff staff = new Staff();
-        PowerMockito.when(service_mock.findStaff(Mockito.anyString(), Mockito.anyString())).thenReturn(staff);
+        Employee emp = new Employee();
+        emp.setType(Employee.Type.OWNER);
+        PowerMockito.when(service_mock.findEmployee(Mockito.anyString(), Mockito.anyString())).thenReturn(emp);
 
-
-        HttpSession session_mock = PowerMockito.mock(HttpSession.class);
 
         Errors errors_mock = PowerMockito.mock(Errors.class);
         PowerMockito.when(errors_mock.hasErrors()).thenReturn(Boolean.FALSE);
 
         MessageSource messageSource = PowerMockito.mock(MessageSource.class);
 
-        AdminAuthorizationController tested_controller = new AdminAuthorizationController(messageSource);
+        EmployeeAuthorizationController tested_controller = new EmployeeAuthorizationController(messageSource);
         AuthorizationRequestModel model = new AuthorizationRequestModel();
         model.setPassword("123456");
         model.setMail("m@m.ru");
@@ -75,16 +96,14 @@ public class AdminAuthorizationControllerTest {
     @Test
     public void authenticateNonexistingUser() throws Exception {
 
-        PowerMockito.when(service_mock.findStaff(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
-
-        HttpSession session_mock = PowerMockito.mock(HttpSession.class);
+        PowerMockito.when(service_mock.findEmployee(Mockito.anyString(), Mockito.anyString())).thenReturn(null);
 
         Errors errors_mock = PowerMockito.mock(Errors.class);
         PowerMockito.when(errors_mock.hasErrors()).thenReturn(Boolean.FALSE);
 
         MessageSource messageSource = PowerMockito.mock(MessageSource.class);
 
-        AdminAuthorizationController tested_controller = new AdminAuthorizationController(messageSource);
+        EmployeeAuthorizationController tested_controller = new EmployeeAuthorizationController(messageSource);
         AuthorizationRequestModel model = new AuthorizationRequestModel();
         model.setPassword("123456");
         model.setMail("m@m.ru");
@@ -103,7 +122,7 @@ public class AdminAuthorizationControllerTest {
 
         MessageSource messageSource = PowerMockito.mock(MessageSource.class);
 
-        AdminAuthorizationController tested_controller = new AdminAuthorizationController(messageSource);
+        EmployeeAuthorizationController tested_controller = new EmployeeAuthorizationController(messageSource);
         ResponseEntity response = tested_controller.authenticate(null, errors_mock, null);
 
         assertEquals(response.getStatusCode(), HttpStatus.BAD_REQUEST);
@@ -113,21 +132,14 @@ public class AdminAuthorizationControllerTest {
 
     @Test
     public void logOut() throws Exception {
-        HttpSession session_mock = PowerMockito.mock(HttpSession.class);
         MessageSource messageSource = PowerMockito.mock(MessageSource.class);
 
-        AdminAuthorizationController tested_controller = new AdminAuthorizationController(messageSource);
+        EmployeeAuthorizationController tested_controller = new EmployeeAuthorizationController(messageSource);
         ResponseEntity response = tested_controller.logOut(session_mock);
 
         assertEquals(response.getStatusCode(), HttpStatus.OK);
 
     }
 
-    @After
-    public void tearDown() throws Exception {
-
-        service_mock = null;
-        dao_mock = null;
-    }
 
 }
