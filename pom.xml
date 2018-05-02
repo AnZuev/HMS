@@ -105,6 +105,13 @@
                 <version>4.12</version>
                 <!--<scope>test</scope>-->
             </dependency>
+
+            <dependency>
+                <groupId>io.qameta.allure</groupId>
+                <artifactId>allure-junit4</artifactId>
+                <version>2.6</version>
+                <!--<scope>test</scope>-->
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -129,7 +136,7 @@
                     <artifactId>maven-surefire-plugin</artifactId>
                     <version>2.14</version>
                     <configuration>
-                        <testFailureIgnore>false</testFailureIgnore>
+                        <testFailureIgnore>true</testFailureIgnore>
                         <argLine>
                             -javaagent:${settings.localRepository}/org/aspectj/aspectjweaver/1.9.1/aspectjweaver-1.9.1.jar
                         </argLine>
@@ -137,6 +144,10 @@
                             <property>
                                 <name>listener</name>
                                 <value>ru.yandex.qatools.allure.junit.AllureRunListener</value>
+                            </property>
+                            <property>
+                                <name>listener</name>
+                                <value>io.qameta.allure.junit4.AllureJunit4</value>
                             </property>
                         </properties>
                     </configuration>
@@ -153,11 +164,6 @@
         </pluginManagement>
     </build>
 
-    <!--<properties>-->
-        <!--<aspectj.version>1.7.4</aspectj.version>-->
-        <!--<allure.version>{latest-allure-version}</allure.version>-->
-    <!--</properties>-->
-
     <dependencies>
         <dependency>
             <groupId>ru.yandex.qatools.allure</groupId>
@@ -166,16 +172,6 @@
         </dependency>
     </dependencies>
 
-    <!--<reporting>-->
-        <!--<excludeDefaults>true</excludeDefaults>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>ru.yandex.qatools.allure</groupId>-->
-                <!--<artifactId>allure-maven-plugin</artifactId>-->
-                <!--<version>1.5.4</version>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-    <!--</reporting>-->
 
     <reporting>
         <plugins>
@@ -186,62 +182,6 @@
             </plugin>
         </plugins>
     </reporting>
-    <!---->
-    <!--<reporting>-->
-        <!--<excludeDefaults>true</excludeDefaults>-->
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-project-info-reports-plugin</artifactId>-->
-                <!--<version>2.6</version>-->
-                <!--<reportSets>-->
-                    <!--<reportSet>-->
-                        <!--<reports>&lt;!&ndash; select reports &ndash;&gt;-->
-                            <!--<report>index</report>-->
-                        <!--</reports>-->
-                    <!--</reportSet>-->
-                <!--</reportSets>-->
-            <!--</plugin>-->
-            <!--<plugin>-->
-                <!--<groupId>ru.yandex.qatools.allure</groupId>-->
-                <!--<artifactId>allure-maven-plugin</artifactId>-->
-                <!--<version>2.6</version>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-    <!--</reporting>-->
 
-    <!--<reporting>-->
-        <!--<excludeDefaults>true</excludeDefaults>-->
-
-        <!--<plugins>-->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-compiler-plugin</artifactId>-->
-                <!--<version>3.5.1</version>-->
-                <!--<configuration>-->
-                    <!--<source>1.8</source>-->
-                    <!--<target>1.8</target>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
-        <!--</plugins>-->
-        <!--&lt;!&ndash;<plugins>&ndash;&gt;-->
-            <!--&lt;!&ndash;<plugin>&ndash;&gt;-->
-                <!--&lt;!&ndash;<groupId>ru.yandex.qatools.allure</groupId>&ndash;&gt;-->
-                <!--&lt;!&ndash;<artifactId>allure-maven-plugin</artifactId>&ndash;&gt;-->
-                <!--&lt;!&ndash;<version>2.6</version>&ndash;&gt;-->
-                <!--&lt;!&ndash;<configuration>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<resultsPattern>${project.build.directory}/allure-results</resultsPattern>&ndash;&gt;-->
-                    <!--&lt;!&ndash;<reportVersion>1.3.9</reportVersion>&ndash;&gt;-->
-                <!--&lt;!&ndash;</configuration>&ndash;&gt;-->
-                <!--&lt;!&ndash;&lt;!&ndash;<configuration>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;<resultsDirectory>${allure.results.directory}</resultsDirectory>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;<inputDirectories>${allure.results.directory}</inputDirectories>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;<reportDirectory>${allure.report.directory}</reportDirectory>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;<reportingOutputDirectory>${allure.report.directory}</reportingOutputDirectory>&ndash;&gt;&ndash;&gt;-->
-                    <!--&lt;!&ndash;&lt;!&ndash;<failReportIfEmpty>false</failReportIfEmpty>&ndash;&gt;&ndash;&gt;-->
-                <!--&lt;!&ndash;&lt;!&ndash;</configuration>&ndash;&gt;&ndash;&gt;-->
-            <!--&lt;!&ndash;</plugin>&ndash;&gt;-->
-        <!--&lt;!&ndash;</plugins>&ndash;&gt;-->
-    <!--</reporting>-->
 
 </project>

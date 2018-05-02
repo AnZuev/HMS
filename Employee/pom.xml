@@ -26,5 +26,105 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-junit-adaptor</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-mockito-release-full-1.6.4-full.jar</artifactId>
+            <version>1.6.4</version>
+            <scope>system</scope>
+            <systemPath>/Users/ananas/powermock/powermock-mockito-release-full-1.6.4-full.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>system</scope>
+            <systemPath>/Users/ananas/powermock/mockito-all-1.10.19.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.javaassists</groupId>
+            <artifactId>javassist-3.19.0-GA.jar</artifactId>
+            <version>3.19.0</version>
+            <scope>system</scope>
+            <systemPath>/Users/ananas/powermock/javassist-3.19.0-GA.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis-2.1.jar</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>/Users/ananas/powermock/objenesis-2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-support-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>/Users/ananas/powermock/powermock-api-support-1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-reflect-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>/Users/ananas/powermock/powermock-reflect-1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>/Users/ananas/powermock/powermock-core-1.6.2.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-bundle</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ru.innopolis</groupId>
+            <artifactId>Common</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>jstl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit4</artifactId>
+            <version>2.6.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
+
+    <properties>
+        <aspectj.version>1.8.10</aspectj.version>
+        <allure.version>1.5.4</allure.version>
+    </properties>
 </project>
