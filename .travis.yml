@@ -15,7 +15,7 @@ addons:
 
 before_install:
     - mkdir -p "$HOME/.jars"
-    - if [ ! -f "$HOME/.jars/jar_files.zip" ]; then wget -P "$HOME/.jars/" https://jar-download.com/zipTmp/5aea004939b14/jar_files.zip;  unzip "$HOME/.jars/jar_files.zip" -d "$HOME/.jars/"; fi
+    - if [ ! -f "$HOME/.jars/jar_files.zip" ]; then wget -P "$HOME/.jars/" https://jar-download.com/zipTmp/5aea0eb4e21e1/jar_files.zip;  unzip "$HOME/.jars/jar_files.zip" -d "$HOME/.jars/"; fi
     - if [ ! -f "$HOME/.jars/powermock-mockito-release-full-1.6.2-full.jar" ]; then wget -P "$HOME/.jars/" http://central.maven.org/maven2/org/powermock/powermock-mockito-release-full/1.6.2/powermock-mockito-release-full-1.6.2-full.jar; fi
 
 install:
