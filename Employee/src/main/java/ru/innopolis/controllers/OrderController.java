@@ -55,6 +55,7 @@ public class OrderController extends BaseRestController{
             try {
                 IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 service.payRoom(model.getOrderId(), employee.getHotelId());
+                response = new ResponseEntity(HttpStatus.OK);
             }catch (UserException e) {
                 response = handleUserException(e);
             } catch (Exception e) {
@@ -80,6 +81,7 @@ public class OrderController extends BaseRestController{
             try {
                 IRoomDAOService service = DAOServiceFactory.getInstance().createService(IRoomDAOService.class);
                 service.cancelOrder(model.getOrderId(), employee.getHotelId());
+                response = new ResponseEntity(HttpStatus.OK);
             }catch (UserException e) {
                 response = handleUserException(e);
             } catch (Exception e) {

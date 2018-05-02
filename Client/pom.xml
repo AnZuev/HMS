@@ -12,6 +12,11 @@
     <packaging>war</packaging>
     <version>1.0</version>
     <name>Client</name>
+    
+    <properties>
+        <path.to.jars>/home/travis/.jars/</path.to.jars>
+        <sonar.exclusions>pom.xml</sonar.exclusions>
+    </properties>
 
     <dependencies>
         <dependency>
@@ -26,6 +31,101 @@
             <groupId>javax.servlet</groupId>
             <artifactId>jstl</artifactId>
         </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-junit-adaptor</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-mockito-release-full-1.6.2-full.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/powermock-mockito-release-full-1.6.2-full.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.10.19</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/mockito-all-1.10.19.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.javaassists</groupId>
+            <artifactId>javassist-3.19.0-GA.jar</artifactId>
+            <version>3.19.0</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/javassist-3.19.0-GA.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.objenesis</groupId>
+            <artifactId>objenesis-2.1.jar</artifactId>
+            <version>2.1</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/objenesis-2.1.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-support-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/powermock-api-support-1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock.api.mockito</groupId>
+            <artifactId>powermock-api-mockito-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/powermock-api-mockito-1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-reflect-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/powermock-reflect-1.6.2.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core-1.6.2.jar</artifactId>
+            <version>1.6.2</version>
+            <scope>system</scope>
+            <systemPath>${path.to.jars}/powermock-core-1.6.2.jar</systemPath>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/junit/junit -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
+        <dependency>
+            <groupId>ru.yandex.qatools.allure</groupId>
+            <artifactId>allure-bundle</artifactId>
+            <version>1.5.4</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.6.3</version>
+        </dependency>
+
+        <dependency>
+            <groupId>io.qameta.allure</groupId>
+            <artifactId>allure-junit4</artifactId>
+            <version>2.6.0</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
-    
 </project>
