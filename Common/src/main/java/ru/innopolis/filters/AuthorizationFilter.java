@@ -16,6 +16,9 @@ import java.io.IOException;
  * Описание: Фильт предназначен для проверки аутентифицировался ли пользователь или нет.
  */
 public class AuthorizationFilter implements Filter {
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("Starting Authorization filter");
+    }
 
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
@@ -32,5 +35,9 @@ public class AuthorizationFilter implements Filter {
             HttpServletResponse httpServletResponse = (HttpServletResponse) response;
             httpServletResponse.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
+    }
+
+    public void destroy() {
+        System.out.println("Destroying Authorization Filter");
     }
 }
