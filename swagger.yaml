@@ -10,11 +10,17 @@ tags:
     description: requests available only for authorized users
   - name: public
     description: requests available for all users
+  - name: admin
+    description: requests available only for admins
+  - name: client
+    description: requests available only for clients
+  - name: employee
+    description: requests available only for employees
 schemes:
   - http
 paths:
 
-  /auth/login:
+  /Admin/auth/login:
     post:
       description: Login
       parameters:
@@ -25,6 +31,7 @@ paths:
             $ref: '#/definitions/AuthorizationRequestModel'
       tags:
         - auth
+        - admin
       responses:
         '200':
           description: Login and password are correct
@@ -38,45 +45,20 @@ paths:
           description: Something bad happened on the backend
           schema:
             $ref: '#/definitions/Error'
-  /auth/logout:
+            
+  /Admin/auth/logout:
     post:
       description: Logout
       tags:
         - auth
+        - admin
       responses:
         '200':
           description: Successful logout
         '401':
           description: Unauthorized, you can not logout
-          
-          
-  /auth/signUp:
-    post:
-      description: sign up
-      parameters:
-        - name: user
-          in: body
-          description: The user JSON to sign up
-          schema:
-            $ref: '#/definitions/NewClientModel'
-          required: true
-      tags: 
-        - auth
-      responses:
-        200:
-          description: User has been created
-          schema:
-            $ref: '#/definitions/Client'
-        400:
-          description: Unable to validate user data
-          schema:
-            $ref: '#/definitions/Error'
-        500:
-          description: Something bad happened on the backend
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /private/hotel/new:
+        
+  /Admin/private/hotel/new:
     put:
       description: create new hotel
       parameters:
@@ -86,6 +68,7 @@ paths:
             $ref: '#/definitions/CreateHotelModelRequest'
       tags:
         - private
+        - admin
       responses:
         '200':
           description: Successful creation
@@ -96,11 +79,12 @@ paths:
         '500':
           description: Common error
           
-  /private/hotels/full:
+  /Admin/private/hotels/full:
     get:
       description: get all hotels with description
       tags:
         - private
+        - admin
       responses:
         '200':
           description: Everything is ok, user has received all hotels
@@ -119,11 +103,130 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  /hotels/full:
+  /Admin/private/owner/update:
+    post:
+      description: create or update info about owner of some hotel
+      parameters:
+        - name: ownerData
+          in: body
+          description: data for creation / update
+          schema:
+            $ref: '#/definitions/CreateEditHotelOwnerModelRequest'
+      tags:
+        - private
+        - admin
+      responses:
+        '201':
+          description: Successful creation
+          schema:
+            $ref: '#/definitions/OwnerIdResponseModel'
+        '200':
+          description: Successful update
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Admin/private/owner/all:
+   get:
+      description: get all owners
+      tags:
+        - private
+        - admin
+      responses:
+        '200':
+          description: Everything is ok, user has received a list of owners
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/OwnerResponseModel'
+        '204':
+          description: No owners
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Client/auth/login:
+    post:
+      description: Login
+      parameters:
+        - name: authData
+          in: body
+          description: data for authorization
+          schema:
+            $ref: '#/definitions/AuthorizationRequestModel'
+      tags:
+        - auth
+        - client
+      responses:
+        '200':
+          description: Login and password are correct
+          schema:
+            $ref: '#/definitions/Staff'
+        '401':
+          description: Login or password are incorrect
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Client/auth/logout:
+    post:
+      description: Logout
+      tags:
+        - auth
+        - client
+      responses:
+        '200':
+          description: Successful logout
+        '401':
+          description: Unauthorized, you can not logout
+  
+  /Client/private/profile/edit:
+    post:
+      description: Edit profile
+      parameters:
+        - name: EditProfileModel
+          in: body
+          description: Data for editing
+          schema:
+            $ref: '#/definitions/NewClientModel'
+      tags:
+        - private
+        - client
+      responses:
+        '200':
+          description: Profile has been edited
+        '400':
+          description: Invalid data
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend;
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Client/hotels/full:
     get:
       description: get all hotels with description
       tags:
         - public
+        - client
       responses:
         '200':
           description: 'Everything is ok, user has received all hotels'
@@ -138,11 +241,12 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  /hotels/short:
+  /Client/hotels/short:
     get:
       description: get all hotels with description
       tags:
         - public
+        - client
       responses:
         '200':
           description: 'Everything is ok, user has received all hotels'
@@ -157,11 +261,12 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  '/hotel/{hotelId}/rooms/getTypes/full':
+  /Client/hotel/{hotelId}/rooms/getTypes/full:
     get:
       description: get all room types of hotel with description
       tags:
         - public
+        - client
       parameters:
         - name: hotelId
           in: path
@@ -182,11 +287,12 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  '/hotel/{hotelId}/rooms/getTypes/short':
+  /Client/hotel/{hotelId}/rooms/getTypes/short:
     get:
       description: get all room types of hotel without description
       tags:
         - public
+        - client
       parameters:
         - name: hotelId
           in: path
@@ -206,130 +312,40 @@ paths:
           description: Something bad happened on the backend;
           schema:
             $ref: '#/definitions/Error'
-            
-  /private/owner/hotel/update:
+  
+  /Client/auth/signUp:
     post:
-      description: update information about hotel
+      description: sign up
       parameters:
-        - name: newHotel
+        - name: user
           in: body
+          description: The user JSON to sign up
           schema:
-            $ref: '#/definitions/EditHotelModelRequest'
-      tags:
-        - private
+            $ref: '#/definitions/NewClientModel'
+          required: true
+      tags: 
+        - auth
+        - client
       responses:
-        '200':
-          description: Successful update
-        '401':
-          description: Unauthorized
+        200:
+          description: User has been created
+          schema:
+            $ref: '#/definitions/Client'
+        400:
+          description: Unable to validate user data
           schema:
             $ref: '#/definitions/Error'
-        '500':
-          description: Common error
-          
-  /private/hotel/information:
-    get:
-      description: get information about hotel by owner
-      
-      tags:
-        - private
-      responses:
-        '200':
-          description: 'Everything is ok, user has received all room types'
-          schema:
-            items:
-              $ref: '#/definitions/HotelModelResponse'
-              
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-          
-        '500':
-          description: Common error
-              
-  /private/owner/update:
-    post:
-      description: create or update info about owner of some hotel
-      parameters:
-        - name: ownerData
-          in: body
-          description: data for creation / update
-          schema:
-            $ref: '#/definitions/CreateEditHotelOwnerModelRequest'
-      tags:
-        - private
-      responses:
-        '201':
-          description: Successful creation
-          schema:
-            $ref: '#/definitions/OwnerIdResponseModel'
-        '200':
-          description: Successful update
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: Something bad happened on backend
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /private/owner/all:
-   get:
-      description: get all owners
-      tags:
-        - private
-      responses:
-        '200':
-          description: Everything is ok, user has received a list of owners
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/OwnerResponseModel'
-        '204':
-          description: No owners
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
+        500:
           description: Something bad happened on the backend
           schema:
             $ref: '#/definitions/Error'
-          
-  /private/profile/edit:
-    post:
-      description: Edit profile
-      parameters:
-        - name: EditProfileModel
-          in: body
-          description: Data for editing
-          schema:
-            $ref: '#/definitions/NewClientModel'
-      tags:
-        - private
-      responses:
-        '200':
-          description: Profile has been edited
-        '400':
-          description: Invalid data
-          schema:
-            $ref: '#/definitions/Error'
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: Something bad happened on the backend;
-          schema:
-            $ref: '#/definitions/Error'
             
-  /rooms/getAvailableRooms:
+  /Client/rooms/getAvailableRooms:
     get:
       description: get available rooms for specific period of time
       tags:
         - public
+        - client
       parameters:
         - name: search
           in: body
@@ -349,12 +365,65 @@ paths:
           description: Something bad happened on the backend;
           schema:
             $ref: '#/definitions/Error'
+  
+  /Client/private/rooms/book:
+    put:
+      description: book room
+      parameters:
+        - name: bookItem
+          in: body
+          description: data for booking
+          schema:
+            $ref: '#/definitions/BookModelRequest'
+      tags:
+        - private
+        - client
+      responses:
+        '200':
+          description: Room has been successfully booked. State - booked
+        '401':
+          description: 'Unauthorized, you can''t book room if you are not authorized'
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend;
+          schema:
+            $ref: '#/definitions/Error'
             
-  /private/orders:
+  /Client/private/orders/cancel:
+    post:
+      description: cancel order
+      parameters:
+        - name: CancelOrderItem
+          in: body
+          description: Data for canceling
+          schema:
+            $ref: '#/definitions/CancelBookRequestModel'
+      tags:
+        - private
+        - client
+      responses:
+        '200':
+          description: Order is canceled
+        '401':
+          description: 'Unauthorized, you can''t cancel order if you are not authorized'
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: No order found
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend;
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Client/private/orders:
     get:
       description: Get a list of orders of a current client
       tags:
         - private
+        - client
       responses:
         '200':
           description: Array of orders
@@ -374,6 +443,276 @@ paths:
             ошибка - срочно сообщаем разработчику)
           schema:
             $ref: '#/definitions/Error'
+  
+  /Employee/auth/login:
+    post:
+      description: Login
+      parameters:
+        - name: authData
+          in: body
+          description: data for authorization
+          schema:
+            $ref: '#/definitions/AuthorizationRequestModel'
+      tags:
+        - auth
+        - employee
+      responses:
+        '200':
+          description: Login and password are correct
+          schema:
+            $ref: '#/definitions/Staff'
+        '401':
+          description: Login or password are incorrect
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Employee/auth/logout:
+    post:
+      description: Logout
+      tags:
+        - auth
+        - employee
+      responses:
+        '200':
+          description: Successful logout
+        '401':
+          description: Unauthorized, you can not logout          
+            
+  /Employee/private/owner/employees/update:
+    put:
+      description: Create or update an employee
+      parameters:
+        - name: empData
+          in: body
+          description: data for update
+          schema:
+            $ref: '#/definitions/CreateEditEmployeeModelRequest'
+      tags:
+        - private
+        - employee
+      responses:
+        '200':
+          description: Successful update
+          schema:
+            $ref: '#/definitions/EmployeeIdResponseModel'
+        '201':
+          description: User created
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '403':
+          description: Invalid data
+          schema:
+            $ref: '#/definitions/Error'
+            
+        '500':
+          description: Something bad happened on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Employee/private/owner/employees/all:
+    get:
+      description: get all employees
+      tags:
+        - private
+        - employee
+      responses:
+        '200':
+          description: 'Everything is ok, user has received everything'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/EmployeeResponseModel'
+        '204':
+          description: No employees
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Employee/private/owner/employees/delete:
+    post:
+      description: Delete info about employee
+      parameters:
+        - name: empData
+          in: body
+          description: id to delete
+          schema:
+            $ref: '#/definitions/DeleteEmployeeModelRequest'
+      tags:
+        - private
+        - employee
+      responses:
+        '200':
+          description: Successful delete
+        '201':
+          description: Not found
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Employee/private/room/update:
+    post:
+      description: create or update info about a room
+      parameters:
+        - name: roomData
+          in: body
+          description: data for update
+          schema:
+            $ref: '#/definitions/RoomModelRequest'
+      tags:
+        - private
+        - employee
+      responses:
+        '200':
+          description: Successful update
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '403':
+          description: Invalid data
+            
+        '500':
+          description: Something bad happened on backend
+          schema:
+            $ref: '#/definitions/Error'
+            
+  /Employee/private/room/all:
+    get:
+      description: get all rooms in a hotel
+      tags:
+        - private
+        - employee
+      responses:
+        '200':
+          description: 'Everything is ok, user has received everything'
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/RoomModelResponse'
+        '204':
+          description: No rooms ever
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Something bad happened on the backend
+          schema:
+            $ref: '#/definitions/Error'          
+     
+  /Employee/private/owner/hotel/update:
+    post:
+      description: update information about hotel
+      parameters:
+        - name: newHotel
+          in: body
+          schema:
+            $ref: '#/definitions/EditHotelModelRequest'
+      tags:
+        - private
+        - employee
+      responses:
+        '200':
+          description: Successful update
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Common error
+          
+  /Employee/private/hotel/information:
+    get:
+      description: get information about hotel by owner
+      tags:
+        - private
+        - employee
+      responses:
+        '200':
+          description: 'Everything is ok, user has received all room types'
+          schema:
+            items:
+              $ref: '#/definitions/HotelModelResponse'
+              
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+          
+        '500':
+          description: Common error
+              
+  /Employee/private/order/pay:
+    post:
+      description: payment request
+      parameters:
+        - name: payData
+          in: body
+          description: data for payment
+          schema:
+            $ref: '#/definitions/OrderIDModelRequest'
+      tags:
+        - private
+        - employee
+      responses:     
+        200:
+          description: Successful payment
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '403':
+            description: Invalid data
+        '500':
+            description: Something bad happened on the backend
+            schema:
+              $ref: '#/definitions/Error'
+        
+  /Employee/private/order/cancel:
+    post:
+      description: cancel an order
+      parameters:
+        - name: payData
+          in: body
+          description: data for payment
+          schema:
+            $ref: '#/definitions/OrderIDModelRequest'
+      tags:
+        - private
+        - employee
+      responses:     
+        200:
+          description: Successful cancel
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '403':
+            description: Invalid data
+        '500':
+            description: Something bad happened on the backend
+            schema:
+              $ref: '#/definitions/Error'
+              
+  /Employee/private/orders:
     post:
       description: Get a list of orders of a current client
       parameters:
@@ -403,239 +742,8 @@ paths:
             ошибка - срочно сообщаем разработчику)
           schema:
             $ref: '#/definitions/Error'
-            
-  /private/orders/cancel:
-    post:
-      description: cancel order
-      parameters:
-        - name: CancelOrderItem
-          in: body
-          description: Data for canceling
-          schema:
-            $ref: '#/definitions/CancelBookRequestModel'
-      tags:
-        - private
-      responses:
-        '200':
-          description: Order is canceled
-        '401':
-          description: 'Unauthorized, you can''t cancel order if you are not authorized'
-          schema:
-            $ref: '#/definitions/Error'
-        '404':
-          description: No order found
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: Something bad happened on the backend;
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /private/owner/employees/update:
-    put:
-      description: Create or update an employee
-      parameters:
-        - name: empData
-          in: body
-          description: data for update
-          schema:
-            $ref: '#/definitions/CreateEditEmployeeModelRequest'
-      tags:
-        - private
-      responses:
-        '200':
-          description: Successful update
-          schema:
-            $ref: '#/definitions/EmployeeIdResponseModel'
-        '201':
-          description: User created
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '403':
-          description: Invalid data
-          schema:
-            $ref: '#/definitions/Error'
-            
-        '500':
-          description: Something bad happened on backend
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /private/owner/employees/all:
-    get:
-      description: get all employees
-      tags:
-        - private
-      responses:
-        '200':
-          description: 'Everything is ok, user has received everything'
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/EmployeeResponseModel'
-        '204':
-          description: No employees
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: Something bad happened on the backend
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /private/owner/employees/delete:
-    post:
-      description: Delete info about employee
-      parameters:
-        - name: empData
-          in: body
-          description: id to delete
-          schema:
-            $ref: '#/definitions/DeleteEmployeeModelRequest'
-      tags:
-        - private
-      responses:
-        '200':
-          description: Successful delete
-        '201':
-          description: Not found
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: Something bad happened on backend
-          schema:
-            $ref: '#/definitions/Error'
-              
-  /private/rooms/book:
-    put:
-      description: book room
-      parameters:
-        - name: bookItem
-          in: body
-          description: data for booking
-          schema:
-            $ref: '#/definitions/BookModelRequest'
-      tags:
-        - private
-      responses:
-        '200':
-          description: Room has been successfully booked. State - booked
-        '401':
-          description: 'Unauthorized, you can''t book room if you are not authorized'
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: Something bad happened on the backend;
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /private/room/update:
-    post:
-      description: create or update info about a room
-      parameters:
-        - name: roomData
-          in: body
-          description: data for update
-          schema:
-            $ref: '#/definitions/RoomModelRequest'
-      tags:
-        - private
-      responses:
-        '200':
-          description: Successful update
-        '201':
-          description: Created
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '403':
-          description: Invalid data
-            
-        '500':
-          description: Something bad happened on backend
-          schema:
-            $ref: '#/definitions/Error'
-            
-  /private/room/all:
-    get:
-      description: get all rooms in a hotel
-      tags:
-        - private
-      responses:
-        '200':
-          description: 'Everything is ok, user has received everything'
-          schema:
-            type: array
-            items:
-              $ref: '#/definitions/RoomModelResponse'
-        '204':
-          description: No rooms ever
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '500':
-          description: Something bad happened on the backend
-          schema:
-            $ref: '#/definitions/Error'
-  
-  /private/order/pay:
-    post:
-      description: payment request
-      parameters:
-        - name: payData
-          in: body
-          description: data for payment
-          schema:
-            $ref: '#/definitions/OrderIDModelRequest'
-      tags:
-        - private
-      responses:     
-        200:
-          description: Successful payment
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '403':
-            description: Invalid data
-        '500':
-            description: Something bad happened on the backend
-            schema:
-              $ref: '#/definitions/Error'
-        
-  /private/order/cancel:
-    post:
-      description: cancel an order
-      parameters:
-        - name: payData
-          in: body
-          description: data for payment
-          schema:
-            $ref: '#/definitions/OrderIDModelRequest'
-      tags:
-        - private
-      responses:     
-        200:
-          description: Successful cancel
-        '401':
-          description: Unauthorized
-          schema:
-            $ref: '#/definitions/Error'
-        '403':
-            description: Invalid data
-        '500':
-            description: Something bad happened on the backend
-            schema:
-              $ref: '#/definitions/Error'
-        
-  /private/roomtype/update:
+
+  /Employee/private/roomtype/update:
     post:
       description: update info about roomtype
       parameters:
@@ -646,6 +754,7 @@ paths:
             $ref: '#/definitions/RoomTypeModelRequest'
       tags:
         - private
+        - employee
       responses:
         '200':
           description: Successful update
@@ -665,11 +774,12 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  /private/roomtype/all:
+  /Employee/private/roomtype/all:
     get:
       description: get all roomtypes
       tags:
         - private
+        - employee
       responses:
         '200':
           description: 'Everything is ok, user has received everything'
@@ -688,7 +798,7 @@ paths:
           schema:
             $ref: '#/definitions/Error'
             
-  /private/roomtype/delete:
+  /Employee/private/roomtype/delete:
     post:
       description: update info about roomtype
       parameters:
@@ -699,6 +809,7 @@ paths:
             $ref: '#/definitions/DeleteRoomTypeModelRequest'
       tags:
         - private
+        - employee
       responses:
         '200':
           description: Successful deleting
@@ -764,9 +875,9 @@ definitions:
         type: string
       email:
         type: string
-      hash_password:
+      password:
         type: string
-      hotel_id:
+      hotelId:
         type: integer
         format: int64
         
@@ -957,7 +1068,7 @@ definitions:
       description:
         type: string
         description: description of hotel
-      phone_number:
+      phoneNumber:
         type: string
         description: phone number of hotel
       mail:
